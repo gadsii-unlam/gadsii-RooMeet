@@ -1,7 +1,32 @@
-# [Nombre del equipo]
+# RooMeet
 
-Integrantes: [nombre 1], [nombre 2], [nombre 3], [nombre 4], [nombre 5]
 
-Producto: [una línea describiendo el producto — se completa en el TP1]
 
-Segmento de la comunidad UNLaM: [se completa en el TP1]
+Integrantes:
+
+BOSCH, MAXIMO AUGUSTO
+
+BURNOWICZ, ALEJO
+
+LÓPEZ FERME, NAHUEL EZEQUIEL
+
+Rodriguez, Mariano Lionel
+
+ROSALES, GUSTAVO MAURICIO
+
+VALLEJOS, FRANCO NICOLAS
+
+
+
+Producto:
+
+
+
+Este desarrollo busca resolver la asignación correcta y eficiente de las aulas de la Universidad para todas las materias que se cursan presencialmente dentro del establecimiento; así como la generación de alertas de inconvenientes técnicos dentro de las mismas.
+
+
+
+
+
+Segmento de la comunidad UNLaM: Administración.
+
