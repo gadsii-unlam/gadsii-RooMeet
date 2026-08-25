@@ -64,9 +64,10 @@ Se trata de una solución destinada a personal administrativo, de seguridad y ma
 
 ###### **4.Integraciones Previstas:**
 
+\-Lectura de materias de la UnlaM y sus horarios a traves de guaraní
 
+\-Lectura o revision actual del sistema de conteo de personas asignables a un aula mediante Intraconsulta
 
-**\*Resta Completar\***
 
 ###### 
 
