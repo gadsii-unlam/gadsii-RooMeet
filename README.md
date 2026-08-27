@@ -1,32 +1,54 @@
-# RooMeet
+# 🏫 RooMeet
 
+> **Sistema para la gestión y asignación eficiente de aulas universitarias**
 
+---
 
-Integrantes:
+## 📌 Descripción
 
-BOSCH, MAXIMO AUGUSTO
+**RooMeet** es un desarrollo orientado a resolver la asignación **correcta y eficiente de las aulas** de la Universidad Nacional de La Matanza (UNLaM).
 
-BURNOWICZ, ALEJO
+El sistema contempla las materias que se cursan **presencialmente dentro del establecimiento**, buscando optimizar la utilización de los espacios disponibles.
 
-LÓPEZ FERME, NAHUEL EZEQUIEL
+Además, el desarrollo contempla la **generación de alertas ante inconvenientes técnicos** que puedan producirse dentro de las aulas.
 
-Rodriguez, Mariano Lionel
+---
 
-ROSALES, GUSTAVO MAURICIO
+## 🎯 Objetivo
 
-VALLEJOS, FRANCO NICOLAS
+El objetivo principal de RooMeet es facilitar la gestión de las aulas universitarias mediante:
 
+- 🏫 Asignación correcta y eficiente de aulas.
+- 📚 Gestión de las materias con cursada presencial.
+- ⚠️ Generación de alertas ante inconvenientes técnicos.
+- 👥 Soporte a las tareas del área administrativa.
 
+---
 
-Producto:
+## 👤 Segmento de la comunidad UNLaM
 
+**Administración**
 
+El sistema está orientado principalmente al personal administrativo encargado de la gestión relacionada con las aulas y las materias presenciales.
 
-Este desarrollo busca resolver la asignación correcta y eficiente de las aulas de la Universidad para todas las materias que se cursan presencialmente dentro del establecimiento; así como la generación de alertas de inconvenientes técnicos dentro de las mismas.
+---
 
+## 👥 Integrantes
 
+- **BOSCH, MAXIMO AUGUSTO**
+- **BURNOWICZ, ALEJO**
+- **LÓPEZ FERME, NAHUEL EZEQUIEL**
+- **RODRIGUEZ, MARIANO LIONEL**
+- **ROSALES, GUSTAVO MAURICIO**
+- **VALLEJOS, FRANCO NICOLAS**
 
+---
 
+## 📦 Producto
 
-Segmento de la comunidad UNLaM: Administración.
+**RooMeet**
+
+Sistema destinado a mejorar la gestión de espacios físicos y la detección de inconvenientes técnicos en las aulas de la universidad.
+
+---
 
