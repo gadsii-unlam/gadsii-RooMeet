@@ -119,6 +119,20 @@ Sin duda, el personal administrativo es nuestro grupo de usuarios primario, ya q
 
 &#x20;
 
+
+* **Leonardo Scaravaglione (Administrativa en DIIT)**
+
+
+
+&#x20;   -->Relación previa con integrantes del equipo: No aplica.
+
+&#x20;   -->Disponibilidad para relevamiento: Martes 1/9 de 14hs a 21hs.
+
+&#x20;   -->Disponibilidad para pruebas de MVP: Martes 29/9 de 14hs a 21hs.
+
+&#x20;
+
+
 ### Personal de mantenimiento
 
 
