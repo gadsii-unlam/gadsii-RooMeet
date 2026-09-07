@@ -120,6 +120,7 @@ Sin duda, el personal administrativo es nuestro grupo de usuarios primario, ya q
 &#x20;
 
 
+
 * **Leonardo Scaravaglione (Administrativa en DIIT)**
 
 
@@ -131,6 +132,7 @@ Sin duda, el personal administrativo es nuestro grupo de usuarios primario, ya q
 &#x20;   -->Disponibilidad para pruebas de MVP: Martes 29/9 de 14hs a 21hs.
 
 &#x20;
+
 
 
 ### Personal de mantenimiento
@@ -209,4 +211,176 @@ Este proyecto parte de muchos supuestos debido a la falta de información públi
 * **Asumimos que** el personal de mantenimiento mantiene un registro activo de las tareas realizadas y de las necesidades relacionadas con la infraestructura de las aulas.
 * **Evidencia que lo confirmaría:** solicitar ejemplos de registros de mantenimiento, planillas, sistemas o procedimientos utilizados actualmente para registrar incidentes, reparaciones y necesidades de infraestructura.
 * **Evidencia que lo refutaría:** comprobar que no existe un registro sistemático de estas actividades y que las solicitudes de mantenimiento se gestionan únicamente mediante comunicaciones informales o de manera verbal.
+
+
+
+\----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+### Recopilación de respuestas-TP2
+
+
+
+##### 1.Perfil de Usuario Real
+
+
+
+A partir de la información recopilada, el perfil del usuario, en términos generales, es aquel que día a día se encarga de administrar las diferentes operaciones y trámites que pueden realizar docentes y estudiantes, dentro de su rutina universitaria.
+
+En los tres usuarios entrevistados, detectamos lo siguiente:
+
+
+
+###### Necesidades Reales
+
+
+
+* No cuentan con un sistema de asignación automática de aulas para cada curso, todo el proceso es manual. Requieren un sistema que centralice toda la capacidad de infraestructura que tiene las instalaciones de la Unlam (aulas, laboratorios, disponibilidad), un histórico de aulas usada y cantidad de inscriptos, algoritmos estadísticos automáticos para la inferencia de cupos de cada materia, y que tenga la capacidad, en base a toda esta información mencionada, de asignar de forma automática las aulas a cada curso.
+
+
+
+* Requieren de un sistema para gestionar las aulas con materias asignadas para administrar y monitorear las disponibilidades de las aulas para cada departamento.
+
+
+
+* No cuentan con un sistema de asignación automática de aulas para cada curso, todo el proceso es manual. Requieren de un sistema para gestionar las aulas con materias asignadas para administrar y monitorear las disponibilidades de las aulas para cada departamento. 
+
+
+
+###### Problemas
+
+
+
+* Debido a la carga manual de datos, existen muchos errores humanos. Los análisis estadísticos para definir el cupo de cada materia también son manuales y conducen a errores. Trabajos manuales conducen a más carga laboral, verificaciones cruzadas entre otros compañeros, consumo alto de recursos. 
+
+
+
+* Los cambios de aulas, hechos por la secretaria académica, perjudica la planificación del cuatrimestre a cada departamento. Tienen conflictos con materias semipresenciales que comparten aulas, ya que se planifica de antemano la disponibilidad del aula para cada materia, pero a veces los docentes salen de la planificación y requieren usar el aula, solapando dos materias en un mismo horario. Aulas superpobladas por reclamos.
+
+
+
+* Aulas superpobladas y las asignaciones de aulas de forma manual sin un sistema que centralice la información.  
+
+
+
+###### Contexto de Uso
+
+
+
+* Proporcionarán la infraestructura y mantenimiento necesario para el sistema que proponemos. Administrarán configuraciones de bajo nivel y serán responsables de mantener la disponibilidad del sistema.
+
+
+
+* Monitorean y planifican la disponibilidad de las aulas con el sistema propuesto, solucionando ágilmente los solapamientos y notificando activamente por la aplicación a docentes y alumnos los cambios de aula. 
+
+
+
+##### 2\. Hipótesis de Valor
+
+
+
+**Creemos que** El personal de administración de cada departamento **tiene el problema de** participar de un proceso tedioso y manual de volcar información al sistema Guaraní. Luego tener que depender de este sistema para consultar la relación curso-aula y no poder visualizar de una forma interactiva el estado actual de las disponibilidades, ocupaciones y capacidades de cada aula. 
+
+
+
+**Nuestra solución es** un sistema que centralice toda la capacidad de infraestructura que tiene las instalaciones de la Unlam (aulas, laboratorios, disponibilidad), un histórico de aulas usada y cantidad de inscriptos, algoritmos estadísticos automáticos para la inferencia de cupos de cada materia, y que tenga la capacidad, en base a toda esta información mencionada, de asignar de forma automática las aulas a cada curso, brindando herramientas para monitoreo y visualización de los estados de cada aula en tiempo real y planificado. 
+
+
+
+**Sabremos que estamos en lo correcto cuando** en base a toda la información requerida, el sistema haga una asignación de aulas correctas ajustando el valor estimado de cupo con las capacidades de cada aula, sin ningún solapamiento de horarios entre materias. Los que definen que la asignación fue correcta deben el personal administrativo de los departamentos y la secretaria académica. A su vez, el personal administrativo de los departamentos debe mostrar satisfacción a la hora de monitorear la disponibilidad de cada aula. 
+
+
+
+
+
+##### 3\. Estado de los Supuestos
+
+
+
+###### Supuestos confirmados
+
+
+
+Muchos supuestos que definimos anteriormente se vieron refutados con la nueva información. No habíamos previsto la cantidad de actores que intervienen en el proceso de asignación de aulas, la complejidad de este, y falta de un sistema que agilice las tareas, teniendo que hacer todo el proceso manual. 
+
+
+
+###### Supuestos rechazados
+
+
+
+* "Asumimos que la responsabilidad de asignar las aulas corresponde al personal administrativo de cada departamento de la Universidad."
+
+
+
+* "Asumimos que el personal administrativo mencionado gestiona activamente la relación entre las aulas y las materias mediante un sistema de software ya establecido."
+
+
+
+* "Asumimos que ningún personal, excepto los administrativos, tiene acceso al sistema de gestión de asignación de aulas actualmente utilizado."
+
+
+
+* "Asumimos que sistemas como IntraConsulta reciben información proveniente del sistema actual de asignación de aulas, y no que el proceso funcione en sentido inverso. Esto explicaría por qué el personal administrativo puede conocer el aula correspondiente a una determinada materia sin que dicha información se encuentre necesariamente reflejada en IntraConsulta."
+
+
+
+
+
+###### Supuestos sin evidencia
+
+
+
+* "Asumimos que el personal de mantenimiento mantiene un registro activo de las tareas realizadas y de las necesidades relacionadas con la infraestructura de las aulas."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
