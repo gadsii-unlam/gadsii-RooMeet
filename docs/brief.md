@@ -1,5 +1,7 @@
 # Brief
 
+**Cambios respecto de la versión 1.** A partir del relevamiento realizado con tres usuarios reales, esta versión reemplaza el perfil hipotético del usuario primario por un perfil basado en evidencia, incorpora sus necesidades, problemas y contexto de uso, confronta los cinco supuestos del TP1 y formula una hipótesis de valor medible. El cambio principal es que la asignación de aulas no depende únicamente del personal administrativo de cada departamento: intervienen varios actores y la Secretaría Académica tiene un rol central en la decisión y validación de cambios. Por este motivo, RooMeet debe contemplar un flujo con múltiples roles, centralización de información y apoyo a la planificación y el monitoreo.
+
 
 
 ## 1\. Segmento
@@ -216,171 +218,70 @@ Este proyecto parte de muchos supuestos debido a la falta de información públi
 
 \----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## 7. Actualización del brief a partir del TP2
 
+Esta sección contiene la revisión vigente del usuario primario y reemplaza, para la versión 2, el perfil hipotético presentado en el TP1. El contenido anterior se conserva como antecedente para que sea posible rastrear qué cambió después del relevamiento.
 
-### Recopilación de respuestas-TP2
+### 7.1 Perfil del usuario real
 
+El relevamiento incluyó a tres personas vinculadas de manera concreta con el proceso de asignación y gestión de aulas:
 
+* **U1 - Desarrollador de software del área de Sistemas:** conoce la infraestructura tecnológica y el proceso actual. Su participación en RooMeet se relaciona con la configuración de bajo nivel, el mantenimiento técnico y la disponibilidad del sistema.
+* **U2 - Personal administrativo del DIIT:** planifica y monitorea la disponibilidad de aulas del departamento. Su trabajo se ve afectado por los cambios decididos por la Secretaría Académica, los solapamientos y los reclamos por capacidad.
+* **U3 - Personal administrativo del DIIT:** participa en la planificación y el seguimiento de aulas y materias. Identificó como problemas centrales la asignación manual, la falta de información centralizada y la superpoblación de aulas.
 
-##### 1.Perfil de Usuario Real
+El usuario primario se redefine como el **personal administrativo que interviene en la planificación, asignación, validación y monitoreo de aulas**, con la **Secretaría Académica** como actor central para aprobar o modificar asignaciones. El personal de cada departamento continúa siendo usuario directo para consultar, planificar y gestionar la disponibilidad, mientras que el área de Sistemas cumple un rol de soporte técnico.
 
+### 7.2 Necesidades reales
 
+* Centralizar la información de aulas y laboratorios, incluyendo capacidad, disponibilidad, horarios y materias asignadas.
+* Disponer de un histórico de aulas utilizadas y cantidad de inscriptos para mejorar la planificación.
+* Automatizar los análisis estadísticos utilizados para estimar cupos y reducir el trabajo manual.
+* Generar propuestas automáticas de asignación que contemplen capacidad y ausencia de superposiciones.
+* Monitorear la disponibilidad planificada y actual de las aulas por departamento.
+* Comunicar con rapidez los cambios de aula a docentes y estudiantes.
 
-A partir de la información recopilada, el perfil del usuario, en términos generales, es aquel que día a día se encarga de administrar las diferentes operaciones y trámites que pueden realizar docentes y estudiantes, dentro de su rutina universitaria.
+### 7.3 Problemas y frustraciones concretas
 
-En los tres usuarios entrevistados, detectamos lo siguiente:
+* La carga de datos y el análisis para definir cupos se realizan manualmente, lo que produce errores, verificaciones cruzadas, mayor carga laboral y alto consumo de tiempo y recursos.
+* Los cambios de aula decididos por la Secretaría Académica pueden alterar la planificación de los departamentos durante el cuatrimestre.
+* Las materias semipresenciales pueden utilizar un aula fuera de la planificación y generar solapamientos con otras materias.
+* Se producen situaciones de aulas superpobladas y reclamos asociados a asignaciones que no contemplan adecuadamente la cantidad de estudiantes.
+* La información no está centralizada ni se presenta de forma visual para consultar disponibilidad, ocupación y capacidad de cada aula.
 
+### 7.4 Contexto de uso
 
+El personal administrativo utilizaría RooMeet durante la planificación del cuatrimestre y en el seguimiento cotidiano de las aulas. Necesita consultar el estado planificado y actual, resolver con agilidad solapamientos o cambios y coordinar la comunicación a docentes y estudiantes. La Secretaría Académica intervendría en la validación y modificación de asignaciones, y el área de Sistemas administraría la infraestructura, las configuraciones de bajo nivel y la disponibilidad técnica del producto.
 
-###### Necesidades Reales
+El relevamiento no aportó evidencia suficiente sobre los dispositivos utilizados, las condiciones de conectividad ni si estas tareas se realizan siempre de manera individual o junto con otros actores. Estos aspectos quedan pendientes de validación y no se incorporan como hechos confirmados.
 
+### 7.5 Confrontación de los supuestos del TP1
 
+| Supuesto del TP1 | Estado | Evidencia e implicancia |
+| --- | --- | --- |
+| La responsabilidad de asignar aulas corresponde al personal administrativo de cada departamento. | **Refutado** | U2 indicó que el proceso es manual e intervienen coordinadores de carrera, el sistema SIU Guaraní y la Secretaría Académica. Al caer el supuesto crítico, RooMeet no puede diseñarse para un único rol departamental: debe contemplar responsabilidades y validaciones de varios actores. |
+| El personal administrativo gestiona la relación entre aulas y materias mediante un sistema de software ya establecido. | **Refutado** | U1 señaló que la asignación y los análisis estadísticos se realizan de manera manual. SIU Guaraní se utiliza en el proceso, pero no automatiza la decisión de asignación descripta por los usuarios. |
+| Solo el personal administrativo tiene acceso o intervención sobre el sistema de asignación de aulas. | **Refutado** | U1 explicó que, una vez iniciado el cuatrimestre, las modificaciones se solicitan a la Secretaría Académica, que revisa, valida y decide si cambia la asignación. |
+| IntraConsulta recibe la información del sistema actual de asignación y el flujo no funciona en sentido inverso. | **Refutado** | U1 indicó que la información de IntraConsulta puede variar según se consuma desde Guaraní o requiera una migración. La relación unidireccional asumida en el TP1 no quedó sostenida. |
+| El personal de mantenimiento conserva un registro activo de tareas y necesidades de infraestructura. | **Sin evidencia** | Las personas relevadas no contaban con información sobre este proceso. Debe validarse con personal de mantenimiento antes de incorporarlo al alcance como hecho. |
 
-* No cuentan con un sistema de asignación automática de aulas para cada curso, todo el proceso es manual. Requieren un sistema que centralice toda la capacidad de infraestructura que tiene las instalaciones de la Unlam (aulas, laboratorios, disponibilidad), un histórico de aulas usada y cantidad de inscriptos, algoritmos estadísticos automáticos para la inferencia de cupos de cada materia, y que tenga la capacidad, en base a toda esta información mencionada, de asignar de forma automática las aulas a cada curso.
+**Supuestos confirmados:** ninguno de los cinco supuestos del TP1 quedó confirmado por el relevamiento realizado.
 
+### 7.6 Hallazgos no previstos y nuevos supuestos
 
+El relevamiento mostró que el proceso involucra más actores de los previstos, que la decisión de asignación continúa siendo manual aun cuando se utiliza SIU Guaraní y que los cambios durante el cuatrimestre afectan la planificación departamental. También aparecieron como problemas específicos los solapamientos vinculados con materias semipresenciales, la superpoblación de aulas y la necesidad de notificar cambios.
 
-* Requieren de un sistema para gestionar las aulas con materias asignadas para administrar y monitorear las disponibilidades de las aulas para cada departamento.
+A partir de estos hallazgos surgen nuevos supuestos que deberán validarse en las próximas etapas:
 
+* La Universidad puede disponibilizar datos confiables de aulas, horarios, capacidades, inscriptos e historial de uso para alimentar el sistema.
+* El personal administrativo y la Secretaría Académica aceptarían propuestas automáticas si conservan la posibilidad de revisarlas y modificarlas.
+* Una notificación emitida desde RooMeet llegaría a docentes y estudiantes por un canal oportuno y utilizado por ellos.
+* Es posible establecer una línea de base del tiempo que demanda el proceso manual para medir la reducción lograda por el producto.
 
+### 7.7 Hipótesis de valor
 
-* No cuentan con un sistema de asignación automática de aulas para cada curso, todo el proceso es manual. Requieren de un sistema para gestionar las aulas con materias asignadas para administrar y monitorear las disponibilidades de las aulas para cada departamento. 
+**Creemos que** el personal administrativo de la Secretaría Académica de la UNLaM **tiene el problema de** asignar y consultar aulas mediante un proceso manual, tedioso y poco visual, dependiente de Guaraní, que dificulta conocer la disponibilidad, ocupación y capacidad real de cada aula.
 
+**Nuestra solución es** un sistema que centraliza la información de aulas, laboratorios, horarios, capacidades e inscriptos, y genera propuestas automáticas de asignación para cada curso, con herramientas visuales para monitorear el estado planificado y actual.
 
-
-###### Problemas
-
-
-
-* Debido a la carga manual de datos, existen muchos errores humanos. Los análisis estadísticos para definir el cupo de cada materia también son manuales y conducen a errores. Trabajos manuales conducen a más carga laboral, verificaciones cruzadas entre otros compañeros, consumo alto de recursos. 
-
-
-
-* Los cambios de aulas, hechos por la secretaria académica, perjudica la planificación del cuatrimestre a cada departamento. Tienen conflictos con materias semipresenciales que comparten aulas, ya que se planifica de antemano la disponibilidad del aula para cada materia, pero a veces los docentes salen de la planificación y requieren usar el aula, solapando dos materias en un mismo horario. Aulas superpobladas por reclamos.
-
-
-
-* Aulas superpobladas y las asignaciones de aulas de forma manual sin un sistema que centralice la información.  
-
-
-
-###### Contexto de Uso
-
-
-
-* Proporcionarán la infraestructura y mantenimiento necesario para el sistema que proponemos. Administrarán configuraciones de bajo nivel y serán responsables de mantener la disponibilidad del sistema.
-
-
-
-* Monitorean y planifican la disponibilidad de las aulas con el sistema propuesto, solucionando ágilmente los solapamientos y notificando activamente por la aplicación a docentes y alumnos los cambios de aula. 
-
-
-
-##### 2\. Hipótesis de Valor
-
-
-
-**Creemos que** El personal de administración de cada departamento **tiene el problema de** participar de un proceso tedioso y manual de volcar información al sistema Guaraní. Luego tener que depender de este sistema para consultar la relación curso-aula y no poder visualizar de una forma interactiva el estado actual de las disponibilidades, ocupaciones y capacidades de cada aula. 
-
-
-
-**Nuestra solución es** un sistema que centralice toda la capacidad de infraestructura que tiene las instalaciones de la Unlam (aulas, laboratorios, disponibilidad), un histórico de aulas usada y cantidad de inscriptos, algoritmos estadísticos automáticos para la inferencia de cupos de cada materia, y que tenga la capacidad, en base a toda esta información mencionada, de asignar de forma automática las aulas a cada curso, brindando herramientas para monitoreo y visualización de los estados de cada aula en tiempo real y planificado. 
-
-
-
-**Sabremos que estamos en lo correcto cuando** en base a toda la información requerida, el sistema haga una asignación de aulas correctas ajustando el valor estimado de cupo con las capacidades de cada aula, sin ningún solapamiento de horarios entre materias. Los que definen que la asignación fue correcta deben el personal administrativo de los departamentos y la secretaria académica. A su vez, el personal administrativo de los departamentos debe mostrar satisfacción a la hora de monitorear la disponibilidad de cada aula. 
-
-
-
-
-
-##### 3\. Estado de los Supuestos
-
-
-
-###### Supuestos confirmados
-
-
-
-Muchos supuestos que definimos anteriormente se vieron refutados con la nueva información. No habíamos previsto la cantidad de actores que intervienen en el proceso de asignación de aulas, la complejidad de este, y falta de un sistema que agilice las tareas, teniendo que hacer todo el proceso manual. 
-
-
-
-###### Supuestos rechazados
-
-
-
-* "Asumimos que la responsabilidad de asignar las aulas corresponde al personal administrativo de cada departamento de la Universidad."
-
-
-
-* "Asumimos que el personal administrativo mencionado gestiona activamente la relación entre las aulas y las materias mediante un sistema de software ya establecido."
-
-
-
-* "Asumimos que ningún personal, excepto los administrativos, tiene acceso al sistema de gestión de asignación de aulas actualmente utilizado."
-
-
-
-* "Asumimos que sistemas como IntraConsulta reciben información proveniente del sistema actual de asignación de aulas, y no que el proceso funcione en sentido inverso. Esto explicaría por qué el personal administrativo puede conocer el aula correspondiente a una determinada materia sin que dicha información se encuentre necesariamente reflejada en IntraConsulta."
-
-
-
-
-
-###### Supuestos sin evidencia
-
-
-
-* "Asumimos que el personal de mantenimiento mantiene un registro activo de las tareas realizadas y de las necesidades relacionadas con la infraestructura de las aulas."
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+**Sabremos que estamos en lo correcto cuando**, en una prueba piloto, el sistema genere asignaciones sin superposición de horarios ni excedentes de capacidad, al menos el 90 % de las propuestas sean aprobadas sin modificaciones por el personal administrativo y la Secretaría Académica, y el tiempo necesario para planificar las aulas se reduzca respecto del proceso manual actual.
