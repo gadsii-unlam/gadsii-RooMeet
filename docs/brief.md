@@ -1,226 +1,131 @@
 # Brief
 
-**Cambios respecto de la versión 1.** A partir del relevamiento realizado con tres usuarios reales, esta versión reemplaza el perfil hipotético del usuario primario por un perfil basado en evidencia, incorpora sus necesidades, problemas y contexto de uso, confronta los cinco supuestos del TP1 y formula una hipótesis de valor medible. El cambio principal es que la asignación de aulas no depende únicamente del personal administrativo de cada departamento: intervienen varios actores y la Secretaría Académica tiene un rol central en la decisión y validación de cambios. Por este motivo, RooMeet debe contemplar un flujo con múltiples roles, centralización de información y apoyo a la planificación y el monitoreo.
+**Versión 3**
 
+**Cambios respecto de la versión 2.** Esta versión no modifica el segmento, el producto ni la hipótesis de valor establecidos en la versión 2: los conserva como marco vigente. Lo que cambia es el **nivel de definición del alcance**. Hasta la versión 2 el brief describía el producto completo (motor de asignación, panel de estado, gestión de incidentes, aulas de contingencia, cumplimiento normativo) sin distinguir qué parte de ese producto se llevaría a una prueba real. A partir del trabajo realizado en el TP3 (puntos 1 a 4), el equipo delimitó el **scope del MVP**: qué se incluye y qué se excluye, qué se construye efectivamente y qué se simula o se resuelve a mano, el flujo principal que recorrerá el usuario y los atributos de usabilidad priorizados. El fundamento de estos cambios es que el MVP existe únicamente para poner a prueba la hipótesis de valor formulada en la versión 2: por eso se recorta el alcance a lo mínimo que permite observar si el sistema produce asignaciones sin solapamientos ni excesos de capacidad y si el personal administrativo las aprueba o las modifica. Todo aquello que no aporta evidencia sobre esa hipótesis —el set completo de datos, los parámetros configurables, la carga de datos (dataEntry), el soporte a alumnos y docentes y la conexión real con SIU Guaraní— queda fuera del MVP sin dejar de formar parte de la visión de producto. La priorización de **tasa de errores** y **recuerdo en el tiempo** como atributos de usabilidad se apoya en dos hechos ya documentados: la criticidad del proceso (una asignación errónea afecta la planificación de todo el cuatrimestre, en línea con los reclamos por superpoblación y los solapamientos relevados en el TP2) y su frecuencia (se ejecuta una sola vez por cuatrimestre).
 
+*Nota de trazabilidad — cambio de la versión 1 a la versión 2 (se conserva como antecedente).* A partir del relevamiento realizado con tres usuarios reales, la versión 2 reemplazó el perfil hipotético del usuario primario por un perfil basado en evidencia, incorporó sus necesidades, problemas y contexto de uso, confrontó los cinco supuestos del TP1 y formuló una hipótesis de valor medible. El cambio principal fue que la asignación de aulas no depende únicamente del personal administrativo de cada departamento: intervienen varios actores y la Secretaría Académica tiene un rol central en la decisión y validación de cambios. Por este motivo, RooMeet debe contemplar un flujo con múltiples roles, centralización de información y apoyo a la planificación y el monitoreo.
 
-## 1\. Segmento
+---
 
-
+## 1. Segmento
 
 El segmento de la comunidad UNLaM seleccionado por el equipo es **Administración**. El mismo está compuesto por personal de mantenimiento y administrativo de la Universidad.
 
-
-
 Se estima que está compuesto por aproximadamente 100 personas. Esta cantidad queda pendiente de validación con el grupo. Lo que diferencia a este segmento es que cubre la organización y gestión del espacio físico de la Universidad desde el inicio de la jornada hasta el final, así como su apertura y cierre; además, responde a trámites administrativos a demanda de estudiantes y docentes. Sin su labor, el acceso y tránsito de personas en la Universidad sería un caos.
-
-
 
 La elección de este segmento se relaciona con la necesidad de solucionar diversos inconvenientes que muchas veces tenemos los estudiantes al acceder a las aulas, ya sea que no haya suficiente espacio para ubicarse en ella (disponibilidad de bancos y dimensiones del aula), que cuente con elementos en mal estado (por ejemplo, cerradura o sillas rotas), que no haya luz o electricidad, etc.
 
-
-
 ### Usuarios reales para el relevamiento
-
-
 
 * **Alumnos y docentes:** cualquier persona que esté cursando en la UNLaM y quiera utilizar la aplicación.
 * **Auxiliar Administrativo:** puede ser la persona que atiende en Mesa de Entrada/Ventanilla dentro del piso del departamento nuevo de Ingeniería.
 * **Técnico de Mantenimiento:** es quien se encarga de mantener en buen estado las aulas y todos los elementos que se encuentran en ellas (sillas, cerraduras, calefacción, pizarra, escritorios, etc.).
 
-
-
-## 2\. Producto
-
-
+## 2. Producto
 
 El nombre del producto software a desarrollar es **RooMeet**.
 
-
-
 Este desarrollo busca resolver la asignación correcta y eficiente de las aulas de la Universidad para todas las materias que se cursan presencialmente dentro del establecimiento; así como la generación de alertas de inconvenientes técnicos dentro de las mismas.
-
-
 
 Se busca que los estudiantes de cada materia puedan asistir a las aulas en condiciones óptimas, respetando la cantidad de alumnos asignados al curso, así como los estándares de seguridad definidos por la UNLaM.
 
 Se trata de una solución destinada a personal administrativo y de mantenimiento asignado a cada departamento de la Universidad, con el objetivo de colaborar en la resolución de incidentes y falta de disponibilidad en las aulas.
 
+## 3. Funcionalidades Core
 
+Las siguientes funcionalidades describen el **producto completo** (visión). El subconjunto que efectivamente forma parte del MVP se define en la sección 8.
 
-## 3\. Funcionalidades Core
+* **Motor de Asignación Inteligente de Aulas:** dispone de un algoritmo que permite asignar aulas a una materia en base a disponibilidad y cumplimiento de condiciones necesarias para su funcionamiento.
+* **Panel de Estado Operativo de Aulas en Tiempo Real:** permite visualizar en un paneo rápido qué aulas están habilitadas para su uso.
+* **Gestión de Incidentes y Flujo de Trabajo:** se conocen los inconvenientes técnicos generados en aulas, y en base a su ocurrencia, se establece un plan de contingencia.
+* **Asignador de Aulas de Contingencia:** dispone de un set de aulas específicas para utilizar en situaciones de emergencia, y las asigna según disponibilidad.
+* **Módulo de Cumplimiento Normativo y Auditoría:** evalúa si un aula cumple con las normativas principales de Higiene y Seguridad, así como los estándares definidos por la Universidad.
 
-
-
-* Motor de Asignación Inteligente de Aulas:  Dispone de un algoritmo que permite asignar aulas a una materia en base a disponibilidad y cumplimiento de condiciones necesarias para su funcionamiento.
-* Panel de Estado Operativo de Aulas en Tiempo Real:  Permite visualizar en un paneo rápido qué aulas están habilitadas para su uso.
-* Gestión de Incidentes y Flujo de Trabajo: Se conocen los inconvenientes técnicos generados en aulas, y en base a su ocurrencia, se establece un plan de contingencia.
-
-
-
-* Asignador de Aulas de Contingencia: Dispone de un set de aulas específicas para utilizar en situaciones de emergencia, y las asigna según disponibilidad.
-
-
-
-* Módulo de Cumplimiento Normativo y Auditoría: Evalúa si un aula cumple con las normativas principales de Higiene y Seguridad, así como los estándares definidos por la Universidad.
-
-&#x20;
-
-## 4\. Integraciones Previstas
-
-
+## 4. Integraciones Previstas
 
 * **SIU GUARANÍ:** integración para conocer qué materias se dictan y en qué horarios en la UNLaM.
 * **IntraConsulta:** integración/revisión del mecanismo actual mediante el cual se gestiona o se censa la disponibilidad y el espacio de las aulas.
 
+> **Actualización TP3:** estas integraciones se mantienen como previstas para el producto, pero **no se implementan en el MVP**. La conexión con SIU Guaraní se simula con archivos (ver sección 8.2).
 
-
-## 5\. Grupos de Usuarios y Usuario Primario Elegido
+## 5. Grupos de Usuarios y Usuario Primario Elegido
 
 ### Personal administrativo de cada departamento — Usuario primario
 
-
-
 El personal administrativo de cada departamento es aquel que tiene acceso y usa el actual sistema de asignación de aulas. Cuando un docente (o alumno) no conoce el aula asignada, acude al departamento a consultar la misma. Esto genera mucha congestión de personas en las horas previas a empezar la cursada o rendir un final, concluyendo en mucha carga de trabajo para el personal.
-
-
 
 Tener un sistema accesible para alumnos y docentes donde puedan verificar las aulas asignadas, minimizar el posible solapamiento de horarios en aulas y maximizar el uso de toda la facultad favorece enormemente a todas las partes.
 
-
-
 Sin duda, el personal administrativo es nuestro grupo de usuarios primario, ya que son los que cargan la responsabilidad de la asignación y exposición de esta.
-
-
 
 **Contactos identificados para el relevamiento:**
 
-
-
 * **Matias Rosano (Sistemas UNLaM)**
-
-
-
-&#x20;   -->Relación previa con integrantes del equipo: No aplica.
-
-&#x20;   -->Disponibilidad para relevamiento: Viernes 28/8 de 9hs a 18hs.
-
-&#x20;   -->Disponibilidad para pruebas de MVP: Viernes 25/9 de 9hs a 18hs.
-
-
-
+  * Relación previa con integrantes del equipo: No aplica.
+  * Disponibilidad para relevamiento: Viernes 28/8 de 9hs a 18hs.
+  * Disponibilidad para pruebas de MVP: Viernes 25/9 de 9hs a 18hs.
 * **Romina Stratta (Administrativa en DIIT)**
-
-
-
-&#x20;   -->Relación previa con integrantes del equipo: No aplica.
-
-&#x20;   -->Disponibilidad para relevamiento: Martes 1/9 de 14hs a 21hs.
-
-&#x20;   -->Disponibilidad para pruebas de MVP: Martes 29/9 de 14hs a 21hs.
-
-&#x20;
-
-
-
-* **Leonardo Scaravaglione (Administrativa en DIIT)**
-
-
-
-&#x20;   -->Relación previa con integrantes del equipo: No aplica.
-
-&#x20;   -->Disponibilidad para relevamiento: Martes 1/9 de 14hs a 21hs.
-
-&#x20;   -->Disponibilidad para pruebas de MVP: Martes 29/9 de 14hs a 21hs.
-
-&#x20;
-
-
+  * Relación previa con integrantes del equipo: No aplica.
+  * Disponibilidad para relevamiento: Martes 1/9 de 14hs a 21hs.
+  * Disponibilidad para pruebas de MVP: Martes 29/9 de 14hs a 21hs.
+* **Leonardo Scaravaglione (Administrativo en DIIT)**
+  * Relación previa con integrantes del equipo: No aplica.
+  * Disponibilidad para relevamiento: Martes 1/9 de 14hs a 21hs.
+  * Disponibilidad para pruebas de MVP: Martes 29/9 de 14hs a 21hs.
 
 ### Personal de mantenimiento
 
-
-
 Estos son los encargados de mantener las instalaciones en buenas condiciones, incluyendo las aulas, y registrar las tareas de mantenimiento y necesidades de la infraestructura.
-
-
 
 Dado que la aplicación propone un sistema de alertas y monitoreo sobre las necesidades de las aulas, se beneficiarían a la hora de planificar tareas, tener mejor visualización del estado de las aulas y comprender mejor qué priorizar.
 
-
-
 ### Alumnos y docentes
-
-
 
 Pueden ver la numeración de las aulas, qué aula pertenece a qué departamento, qué clases se dictan en determinada aula a determinado horario, o si esta se encuentra libre. Además, pueden reportar problemas de mantenimiento en el aula si los hubiera.
 
+> **Actualización TP3:** el MVP se prueba únicamente con los **usuarios primarios** (personal administrativo). El soporte para alumnos y docentes queda explícitamente excluido del MVP (ver sección 8.1).
 
-
-## 6\. Supuestos
-
-
+## 6. Supuestos
 
 Este proyecto parte de muchos supuestos debido a la falta de información pública del actual proceso de gestión de asignación de aulas. Los supuestos van desde quién lleva cierta responsabilidad hasta los procedimientos actuales.
 
-
-
-### Supuesto 1 — Responsable de la asignación de aulas **\[CRÍTICO]**
-
-
+### Supuesto 1 — Responsable de la asignación de aulas **[CRÍTICO]**
 
 * **Asumimos que** la responsabilidad de asignar las aulas corresponde al personal administrativo de cada departamento de la Universidad.
 * **Evidencia que lo confirmaría:** entrevistas con personal administrativo de los distintos departamentos que indiquen que son ellos quienes reciben, gestionan y realizan la asignación de aulas. También podría confirmarse mediante la observación del proceso actual de asignación.
 * **Evidencia que lo refutaría:** identificar que la asignación de aulas es realizada por otro sector, área o sistema centralizado de la Universidad, sin intervención directa del personal administrativo de cada departamento.
 * **Impacto:** este es el supuesto crítico del proyecto, ya que define quién sería el principal usuario responsable de la gestión de las aulas y, por lo tanto, condiciona el diseño de los permisos, funcionalidades y flujo de trabajo de RooMeet.
 
-
-
 ### Supuesto 2 — Existencia de un sistema actual de gestión
-
-
 
 * **Asumimos que** el personal administrativo mencionado gestiona activamente la relación entre las aulas y las materias mediante un sistema de software ya establecido.
 * **Evidencia que lo confirmaría:** entrevistas con el personal administrativo y demostraciones del sistema actualmente utilizado para consultar, registrar o modificar la asignación de aulas.
 * **Evidencia que lo refutaría:** comprobar que la asignación se realiza exclusivamente mediante planillas, documentos físicos, comunicaciones informales u otros mecanismos que no involucren un sistema de software específico.
 
-
-
 ### Supuesto 3 — Acceso restringido al sistema actual
-
-
 
 * **Asumimos que** ningún personal, excepto los administrativos, tiene acceso al sistema de gestión de asignación de aulas actualmente utilizado.
 * **Evidencia que lo confirmaría:** verificar mediante entrevistas y relevamiento de permisos del sistema que únicamente el personal administrativo posee credenciales y permisos para consultar o modificar la información de asignación.
 * **Evidencia que lo refutaría:** comprobar que docentes, alumnos, personal de mantenimiento u otros sectores de la Universidad poseen acceso directo al sistema actual.
 
-
-
 ### Supuesto 4 — Relación entre el sistema de asignación e IntraConsulta
-
-
 
 * **Asumimos que** sistemas como IntraConsulta reciben información proveniente del sistema actual de asignación de aulas, y no que el proceso funcione en sentido inverso. Esto explicaría por qué el personal administrativo puede conocer el aula correspondiente a una determinada materia sin que dicha información se encuentre necesariamente reflejada en IntraConsulta.
 * **Evidencia que lo confirmaría:** relevar las integraciones y el flujo de información entre ambos sistemas, además de consultar al personal responsable de su utilización y administración.
 * **Evidencia que lo refutaría:** comprobar que IntraConsulta es la fuente original de la información de asignación de aulas, que ambos sistemas funcionan de manera independiente o que la información se carga desde IntraConsulta hacia el sistema utilizado por los administrativos.
 
-
-
 ### Supuesto 5 — Registro de mantenimiento
-
-
 
 * **Asumimos que** el personal de mantenimiento mantiene un registro activo de las tareas realizadas y de las necesidades relacionadas con la infraestructura de las aulas.
 * **Evidencia que lo confirmaría:** solicitar ejemplos de registros de mantenimiento, planillas, sistemas o procedimientos utilizados actualmente para registrar incidentes, reparaciones y necesidades de infraestructura.
 * **Evidencia que lo refutaría:** comprobar que no existe un registro sistemático de estas actividades y que las solicitudes de mantenimiento se gestionan únicamente mediante comunicaciones informales o de manera verbal.
 
-
-
-\----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## 7. Actualización del brief a partir del TP2
 
-Esta sección contiene la revisión vigente del usuario primario y reemplaza, para la versión 2, el perfil hipotético presentado en el TP1. El contenido anterior se conserva como antecedente para que sea posible rastrear qué cambió después del relevamiento.
+Esta sección contiene la revisión vigente del usuario primario y reemplaza, desde la versión 2, el perfil hipotético presentado en el TP1. El contenido anterior se conserva como antecedente para que sea posible rastrear qué cambió después del relevamiento. **En la versión 3 esta sección se mantiene sin modificaciones: sigue siendo válida en su totalidad.**
 
 ### 7.1 Perfil del usuario real
 
@@ -285,3 +190,68 @@ A partir de estos hallazgos surgen nuevos supuestos que deberán validarse en la
 **Nuestra solución es** un sistema que centraliza la información de aulas, laboratorios, horarios, capacidades e inscriptos, y genera propuestas automáticas de asignación para cada curso, con herramientas visuales para monitorear el estado planificado y actual.
 
 **Sabremos que estamos en lo correcto cuando**, en una prueba piloto, el sistema genere asignaciones sin superposición de horarios ni excedentes de capacidad, al menos el 90 % de las propuestas sean aprobadas sin modificaciones por el personal administrativo y la Secretaría Académica, y el tiempo necesario para planificar las aulas se reduzca respecto del proceso manual actual.
+
+---
+
+## 8. Actualización del brief a partir del TP3: alcance del MVP
+
+Esta sección es nueva en la versión 3. Define el alcance del MVP destinado a poner a prueba la hipótesis de valor de la sección 7.7. Todo lo que no aparece aquí como incluido **no forma parte del MVP**, aunque siga siendo parte de la visión de producto descripta en las secciones 2 a 4.
+
+### 8.1 Scope del MVP
+
+**Incluido en el MVP**
+
+| Incluido | Para qué parte de la hipótesis sirve |
+| --- | --- |
+| Dataset de prueba pequeño con aulas y capacidad, materias, cursos, horarios e historial de los cursos. No se pre-cargan asignaciones efectuadas: las aulas parten vacías como estado inicial. | Conjunto de datos de entrada para el proceso de asignación automática de aulas para cada materia. |
+| Visualización de los datos cargados con el dataset (aulas, capacidad, materias, etc.). | Para clarificar el proceso de asignación: el usuario debe poder conocer los datos precargados para la prueba. |
+| Aulas con cursos y horarios asignados, con una navegabilidad clara y ágil con filtros. | Para monitorear la disponibilidad y ocupación de las aulas. |
+| Modificación de aulas asignadas. | Para que el usuario pueda probar modificar las disponibilidades de las aulas y se sienta cómodo con su uso. |
+
+**Excluido del MVP**
+
+| Excluido | Por qué se excluye |
+| --- | --- |
+| Set completo de aulas y capacidad, materias, cursos, horarios e historial de los cursos. | Para testear la hipótesis no es necesario hacer un proceso completo de punta a punta de la asignación de aulas. Es costoso y tendría el mismo efecto que probarlo con un set pequeño. |
+| Parámetros configurables para la asignación. | Fuera del alcance de la hipótesis. Para la prueba se usará tal cual el proceso estadístico para estimar cupos y definir aulas. |
+| Espacio de dataEntry para agregar aulas, materias, cursos, etc. | Fuera del alcance de la hipótesis. |
+| Soporte para alumnos y docentes. | La hipótesis se probará con los usuarios primarios. |
+| Conexión con el sistema SIU Guaraní. | No es necesaria para hacer pruebas. Se simulará con archivos. |
+
+**Relación con las funcionalidades core de la versión 2.** De las cinco funcionalidades listadas en la sección 3, el MVP cubre parcialmente el **Motor de Asignación Inteligente de Aulas** (generación de una propuesta de aula por curso sobre un dataset reducido) y el **Panel de Estado Operativo de Aulas** (monitoreo de disponibilidad y ocupación con filtros). La **Gestión de Incidentes y Flujo de Trabajo**, el **Asignador de Aulas de Contingencia** y el **Módulo de Cumplimiento Normativo y Auditoría** no se incluyen en el alcance del MVP definido en el TP3; se conservan como parte de la visión de producto. La comunicación de cambios a docentes y estudiantes (necesidad 7.2) tampoco forma parte del alcance definido: queda pendiente de definir en etapas posteriores.
+
+### 8.2 Qué se construye y qué se simula
+
+| Elemento | Se construye | Se simula / se resuelve a mano | Por qué |
+| --- | --- | --- | --- |
+| Dataset de prueba pequeño | No | Se resuelve a mano | Se agregará información hardcodeada para agilizar las pruebas. La información será estática en el MVP. |
+| Visualización de los datos cargados con el dataset (aulas, capacidad, materias, etc.) | No | Se simula | La información está hardcodeada y es estática en el MVP. |
+| Aulas con cursos y horarios asignados, con navegabilidad clara y ágil con filtros | Sí | No | En el MVP se incluirá el monitoreo de la disponibilidad de las aulas para poder visualizar la asignación hecha. Es una pieza fundamental para los usuarios. |
+| Modificación de aulas asignadas | Solo la parte local | Se simula la conexión con Guaraní | Los usuarios desearán poder modificar la asignación de aulas antes y después de que sea efectiva en Guaraní. |
+
+### 8.3 Flujo principal del MVP
+
+1. Abre la aplicación → Pantalla principal → Visualización del dataset cargado.
+2. Botón "Generar asignación" → Pantalla de asignación → Resultado de la asignación.
+3. Botón "Gestionar aulas" → Pantalla de monitoreo de aulas con disponibilidades y horarios ocupados.
+4. Selecciona "Filtros" y agrega filtros → Muestra resultados.
+5. Selecciona el curso y el aula deseada → Presiona la opción modificar → Pantalla de aulas y sus disponibilidades.
+6. Selecciona "Filtros" y agrega filtros → Muestra resultados.
+7. Selecciona el aula y su disponibilidad deseada → Confirma el cambio.
+8. Vuelve a la pantalla de monitoreo de aulas con disponibilidades y horarios ocupados.
+
+### 8.4 Atributos de usabilidad priorizados
+
+* **Tasa de errores.** Es clave por la criticidad del proceso. Una asignación de aulas con errores perjudica a todos los actores involucrados y afecta directamente a la planificación del cuatrimestre. El proceso de asignación debe ser preciso y fiable.
+* **Recuerdo en el tiempo.** Tiene relevancia porque el proceso de asignación de aulas se hace una sola vez por cuatrimestre: no es una tarea repetitiva y el usuario no debería tener que esforzarse por recordar cómo hacerla cada cuatro meses.
+
+Los demás atributos quedan en segundo plano: la **facilidad de aprendizaje** no es esencial porque el personal que lo usa es especializado; la **eficiencia** resulta poco relevante porque es un proceso que se realiza una vez por cuatrimestre; y la **satisfacción** pasa a segundo plano por la falta de competencia, dado que hasta este momento el proceso es manual.
+
+### 8.5 Cuestiones pendientes al cierre de esta versión
+
+Se registran como pendientes, sin resolver en esta versión del brief:
+
+* El diseño de la interacción y las pantallas concretas del MVP (corresponde a etapas posteriores del TP3).
+* La definición de cómo se comunicarán los cambios de aula a docentes y estudiantes, necesidad relevada en el TP2 y no incluida en el alcance del MVP.
+* Los aspectos de contexto de uso señalados en 7.4 (dispositivos, conectividad, trabajo individual o conjunto), que siguen sin evidencia.
+* La validación con el personal administrativo de que el alcance recortado del MVP resulta suficiente para ejecutar la prueba piloto.
