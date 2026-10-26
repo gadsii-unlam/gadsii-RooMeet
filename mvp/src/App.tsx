@@ -3,6 +3,7 @@ import { StepNavigation } from './components/StepNavigation'
 import { careers, courses, DATASET_VERSION, formatCourseSchedule, getCourse, getRoom, rooms } from './data/demoDataset'
 import { generateAssignments } from './domain/allocation'
 import { calculatePilotMetrics } from './domain/metrics'
+import { defaultMonitorFilters } from './domain/monitoring'
 import type { Screen, SessionState } from './domain/types'
 import { validateAssignments, validateChange } from './domain/validation'
 import { ChangeScreen } from './screens/ChangeScreen'
@@ -35,7 +36,7 @@ export default function App() {
   const [state, dispatch] = useReducer(sessionReducer, undefined, restoreInitialState)
   const [screen, setScreen] = useState<Screen>(screenFromHash)
   const [selectedRoomId, setSelectedRoomId] = useState(rooms[0].id)
-  const [selectedScheduleKey, setSelectedScheduleKey] = useState('all')
+  const [monitorFilters, setMonitorFilters] = useState(defaultMonitorFilters)
   const [destinationId, setDestinationId] = useState('')
   const storageWarningShown = useRef(false)
   const activeScreen: Screen = state.phase === 'not-started' && screen !== 'datos'
@@ -196,7 +197,7 @@ export default function App() {
     clearSession()
     dispatch({ type: 'NEW_SESSION' })
     setSelectedRoomId(rooms[0].id)
-    setSelectedScheduleKey('all')
+    setMonitorFilters(defaultMonitorFilters)
     setDestinationId('')
     navigate('datos')
   }
@@ -214,7 +215,7 @@ export default function App() {
       {(state.storageWarning || state.errorMessage) && <div className={`global-message ${state.errorMessage ? 'error' : 'warning'}`} role="alert"><span>{state.errorMessage ?? state.storageWarning}</span><button aria-label="Cerrar mensaje" onClick={() => dispatch({ type: 'CLEAR_STATUS' })}>×</button></div>}
       {activeScreen === 'datos' && <DataScreen rooms={rooms} courses={courses} phase={state.phase} onGenerate={generate} onContinue={() => navigate('propuesta')} />}
       {activeScreen === 'propuesta' && <ProposalScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} unassigned={state.unassigned} reviews={state.reviews} phase={state.phase} onApproval={(courseId, approved) => dispatch({ type: 'SET_APPROVAL', courseId, approved, now: now(), eventId: uid('event') })} onContinue={() => navigate('monitoreo')} />}
-      {activeScreen === 'monitoreo' && <MonitoringScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} reviews={state.reviews} phase={state.phase} selectedRoomId={selectedRoomId} selectedScheduleKey={selectedScheduleKey} lastChange={state.lastChange} statusMessage={state.statusMessage} metrics={metrics} canFinish={canFinish} onSelectRoom={setSelectedRoomId} onSelectSchedule={setSelectedScheduleKey} onEdit={openEdit} onUndo={undo} onFinish={finish} onExport={exportSession} onNew={newSession} />}
+      {activeScreen === 'monitoreo' && <MonitoringScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} reviews={state.reviews} phase={state.phase} selectedRoomId={selectedRoomId} filters={monitorFilters} lastChange={state.lastChange} statusMessage={state.statusMessage} metrics={metrics} canFinish={canFinish} onSelectRoom={setSelectedRoomId} onFiltersChange={setMonitorFilters} onResetFilters={() => setMonitorFilters(defaultMonitorFilters)} onEdit={openEdit} onUndo={undo} onFinish={finish} onExport={exportSession} onNew={newSession} />}
       {activeScreen === 'cambio' && state.editContext && <ChangeScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} context={state.editContext} destinationId={destinationId} getValidation={getDestinationValidation} onDestination={setDestinationId} onConfirm={confirmChange} onCancel={cancelEdit} />}
       <footer><span>RooMeet MVP · Planes DIIT, cursadas simuladas</span><span>Sin conexión con SIU Guaraní</span></footer>
     </div>

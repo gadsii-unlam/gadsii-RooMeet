@@ -1,34 +1,39 @@
-import type { Assignment, Course, Room } from '../domain/types'
+import { describeOccupancy, hasTimeWindow, type MonitorFilters } from '../domain/monitoring'
+import type { Room } from '../domain/types'
 
-export function RoomMap({ rooms, courses, assignments, selectedRoomId, selectedCourse, onSelectRoom }: {
+export function RoomMap({ rooms, counts, filters, selectedRoomId, onSelectRoom }: {
   rooms: Room[]
-  courses: Course[]
-  assignments: Assignment[]
+  counts: Record<string, number>
+  filters: MonitorFilters
   selectedRoomId: string
-  selectedCourse: Course | null
   onSelectRoom: (roomId: string) => void
 }) {
+  const timeWindow = hasTimeWindow(filters)
   return (
     <figure className="campus-map">
       <div className="map-canvas">
         <img src="/mapa-campus.png" alt="Plano ilustrativo del campus con las tres aulas de prueba" />
         {rooms.map((room) => {
-          const occupied = selectedCourse
-            ? assignments.some((assignment) => assignment.roomId === room.id && courses.find((course) => course.id === assignment.courseId)?.term === selectedCourse.term && courses.find((course) => course.id === assignment.courseId)?.day === selectedCourse.day && (courses.find((course) => course.id === assignment.courseId)?.startMinutes ?? 0) < selectedCourse.endMinutes && selectedCourse.startMinutes < (courses.find((course) => course.id === assignment.courseId)?.endMinutes ?? 0))
-            : assignments.some((assignment) => assignment.roomId === room.id)
+          const occupied = (counts[room.id] ?? 0) > 0
+          const selected = selectedRoomId === room.id
           return (
             <button
               key={room.id}
               type="button"
-              className={`map-marker ${occupied ? 'occupied' : 'available'} ${selectedRoomId === room.id ? 'selected' : ''}`}
+              className={`map-marker ${occupied ? 'occupied' : 'available'} ${selected ? 'selected' : ''}`}
               style={{ left: `${room.mapPosition.xPercent}%`, top: `${room.mapPosition.yPercent}%` }}
-              aria-label={`${room.name}, ${occupied ? selectedCourse ? 'ocupada en este horario' : 'con asignaciones' : selectedCourse ? 'disponible en este horario' : 'sin asignaciones'}`}
+              aria-label={`Ver ${room.name}: ${describeOccupancy(counts[room.id] ?? 0, filters)}`}
+              aria-pressed={selected}
               onClick={() => onSelectRoom(room.id)}
             >
               <span>{room.name.replace('Aula ', '')}</span>
             </button>
           )
         })}
+      </div>
+      <div className="map-key">
+        <span><span className="key-symbol occupied" aria-hidden="true" />{timeWindow ? 'Ocupada en la franja' : 'Con cursos en el filtro'}</span>
+        <span><span className="key-symbol available" aria-hidden="true" />{timeWindow ? 'Libre en la franja' : 'Sin cursos en el filtro'}</span>
       </div>
       <figcaption>Ubicaciones ilustrativas, no verificadas. El listado ofrece la misma información.</figcaption>
     </figure>

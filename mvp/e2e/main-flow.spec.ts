@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { courses, rooms } from '../src/data/demoDataset'
+import { courses, getCareer, rooms } from '../src/data/demoDataset'
 import { generateAssignments } from '../src/domain/allocation'
 import { validateChange } from '../src/domain/validation'
 import { initialState } from '../src/state/reducer'
@@ -17,8 +17,12 @@ const moves = result.assignments.flatMap((assignment) => rooms.filter((room) => 
 async function openChange(page: import('@playwright/test').Page, move: typeof moves[number]) {
   const source = rooms.find((room) => room.id === move.assignment.roomId)!
   const course = courses.find((item) => item.id === move.assignment.courseId)!
-  await page.getByRole('button', { name: `${source.name}, con asignaciones` }).click()
-  await page.getByRole('button', { name: `Modificar ${course.name}` }).click()
+  const career = getCareer(course.careerId)!.name
+  await page.getByLabel('Cuatrimestre').selectOption(String(course.term))
+  await page.getByRole('button', { name: `Ver agenda de ${source.name}` }).click()
+  await page.getByLabel('Buscar en esta aula').fill(course.curriculumCode)
+  await page.locator('details.agenda-course').filter({ hasText: course.subject }).filter({ hasText: career.replace(/^Ingeniería /, '') }).locator('summary').click()
+  await page.getByRole('button', { name: `Cambiar aula de ${course.subject}, ${career}` }).click()
   await expect(page.getByRole('heading', { name: `Modificar ${course.name}` })).toBeVisible()
   await page.getByRole('radio', { name: new RegExp(`^${move.room.name}`) }).check({ force: true })
   return { source, course }

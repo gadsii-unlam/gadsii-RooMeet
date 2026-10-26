@@ -174,8 +174,12 @@ export function formatMinutes(minutes: number): string {
   return `${hours}:${mins}`
 }
 
+export function formatTimeRange(course: Course): string {
+  return `${formatMinutes(course.startMinutes)}–${formatMinutes(course.endMinutes)}`
+}
+
 export function formatCourseSchedule(course: Course): string {
-  return `${course.term}.º cuatrimestre · ${DAY_NAMES[course.day]} ${formatMinutes(course.startMinutes)}–${formatMinutes(course.endMinutes)}`
+  return `${course.term}.º cuatrimestre · ${DAY_NAMES[course.day]} ${formatTimeRange(course)}`
 }
 
 export function getCourse(courseId: string): Course | undefined {
@@ -185,7 +189,3 @@ export function getCourse(courseId: string): Course | undefined {
 export function getRoom(roomId: string): Room | undefined {
   return rooms.find((room) => room.id === roomId)
 }
-
-export const scheduleOptions = Array.from(
-  new Map(courses.map((course) => [`${course.term}-${course.day}-${course.startMinutes}-${course.endMinutes}`, course])).values(),
-).sort((a, b) => a.term - b.term || a.day - b.day || a.startMinutes - b.startMinutes)
