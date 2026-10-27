@@ -56,16 +56,17 @@ small { color: var(--muted); }
 .narrow-shell { width: min(900px, calc(100% - 2rem)); }
 .page-heading { max-width: 760px; margin-bottom: 2rem; }
 .page-heading > p:last-child { color: var(--muted); font-size: 1.02rem; line-height: 1.65; }
-.split-heading { max-width: none; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; }
-.split-heading > div:first-child { max-width: 760px; }
 .eyebrow { color: var(--teal); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.11em; margin-bottom: 0.6rem; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; padding: 1.4rem; box-shadow: var(--shadow); }
 .section-title { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
 .section-title h2, .section-title p { margin-bottom: 0; }
 .section-title p { color: var(--muted); font-size: 0.88rem; margin-top: 0.15rem; }
-.section-icon { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 10px; background: var(--blue-soft); color: var(--blue); font-weight: 800; }
 
 .summary-strip { background: var(--navy); color: white; border-radius: 1rem; padding: 1rem 1.25rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.2rem; box-shadow: var(--shadow); }
+.planning-period { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.2rem; }
+.planning-period h2, .planning-period p { margin-bottom: 0; }
+.planning-period p { color: var(--muted); margin-top: .25rem; }
+.planning-period .filter-control { min-width: 230px; }
 .summary-strip div { display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,.16); padding-left: 1rem; }
 .summary-strip div:first-child { padding-left: 0; }
 .summary-strip div:last-child { border-right: 0; }
@@ -104,17 +105,11 @@ td small { display: block; margin-top: 0.18rem; }
 .button.secondary { color: var(--navy); background: white; border-color: #b9c4d7; }
 .button.ghost { color: var(--muted); background: transparent; }
 
-.progress-card { flex: 0 0 auto; background: white; border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 0.85rem; padding: 0.9rem 1.25rem; text-align: center; }
-.progress-card strong { display: block; font-family: 'Manrope'; color: var(--blue); font-size: 1.4rem; }
-.progress-card span { color: var(--muted); font-size: .8rem; }
-.proposal-table { min-width: 940px; }
+.proposal-table { min-width: 820px; }
 .room-pill { background: var(--blue-soft); color: var(--blue); padding: 0.3rem 0.55rem; border-radius: 999px; font-weight: 700; white-space: nowrap; }
 .status { display: inline-block; font-size: 0.78rem; line-height: 1.35; }
 .status.ok { color: #0c6c61; }
 .status.error { color: var(--red); }
-.approval { border: 1px solid #a9b7cd; background: white; color: var(--blue); font-weight: 700; border-radius: .55rem; padding: .5rem .7rem; min-width: 100px; }
-.approval.approved { background: var(--teal-soft); color: #09695e; border-color: #9ed9cf; }
-.modified-label { color: var(--amber); font-weight: 700; }
 .error-row { background: var(--red-soft); }
 
 .filter-control { display: grid; gap: .4rem; color: var(--muted); font-size: .78rem; font-weight: 700; }
@@ -230,13 +225,13 @@ footer { margin-top: auto; min-height: 64px; background: #e9edf4; color: var(--m
 }
 
 @media (max-width: 600px) {
+  .planning-period { align-items: stretch; flex-direction: column; }
+  .planning-period .filter-control { min-width: 0; }
   .app-header { min-height: 68px; }
   .brand small { display: none; }
   .brand-mark { width: 36px; height: 36px; }
   .page-shell { width: min(100% - 1.2rem, 1180px); padding: 2.4rem 0 2.5rem; }
   h1 { font-size: 2rem; }
-  .split-heading { align-items: stretch; flex-direction: column; gap: .6rem; }
-  .progress-card { align-self: flex-start; display: flex; gap: .4rem; align-items: baseline; }
   .filter-control select { width: 100%; min-width: 0; }
   .summary-strip, .metrics-panel { gap: .4rem; }
   .summary-strip div, .metrics-panel div { padding: .35rem .6rem; }

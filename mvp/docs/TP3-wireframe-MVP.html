@@ -22,17 +22,18 @@
 <main>
  <section id="datos" class="screen active" aria-labelledby="datos-t">
   <h2 id="datos-t">1 Revisar datos de prueba</h2>
-  <p>Entrada preparada manualmente para evaluar la generación de una propuesta.</p>
-  <div class="row"><div class="box"><h3>Aulas</h3><p>Aula 1 · capacidad 40<br>Aula 2 · capacidad 60<br>Aula 3 · capacidad 50</p></div><div class="box"><h3>Cursos</h3><p>Muestra de 18 cursos, en distintos días y cuatrimestres, para revisar la lectura del monitoreo.</p><p>Los horarios y los cupos son simulados.</p></div></div>
+  <p>Entrada preparada manualmente para evaluar la generación de una propuesta de un único cuatrimestre.</p>
+  <label for="planning-term">Período a planificar<select id="planning-term"><option value="1">1.º cuatrimestre</option><option value="2">2.º cuatrimestre</option></select></label>
+  <div class="row"><div class="box"><h3>Aulas</h3><p>Aula 1 · capacidad 40<br>Aula 2 · capacidad 60<br>Aula 3 · capacidad 50</p></div><div class="box"><h3>Cursos del período</h3><p id="planning-course-count"></p><p>Los horarios y los cupos son simulados.</p></div></div>
   <aside>Decisión: mostrar capacidad, cupo y horario antes de generar para que la entrada sea revisable. Los valores son ficticios.</aside>
   <div class="controls"><button class="primary" data-go="propuesta">Generar propuesta →</button></div>
  </section>
  <section id="propuesta" class="screen" aria-labelledby="propuesta-t">
-  <h2 id="propuesta-t">2 Revisar propuesta</h2>
+  <h2 id="propuesta-t">2 Revisar propuesta del <span id="proposal-term">1.º cuatrimestre</span></h2>
   <p>Propuesta ilustrativa: el MVP real deberá calcularla mediante su componente propio.</p>
   <div class="table-scroll"><table><thead><tr><th>Curso</th><th>Horario</th><th>Aula propuesta</th><th>Cupo / capacidad</th></tr></thead><tbody id="proposal-preview"></tbody></table></div>
   <p class="muted">Se muestran seis cursos de la muestra para contextualizar el recorrido.</p>
-  <div class="alert">Antes de aprobar, revisar solapamientos de horario y capacidad. Esta pantalla solo ilustra dónde aparecen los controles.</div>
+  <div class="alert">Antes de continuar, revisar solapamientos de horario y capacidad. Esta pantalla solo ilustra dónde aparecen los controles.</div>
   <aside>Decisión: ubicar los criterios de corrección junto a cada asignación. TP2 exige evitar superposiciones y excedentes de capacidad.</aside>
   <div class="controls"><button data-go="datos">← Datos</button><button class="primary" data-go="monitoreo">Revisar aulas →</button></div>
  </section>
@@ -40,7 +41,6 @@
   <h2 id="monitoreo-t">3 Visor de aulas y disponibilidad</h2>
   <p class="section-intro">Compará las aulas en el listado y abrí una agenda para revisar sus cursos.</p>
   <div class="monitor-filters">
-   <label for="mon-term">Cuatrimestre<select id="mon-term"><option value="1">1.º cuatrimestre</option><option value="2">2.º cuatrimestre</option></select></label>
    <label for="mon-day">Día<select id="mon-day"><option value="0">Todos los días</option><option value="1">Lunes</option><option value="2">Martes</option><option value="3">Miércoles</option><option value="4">Jueves</option><option value="5">Viernes</option></select></label>
    <label for="mon-slot">Franja<select id="mon-slot"><option value="all">Día completo</option><option value="480-720">08:00–12:00</option><option value="720-960">12:00–16:00</option><option value="960-1200">16:00–20:00</option><option value="1200-1440">20:00–24:00</option></select></label>
    <button type="button" id="reset-filters">Restablecer</button>

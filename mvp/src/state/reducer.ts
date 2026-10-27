@@ -2,15 +2,16 @@ import { DATASET_VERSION } from '../data/demoDataset'
 import type { AllocationResult, SessionEvent, SessionState } from '../domain/types'
 
 export const initialState: SessionState = {
-  schemaVersion: 1,
+  schemaVersion: 3,
   datasetVersion: DATASET_VERSION,
   sessionId: '',
   revision: 0,
   phase: 'not-started',
+  planningTerm: null,
   originalAssignments: [],
   currentAssignments: [],
   unassigned: [],
-  reviews: [],
+  assignmentEvidence: [],
   lastChange: null,
   editContext: null,
   events: [],
@@ -24,8 +25,7 @@ export const initialState: SessionState = {
 type Timed = { now: string; eventId: string }
 
 export type SessionAction =
-  | ({ type: 'GENERATE'; result: AllocationResult; sessionId: string } & Timed)
-  | ({ type: 'SET_APPROVAL'; courseId: string; approved: boolean } & Timed)
+  | ({ type: 'GENERATE'; result: AllocationResult; sessionId: string; planningTerm: 1 | 2 } & Timed)
   | { type: 'OPEN_EDIT'; courseId: string; fromRoomId: string }
   | { type: 'CANCEL_EDIT' }
   | ({ type: 'APPLY_CHANGE'; courseId: string; fromRoomId: string; toRoomId: string; changeId: string; message: string } & Timed)
@@ -50,28 +50,15 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         ...initialState,
         sessionId: action.sessionId,
         phase: 'running',
+        planningTerm: action.planningTerm,
         revision,
         originalAssignments: action.result.assignments.map((assignment) => ({ ...assignment })),
         currentAssignments: action.result.assignments.map((assignment) => ({ ...assignment })),
         unassigned: action.result.unassigned,
-        reviews: action.result.assignments.map((assignment) => ({ courseId: assignment.courseId, approved: false, everModified: false })),
+        assignmentEvidence: action.result.assignments.map((assignment) => ({ courseId: assignment.courseId, everModified: false })),
         startedAt: action.now,
         events: [{ id: action.eventId, type: 'proposal-created', at: action.now, revision }],
         statusMessage: `Propuesta generada: ${action.result.assignments.length} cursos asignados.`,
-      }
-    }
-    case 'SET_APPROVAL': {
-      if (state.phase !== 'running') return state
-      const review = state.reviews.find((item) => item.courseId === action.courseId)
-      if (!review || review.approved === action.approved) return state
-      const revision = state.revision + 1
-      return {
-        ...state,
-        revision,
-        reviews: state.reviews.map((item) => item.courseId === action.courseId ? { ...item, approved: action.approved } : item),
-        events: addEvent(state.events, { id: action.eventId, type: 'approval-set', at: action.now, revision, courseId: action.courseId, approved: action.approved }),
-        statusMessage: action.approved ? `Curso ${action.courseId} aprobado.` : `Se quitó la aprobación del Curso ${action.courseId}.`,
-        errorMessage: null,
       }
     }
     case 'OPEN_EDIT':
@@ -88,7 +75,7 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         ...state,
         revision,
         currentAssignments: state.currentAssignments.map((assignment) => assignment.courseId === action.courseId ? { ...assignment, roomId: action.toRoomId } : assignment),
-        reviews: state.reviews.map((review) => review.courseId === action.courseId ? { ...review, approved: false, everModified: true } : review),
+        assignmentEvidence: state.assignmentEvidence.map((item) => item.courseId === action.courseId ? { ...item, everModified: true } : item),
         lastChange: { id: action.changeId, courseId: action.courseId, fromRoomId: action.fromRoomId, toRoomId: action.toRoomId, revisionAfter: revision },
         editContext: null,
         events: addEvent(state.events, { id: action.eventId, type: 'change-confirmed', at: action.now, revision, courseId: action.courseId, fromRoomId: action.fromRoomId, toRoomId: action.toRoomId }),
@@ -110,7 +97,6 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         ...state,
         revision,
         currentAssignments: state.currentAssignments.map((assignment) => assignment.courseId === change.courseId ? { ...assignment, roomId: change.fromRoomId } : assignment),
-        reviews: state.reviews.map((review) => review.courseId === change.courseId ? { ...review, approved: false } : review),
         lastChange: null,
         events: addEvent(state.events, { id: action.eventId, type: 'change-undone', at: action.now, revision, courseId: change.courseId, fromRoomId: change.toRoomId, toRoomId: change.fromRoomId }),
         statusMessage: action.message,

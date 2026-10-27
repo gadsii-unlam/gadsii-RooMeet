@@ -2,19 +2,19 @@
 
 Aplicación web para probar la hipótesis central de RooMeet: generar y revisar propuestas de asignación de aulas sin superposiciones ni excesos de capacidad, y medir cuántas propuestas son aceptadas sin modificaciones y cuánto demora el recorrido.
 
-El MVP incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. Los horarios, cupos, historiales, aulas y posiciones del mapa son simulados. Funciona completamente en el navegador, sin conexión con SIU Guaraní, backend, credenciales ni variables de entorno. [Fuentes y criterios del dataset](docs/dataset-diit.md).
+El dataset incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. Cada prueba elige y planifica **un solo cuatrimestre**; no genera una asignación anual. Los horarios, cupos, historiales, aulas y posiciones del mapa son simulados. Funciona completamente en el navegador, sin conexión con SIU Guaraní, backend, credenciales ni variables de entorno. [Fuentes y criterios del dataset](docs/dataset-diit.md).
 
 ## Alcance implementado
 
-- Revisión por carrera y cuatrimestre de materias, aulas, capacidades, cupos, horarios completos e historial ilustrativo. Las materias presentes en varios planes se señalan en la tabla.
+- Elección del cuatrimestre antes de generar la propuesta y revisión por carrera de sus materias, aulas, capacidades, cupos, horarios completos e historial ilustrativo. Las materias presentes en varios planes se señalan en la tabla.
 - Generación real y determinista de asignaciones mediante búsqueda con retroceso.
 - Validación independiente de capacidad, duplicados y superposición horaria.
-- Aprobación explícita por curso.
+- Revisión de la propuesta y modificación opcional de las asignaciones.
 - Consulta de ocupación mediante mapa ilustrativo y listado accesible.
 - Cambio de aula asociado al curso seleccionado, con validación al confirmar.
 - Confirmación visible del cambio y posibilidad de deshacer la última modificación.
 - Persistencia local de una sesión y exportación JSON de evidencia.
-- Finalización únicamente cuando todos los cursos están asignados, aprobados y sin conflictos.
+- Finalización cuando todos los cursos están asignados y no existen conflictos.
 
 La guía completa de alcance, criterios y decisiones está en [MVP-AGENTES.md](MVP-AGENTES.md).
 
@@ -63,7 +63,7 @@ El almacenamiento es `localStorage`: cada navegador y dispositivo mantiene su pr
 
 ## Protocolo de prueba
 
-La aplicación exporta la propuesta original, el resultado final, aprobaciones, eventos, duración y métricas técnicas. La comparación con el tiempo del proceso manual y la participación de usuarios administrativos reales deben registrarse externamente. Un build exitoso o una prueba técnica no equivalen a validar la hipótesis con usuarios.
+La aplicación exporta la propuesta original, el resultado final, las modificaciones realizadas, eventos, duración y métricas técnicas. La comparación con el tiempo del proceso manual y la participación de usuarios administrativos reales deben registrarse externamente. Un build exitoso o una prueba técnica no equivalen a validar la hipótesis con usuarios.
 
 ## Límites deliberados
 

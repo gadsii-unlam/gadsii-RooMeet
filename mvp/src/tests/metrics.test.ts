@@ -5,26 +5,30 @@ import { courses, rooms } from '../data/demoDataset'
 import { initialState } from '../state/reducer'
 
 describe('calculatePilotMetrics', () => {
-  it('calcula la aprobación sobre los 65 cursos de entrada', () => {
-    const generated = generateAssignments(rooms, courses)
+  it('calcula las asignaciones conservadas sin cambios sobre el cuatrimestre planificado', () => {
+    const termCourses = courses.filter((course) => course.term === 1)
+    const generated = generateAssignments(rooms, termCourses)
     const state = {
       ...initialState,
       phase: 'running' as const,
       originalAssignments: generated.assignments,
       currentAssignments: generated.assignments,
-      reviews: courses.map((course, index) => ({ courseId: course.id, approved: index < 59, everModified: false })),
+      planningTerm: 1 as const,
+      assignmentEvidence: termCourses.map((course, index) => ({ courseId: course.id, everModified: index >= termCourses.length - 3 })),
     }
-    expect(calculatePilotMetrics(state, rooms, courses).approvedWithoutChangesPercent).toBeCloseTo(59 / 65 * 100)
+    expect(calculatePilotMetrics(state, rooms, termCourses).unchangedAssignmentsPercent).toBeCloseTo((termCourses.length - 3) / termCourses.length * 100)
   })
 
   it('no vuelve a contar como intacto un curso modificado y deshecho', () => {
-    const generated = generateAssignments(rooms, courses)
+    const termCourses = courses.filter((course) => course.term === 1)
+    const generated = generateAssignments(rooms, termCourses)
     const state = {
       ...initialState,
       originalAssignments: generated.assignments,
       currentAssignments: generated.assignments,
-      reviews: courses.map((course) => ({ courseId: course.id, approved: true, everModified: course.id === courses[0].id })),
+      planningTerm: 1 as const,
+      assignmentEvidence: termCourses.map((course) => ({ courseId: course.id, everModified: course.id === termCourses[0].id })),
     }
-    expect(calculatePilotMetrics(state, rooms, courses).approvedWithoutChanges).toBe(64)
+    expect(calculatePilotMetrics(state, rooms, termCourses).unchangedAssignments).toBe(termCourses.length - 1)
   })
 })

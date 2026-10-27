@@ -5,9 +5,10 @@ import { validateChange } from '../src/domain/validation'
 import { initialState } from '../src/state/reducer'
 import { STORAGE_KEY } from '../src/state/storage'
 
-const result = generateAssignments(rooms, courses)
-const state = { ...initialState, phase: 'running' as const, currentAssignments: result.assignments, originalAssignments: result.assignments }
-const moves = result.assignments.flatMap((assignment) => rooms.filter((room) => validateChange(rooms, courses, state, {
+const pilotCourses = courses.filter((course) => course.term === 1)
+const result = generateAssignments(rooms, pilotCourses)
+const state = { ...initialState, phase: 'running' as const, planningTerm: 1 as const, currentAssignments: result.assignments, originalAssignments: result.assignments }
+const moves = result.assignments.flatMap((assignment) => rooms.filter((room) => validateChange(rooms, pilotCourses, state, {
   courseId: assignment.courseId,
   fromRoomId: assignment.roomId,
   toRoomId: room.id,
@@ -16,9 +17,8 @@ const moves = result.assignments.flatMap((assignment) => rooms.filter((room) => 
 
 async function openChange(page: import('@playwright/test').Page, move: typeof moves[number]) {
   const source = rooms.find((room) => room.id === move.assignment.roomId)!
-  const course = courses.find((item) => item.id === move.assignment.courseId)!
+  const course = pilotCourses.find((item) => item.id === move.assignment.courseId)!
   const career = getCareer(course.careerId)!.name
-  await page.getByLabel('Cuatrimestre').selectOption(String(course.term))
   await page.getByRole('button', { name: `Ver agenda de ${source.name}` }).click()
   await page.getByLabel('Buscar en esta aula').fill(course.curriculumCode)
   await page.locator('details.agenda-course').filter({ hasText: course.subject }).filter({ hasText: career.replace(/^Ingeniería /, '') }).locator('summary').click()
@@ -37,13 +37,13 @@ test.beforeEach(async ({ page }) => {
 test('genera, revisa y corrige una propuesta con feedback y deshacer', async ({ page }) => {
   const move = moves[0]
   await expect(page.getByRole('heading', { name: 'Revisá la entrada de la prueba' })).toBeVisible()
-  await expect(page.getByText('65', { exact: true }).first()).toBeVisible()
+  await expect(page.getByText(String(pilotCourses.length), { exact: true }).first()).toBeVisible()
   await page.getByLabel('Carrera').selectOption('mecanica')
-  await expect(page.getByText('8 de 65 visibles')).toBeVisible()
+  await expect(page.getByText(`3 de ${pilotCourses.length} visibles`)).toBeVisible()
   await page.getByLabel('Carrera').selectOption('all')
   await page.getByRole('button', { name: 'Generar propuesta' }).click()
   await expect(page.getByRole('heading', { name: 'Revisá la propuesta' })).toBeVisible()
-  await expect(page.getByText('0/65')).toBeVisible()
+  await expect(page.getByText(`${pilotCourses.length} cursos visibles de ${pilotCourses.length}`)).toBeVisible()
   await page.getByRole('button', { name: 'Revisar aulas' }).click()
   const { source, course } = await openChange(page, move)
   await expect(page.getByRole('button', { name: 'Confirmar cambio local' })).toBeEnabled()

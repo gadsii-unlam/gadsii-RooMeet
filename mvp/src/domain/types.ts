@@ -30,9 +30,8 @@ export interface Assignment {
   roomId: string
 }
 
-export interface Review {
+export interface AssignmentEvidence {
   courseId: string
-  approved: boolean
   everModified: boolean
 }
 
@@ -46,7 +45,6 @@ export interface LastChange {
 
 export type EventType =
   | 'proposal-created'
-  | 'approval-set'
   | 'change-confirmed'
   | 'change-rejected'
   | 'change-undone'
@@ -60,7 +58,6 @@ export interface SessionEvent {
   courseId?: string
   fromRoomId?: string
   toRoomId?: string
-  approved?: boolean
   reason?: string
 }
 
@@ -76,15 +73,16 @@ export interface EditContext {
 }
 
 export interface SessionState {
-  schemaVersion: 1
+  schemaVersion: 3
   datasetVersion: string
   sessionId: string
   revision: number
   phase: Phase
+  planningTerm: Term | null
   originalAssignments: Assignment[]
   currentAssignments: Assignment[]
   unassigned: UnassignedCourse[]
-  reviews: Review[]
+  assignmentEvidence: AssignmentEvidence[]
   lastChange: LastChange | null
   editContext: EditContext | null
   events: SessionEvent[]
@@ -131,8 +129,8 @@ export interface PilotMetrics {
   finalOverlaps: number
   originalCapacityExcesses: number
   finalCapacityExcesses: number
-  approvedWithoutChanges: number
-  approvedWithoutChangesPercent: number
+  unchangedAssignments: number
+  unchangedAssignmentsPercent: number
   effectiveChanges: number
   durationMs: number | null
 }

@@ -3,13 +3,12 @@ import { ChangeSummary } from '../components/ChangeSummary'
 import { RoomMap } from '../components/RoomMap'
 import { formatTimeRange, getCareer } from '../data/demoDataset'
 import { AGENDA_PAGE_SIZE, DAY_OPTIONS, SLOT_OPTIONS, compareBySchedule, dayLabel, describeFilters, describeOccupancy, hasTimeWindow, matchesFilters, matchesQuery, type MonitorFilters } from '../domain/monitoring'
-import type { Assignment, Course, Day, LastChange, Phase, PilotMetrics, Review, Room, Term } from '../domain/types'
+import type { Assignment, Course, Day, LastChange, Phase, PilotMetrics, Room } from '../domain/types'
 
-export function MonitoringScreen({ rooms, courses, assignments, reviews, phase, selectedRoomId, filters, lastChange, statusMessage, metrics, canFinish, onSelectRoom, onFiltersChange, onResetFilters, onEdit, onUndo, onFinish, onExport, onNew }: {
+export function MonitoringScreen({ rooms, courses, assignments, phase, selectedRoomId, filters, lastChange, statusMessage, metrics, canFinish, onSelectRoom, onFiltersChange, onResetFilters, onEdit, onUndo, onFinish, onExport, onNew }: {
   rooms: Room[]
   courses: Course[]
   assignments: Assignment[]
-  reviews: Review[]
   phase: Phase
   selectedRoomId: string
   filters: MonitorFilters
@@ -71,10 +70,9 @@ export function MonitoringScreen({ rooms, courses, assignments, reviews, phase, 
 
   return (
     <main id="main-content" className="page-shell">
-      <header className="page-heading"><p className="eyebrow">Paso 3 · Monitoreo y corrección</p><h1>Consultá la ocupación</h1><p>Compará las aulas en el listado y abrí una agenda para revisar sus cursos. Los filtros se aplican al mapa, a la agenda y al listado.</p></header>
+      <header className="page-heading"><p className="eyebrow">Paso 3 · Monitoreo y corrección · {courses[0]?.term}.º cuatrimestre</p><h1>Consultá la ocupación</h1><p>Compará las aulas en el listado y abrí una agenda para revisar sus cursos. Los filtros se aplican al mapa, a la agenda y al listado.</p></header>
 
       <section className="monitor-filters" aria-label="Filtros de ocupación">
-        <label className="filter-control">Cuatrimestre<select value={filters.term} onChange={(event) => changeFilters({ ...filters, term: Number(event.target.value) as Term })}><option value={1}>1.º cuatrimestre</option><option value={2}>2.º cuatrimestre</option></select></label>
         <label className="filter-control">Día<select value={filters.day} onChange={(event) => changeFilters({ ...filters, day: Number(event.target.value) as Day | 0 })}>{DAY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
         <label className="filter-control">Franja<select value={filters.slot} onChange={(event) => changeFilters({ ...filters, slot: event.target.value })}>{SLOT_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
         <button type="button" className="button secondary" onClick={resetFilters}>Restablecer</button>
@@ -113,10 +111,10 @@ export function MonitoringScreen({ rooms, courses, assignments, reviews, phase, 
         })}</tbody></table></div>
       </section>
 
-      <section className="metrics-panel" aria-label="Resumen de evidencia de la prueba"><div><span>Cobertura</span><strong>{metrics.coveragePercent.toFixed(0)}%</strong></div><div><span>Aprobación sin cambios</span><strong>{metrics.approvedWithoutChangesPercent.toFixed(0)}%</strong></div><div><span>Conflictos vigentes</span><strong>{metrics.finalOverlaps + metrics.finalCapacityExcesses}</strong></div><div><span>Estado</span><strong>{phase === 'finished' ? 'Finalizada' : `${reviews.filter((review) => review.approved).length}/${reviews.length} revisados`}</strong></div></section>
+      <section className="metrics-panel" aria-label="Resumen de evidencia de la prueba"><div><span>Cobertura</span><strong>{metrics.coveragePercent.toFixed(0)}%</strong></div><div><span>Sin modificaciones</span><strong>{metrics.unchangedAssignmentsPercent.toFixed(0)}%</strong></div><div><span>Conflictos vigentes</span><strong>{metrics.finalOverlaps + metrics.finalCapacityExcesses}</strong></div><div><span>Estado</span><strong>{phase === 'finished' ? 'Finalizada' : 'En revisión'}</strong></div></section>
 
       <div className="page-actions between wrap"><div className="action-group"><button className="button secondary" onClick={onExport}>Exportar prueba</button><button className="button ghost" onClick={onNew}>Nueva prueba</button></div>{phase === 'running' ? <button className="button primary" disabled={!canFinish} onClick={onFinish}>Finalizar revisión</button> : <span className="finished-badge">✓ Revisión finalizada</span>}</div>
-      {!canFinish && phase === 'running' && <p className="finish-hint">Para finalizar, asigná y aprobá todos los cursos y resolvé cualquier conflicto.</p>}
+      {!canFinish && phase === 'running' && <p className="finish-hint">Para finalizar, todos los cursos deben tener un aula válida y no presentar conflictos.</p>}
     </main>
   )
 }

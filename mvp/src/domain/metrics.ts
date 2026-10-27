@@ -6,7 +6,7 @@ function countCode(rooms: Room[], courses: Course[], assignments: Assignment[], 
 }
 
 export function calculatePilotMetrics(state: SessionState, rooms: Room[], courses: Course[]): PilotMetrics {
-  const approvedWithoutChanges = state.reviews.filter((review) => review.approved && !review.everModified).length
+  const unchangedAssignments = state.assignmentEvidence.filter((item) => !item.everModified).length
   const duration = state.startedAt && state.finishedAt ? Date.parse(state.finishedAt) - Date.parse(state.startedAt) : Number.NaN
   return {
     totalCourses: courses.length,
@@ -16,8 +16,8 @@ export function calculatePilotMetrics(state: SessionState, rooms: Room[], course
     finalOverlaps: countCode(rooms, courses, state.currentAssignments, 'overlap'),
     originalCapacityExcesses: countCode(rooms, courses, state.originalAssignments, 'capacity'),
     finalCapacityExcesses: countCode(rooms, courses, state.currentAssignments, 'capacity'),
-    approvedWithoutChanges,
-    approvedWithoutChangesPercent: courses.length ? (approvedWithoutChanges / courses.length) * 100 : 0,
+    unchangedAssignments,
+    unchangedAssignmentsPercent: courses.length ? (unchangedAssignments / courses.length) * 100 : 0,
     effectiveChanges: state.events.filter((event) => event.type === 'change-confirmed').length,
     durationMs: Number.isFinite(duration) && duration >= 0 ? duration : null,
   }

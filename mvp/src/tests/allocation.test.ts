@@ -5,23 +5,26 @@ import type { Course, Room } from '../domain/types'
 import { coursesOverlap, validateAssignments } from '../domain/validation'
 
 describe('generateAssignments', () => {
-  it('asigna el primer año completo de las seis carreras sin conflictos', () => {
-    const result = generateAssignments(rooms, courses)
-    expect(result.unassigned).toEqual([])
+  it('asigna cada cuatrimestre de las seis carreras por separado y sin conflictos', () => {
     expect(careers).toHaveLength(6)
     expect(courses).toHaveLength(65)
-    expect(result.assignments).toHaveLength(courses.length)
-    expect(validateAssignments(rooms, courses, result.assignments)).toEqual([])
     expect(new Set(courses.map((course) => course.id)).size).toBe(courses.length)
     expect(courses.filter((course) => course.careerId === 'informatica')).toHaveLength(12)
     expect(courses.filter((course) => course.careerId === 'civil')).toHaveLength(11)
     expect(courses.filter((course) => course.careerId === 'mecanica')).toHaveLength(8)
     expect(sharedCareerCount(courses.find((course) => course.curriculumCode === '3622')!)).toBeGreaterThan(1)
-    for (const career of careers) {
-      const planCourses = courses.filter((course) => course.careerId === career.id)
-      for (let left = 0; left < planCourses.length; left += 1) {
-        for (let right = left + 1; right < planCourses.length; right += 1) {
-          expect(coursesOverlap(planCourses[left], planCourses[right]), `${career.name}: ${planCourses[left].curriculumCode} y ${planCourses[right].curriculumCode}`).toBe(false)
+    for (const term of [1, 2] as const) {
+      const termCourses = courses.filter((course) => course.term === term)
+      const result = generateAssignments(rooms, termCourses)
+      expect(result.unassigned).toEqual([])
+      expect(result.assignments).toHaveLength(termCourses.length)
+      expect(validateAssignments(rooms, termCourses, result.assignments)).toEqual([])
+      for (const career of careers) {
+        const planCourses = termCourses.filter((course) => course.careerId === career.id)
+        for (let left = 0; left < planCourses.length; left += 1) {
+          for (let right = left + 1; right < planCourses.length; right += 1) {
+            expect(coursesOverlap(planCourses[left], planCourses[right]), `${career.name}: ${planCourses[left].curriculumCode} y ${planCourses[right].curriculumCode}`).toBe(false)
+          }
         }
       }
     }

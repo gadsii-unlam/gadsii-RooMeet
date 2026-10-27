@@ -37,14 +37,14 @@ El sistema centraliza un conjunto pequeño de aulas, cursos, horarios y cupos, c
 
 1. Asignaciones sin superposición de horarios dentro de una misma aula.
 2. Asignaciones sin cupos superiores a la capacidad del aula.
-3. Al menos el **90 % de las propuestas aprobadas sin modificaciones** por los usuarios administrativos correspondientes.
+3. Al menos el **90 % de las propuestas conservadas sin modificaciones** al finalizar la revisión por los usuarios administrativos correspondientes.
 4. Menor tiempo de planificación que el proceso manual comparable.
 
 El 90 % y la comparación con el proceso manual vienen del brief. No reemplazar estos criterios por visitas, satisfacción, rapidez de carga ni éxito de tests automatizados. La reducción de tiempo no tiene un porcentaje fijado por la fuente: no inventarlo.
 
 ### Recorrido indispensable
 
-Revisar datos preparados → generar una propuesta real → revisar y aprobar asignaciones → consultar ocupación con filtros en mapa/listado → seleccionar un curso concreto → cambiarlo de aula si es válido → comprobar el resultado o deshacerlo.
+Elegir el cuatrimestre → revisar sus datos preparados → generar una propuesta real para ese período → revisar asignaciones → consultar ocupación con filtros en mapa/listado → seleccionar un curso concreto → cambiarlo de aula si es necesario y válido → comprobar el resultado o deshacerlo.
 
 La prueba debe poder completarse sin cuentas, servicios externos ni datos reales. Se construye el comportamiento de asignación y modificación; se simulan los datos de entrada y cualquier relación con Guaraní.
 
@@ -55,7 +55,7 @@ La prueba debe poder completarse sin cuentas, servicios externos ni datos reales
 | Dataset pequeño y estático, inicialmente sin asignaciones | Entrada reproducible del experimento. |
 | Lectura de aulas, capacidades, materias/cursos, horarios, cupos e historial ilustrativo | Permite revisar los datos antes de calcular. |
 | Motor local que calcule una propuesta a partir del dataset | Es parte central de la hipótesis; una tabla precargada no alcanza. |
-| Revisión y aprobación explícita por curso | Permite medir aprobación sin cambios. |
+| Revisión de la propuesta y modificación opcional | Permite observar qué asignaciones se conservan sin agregar una aprobación por fila ajena al wireframe. |
 | Monitoreo con filtro horario, mapa, detalle y listado accesible | Permite comprobar disponibilidad y ocupación. |
 | Cambio local de aula, con controles de capacidad y horario | Permite evaluar correcciones por el usuario. |
 | Confirmación visible, horarios completos, deshacer y selección correcta | Son las cuatro mejoras aceptadas del PDF. |
@@ -63,7 +63,7 @@ La prueba debe poder completarse sin cuentas, servicios externos ni datos reales
 
 Quedan fuera: integración real con SIU Guaraní o IntraConsulta; base de datos y API; autenticación y permisos institucionales; colaboración entre usuarios; datos de toda la Universidad; ABM de aulas, materias o cursos; importador de archivos para el usuario; parámetros configurables del motor; estimación estadística avanzada; incidentes, mantenimiento, contingencia y cumplimiento normativo; notificaciones; apps nativas; informes o dashboards de negocio; sugerencias automáticas de aulas alternativas; edición de horarios o cupos durante la prueba.
 
-La exportación de evidencia y la aprobación son apoyos mínimos al experimento, integrados en las pantallas existentes. No convertirlos en módulos nuevos. Evitar funcionalidades que no contribuyan a los cuatro criterios de la hipótesis.
+La exportación de evidencia y el registro de modificaciones son apoyos mínimos al experimento, integrados en las pantallas existentes. No convertirlos en módulos nuevos. Evitar funcionalidades que no contribuyan a los cuatro criterios de la hipótesis.
 
 ## 4. Correcciones del PDF que son obligatorias
 
@@ -91,11 +91,10 @@ Conservar la alternativa C, «Revisión segura», y sus cuatro pasos. Se puede m
 
 ### Pantalla 2 Revisar propuesta
 
-- Tabla: materia/curso, horario completo, aula propuesta, cupo/capacidad, control y estado de revisión.
+- Tabla: materia/curso, horario completo, aula propuesta, cupo/capacidad y control.
 - Controles derivados de los datos: «Sin solapamiento · capacidad suficiente», o causa concreta de que un curso no pueda asignarse.
-- Mostrar pendientes y aprobación explícita por fila. Basta «Aprobar» o «Quitar aprobación». La aprobación no cambia el aula.
-- El usuario debe poder recorrer la propuesta y pasar a «Revisar aulas». Las asignaciones modificadas se vuelven pendientes de revisión y quedan identificadas como modificadas.
-- Nunca mostrar aprobación institucional real: se está registrando la decisión del participante del piloto, no una autorización de un sistema externo.
+- No agregar aprobación explícita por fila: el wireframe solo exige consultar la propuesta y modificar las asignaciones que lo necesiten.
+- El usuario debe poder recorrer la propuesta y pasar a «Revisar aulas». Las asignaciones conservadas se consideran aceptadas implícitamente al finalizar; las modificaciones quedan registradas como evidencia.
 
 ### Pantalla 3 Monitoreo
 
@@ -156,7 +155,7 @@ Algoritmo de referencia, suficiente para esta escala:
 4. Si no hay solución completa, conservar una solución parcial con el mayor número de cursos asignados explorado; en empate, conservar la primera. Se puede podar una rama que ya no supere la mejor cobertura encontrada.
 5. Devolver asignaciones y cursos sin asignar con una explicación. Nunca forzar un aula inválida para conseguir cobertura del 100 %.
 
-No se exige optimizar globalmente uso de asientos, recorridos ni preferencias. La búsqueda aplica a los 65 cursos del fixture vigente y los pequeños casos de prueba; no desarrollar un optimizador universitario de propósito general.
+No se exige optimizar globalmente uso de asientos, recorridos ni preferencias. El fixture conserva 65 cursos de primer año, pero cada búsqueda recibe únicamente los cursos del cuatrimestre elegido; no desarrollar una asignación anual ni un optimizador universitario de propósito general.
 
 Antes de aceptar el resultado, ejecutar un validador independiente del algoritmo que recalcule integridad referencial, capacidad, duplicados y solapamientos. Un resultado inválido no se publica como propuesta válida.
 
@@ -171,13 +170,13 @@ Los documentos no aportan una fórmula estadística validada para estimar cupos.
 - Registrar la última modificación exitosa con origen, destino, curso y revisión resultante. Confirmar dos veces la misma acción no debe aplicarla dos veces.
 - Deshacer verifica que ese cambio siga siendo el último y que la asignación actual coincida con el destino registrado. Revalidar el aula anterior antes de restaurarla. Si ya no es válido, explicar el motivo sin pisar otro estado.
 - Una nueva modificación reemplaza la acción disponible para deshacer. Deshacer la consume; no se necesita rehacer. Reiniciar o finalizar la prueba elimina la posibilidad de modificar esa sesión.
-- Si un cambio se deshace, conservar ese hecho en la evidencia y volver a dejar pendiente la aprobación del curso. No borrar el historial del experimento.
+- Si un cambio se deshace, conservar ese hecho en la evidencia y mantener el curso marcado como alguna vez modificado. No borrar el historial del experimento.
 
 ## 7. Dataset de prueba y contratos compartidos
 
 ### Dataset público inicial
 
-El dataset vigente está en `src/data/demoDataset.ts` y sus fuentes y criterios en [docs/dataset-diit.md](docs/dataset-diit.md). Reemplaza por completo el fixture anterior de cursos A–J: contiene **65 materias de primer año** de las seis carreras de grado del DIIT. Se conserva la decisión de tres aulas ilustrativas con capacidades 40, 60 y 50. Antes de generar no hay asignaciones.
+El dataset vigente está en `src/data/demoDataset.ts` y sus fuentes y criterios en [docs/dataset-diit.md](docs/dataset-diit.md). Reemplaza por completo el fixture anterior de cursos A–J: contiene **65 materias de primer año** de las seis carreras de grado del DIIT, divididas en dos períodos. Cada sesión selecciona un único cuatrimestre antes de generar. Se conserva la decisión de tres aulas ilustrativas con capacidades 40, 60 y 50. Antes de generar no hay asignaciones.
 
 Los nombres, códigos y cargas semanales se tomaron de los planes oficiales enlazados en la documentación del dataset. Una materia presente en más de un plan conserva un curso y código por carrera; eso no afirma que la UNLaM comparta físicamente las comisiones. Horarios, cupos e historial de inscriptos son simulados. El plan de Ingeniería Civil 2025 enumera las materias de primer año sin dividirlas por cuatrimestre; esa división en el fixture es una decisión de simulación.
 
@@ -213,9 +212,8 @@ interface Assignment {
   roomId: string;
 }
 
-interface Review {
+interface AssignmentEvidence {
   courseId: string;
-  approved: boolean;
   everModified: boolean;
 }
 
@@ -230,7 +228,7 @@ interface LastChange {
 
 Cada curso tiene un único intervalo semanal simulado en este MVP. Los conflictos se comparan dentro del mismo cuatrimestre, día e intervalo. Cada curso puede tener como máximo una asignación; un aula puede alojar varios cursos en intervalos compatibles. Los nombres son para presentación y los ID son estables.
 
-El estado de sesión debe incluir `schemaVersion`, `datasetVersion`, `sessionId`, `revision`, estado de prueba (`not-started`, `running`, `finished`), `originalAssignments`, `currentAssignments`, cursos sin asignar, revisiones, última modificación, marcas de tiempo y eventos mínimos. La lista original queda inmutable después de la primera generación. Selecciones y filtros de la interfaz no son otra fuente de asignaciones.
+El estado de sesión debe incluir `schemaVersion`, `datasetVersion`, `sessionId`, `revision`, `planningTerm`, estado de prueba (`not-started`, `running`, `finished`), `originalAssignments`, `currentAssignments`, cursos sin asignar, evidencia de modificaciones, última modificación, marcas de tiempo y eventos mínimos. La lista original queda inmutable después de la primera generación. Selecciones y filtros de la interfaz no son otra fuente de asignaciones.
 
 Funciones compartidas mínimas:
 
@@ -246,9 +244,9 @@ Definir tipos explícitos para resultados y errores. Compartir el validador entr
 
 ## 8. Estado y persistencia local
 
-**Decisión técnica:** estado en React mediante un reducer y un contexto pequeño si hace falta. Persistir una instantánea JSON en `localStorage`, bajo la clave `roomeet:mvp:session:v2`. La clave v1 del fixture A–J se elimina al iniciar la aplicación.
+**Decisión técnica:** estado en React mediante un reducer y un contexto pequeño si hace falta. Persistir una instantánea JSON con `schemaVersion: 3` en `localStorage`, bajo la clave `roomeet:mvp:session:v4`. Las claves anteriores se eliminan al iniciar la aplicación porque cambió el flujo y ahora cada sesión fija su cuatrimestre.
 
-- Restaurar la sesión al recargar. No regenerar resultados ni aprobar cursos durante el arranque.
+- Restaurar la sesión al recargar. No regenerar resultados ni modificar cursos durante el arranque.
 - Validar estructura, versión de dataset, IDs, capacidad y horarios antes de restaurar. Estado inválido o incompatible requiere explicar el problema y ofrecer reinicio explícito; no migrarlo de forma silenciosa ni inventar una sesión válida.
 - No bloquear la aplicación si el navegador niega almacenamiento: continuar en memoria, avisar que los cambios duran mientras siga abierta y permitir exportar.
 - Una prueba activa se usa en una sola pestaña y dispositivo. No implementar sincronización ni afirmar que las decisiones se comparten con otro usuario o con Secretaría Académica.
@@ -260,11 +258,11 @@ Definir tipos explícitos para resultados y errores. Compartir el validador entr
 
 ### Registro dentro de la aplicación
 
-Registrar creación de propuesta, aprobación o retiro de aprobación, cambios confirmados, deshacer, finalización y rechazos por validación. Cada evento lleva tipo, fecha, revisión y, cuando aplique, IDs y valores de origen/destino. Un rechazo no cambia la asignación ni marca el curso como modificado.
+Registrar creación de propuesta, cambios confirmados, deshacer, finalización y rechazos por validación. Cada evento lleva tipo, fecha, revisión y, cuando aplique, IDs y valores de origen/destino. Un rechazo no cambia la asignación ni marca el curso como modificado.
 
 Guardar `startedAt` al ejecutar la primera generación y `finishedAt` al finalizar la revisión. La duración incluye cálculo, revisión y correcciones del participante; no es solo el tiempo que tarda el algoritmo. Una recarga/interrupción queda registrada y no produce una duración artificial de cero. Si el reloj arroja valores inválidos, marcar el dato como no medible.
 
-«Exportar prueba» descarga un único JSON con versiones, ID anónimo de sesión, dataset utilizado, propuesta original, estado final, revisiones, eventos, fechas, duración y métricas calculadas. No requiere servidor ni importación posterior. Mostrar un resumen compacto, sin gráficos ni dashboard adicional.
+«Exportar prueba» descarga un único JSON con versiones, ID anónimo de sesión, cuatrimestre planificado, dataset utilizado, propuesta original, estado final, evidencia de modificaciones, eventos, fechas, duración y métricas calculadas. No requiere servidor ni importación posterior. Mostrar un resumen compacto, sin gráficos ni dashboard adicional.
 
 ### Cálculos
 
@@ -273,13 +271,13 @@ Guardar `startedAt` al ejecutar la primera generación y `finishedAt` al finaliz
 | Cobertura | Cursos asignados / total de cursos del dataset. Informar también los no asignados; una cobertura baja no se oculta detrás de cero conflictos. |
 | Solapamientos | Cantidad de pares de cursos que violan la regla temporal en la misma aula; calcular en propuesta original y resultado final. Objetivo: 0. |
 | Excesos de capacidad | Cantidad de asignaciones cuyo cupo supera la capacidad; calcular en propuesta original y resultado final. Objetivo: 0. |
-| Aprobación sin modificaciones | Cursos con propuesta original, aprobación explícita y `everModified === false`, divididos por el **total de cursos de la entrada**. Pendientes y no asignados no cuentan como aprobados. Objetivo: al menos 90 %. |
+| Asignaciones sin modificaciones | Cursos asignados con `everModified === false`, divididos por el **total de cursos de la entrada**. Se interpreta como aceptación implícita al finalizar la revisión; los cursos no asignados no cuentan. Objetivo: al menos 90 %. |
 | Modificaciones | Cambios de aula efectivos. Deshacer no borra el cambio de la evidencia ni restablece `everModified` a falso; es una definición conservadora para no inflar la tasa. |
 | Tiempo | `finishedAt - startedAt` en una sesión completa sin interrupciones que invaliden la comparación. Reportar junto a la línea de base manual externa. |
 
-El mismo curso se cuenta una vez en el denominador, aunque se modifique varias veces. No calcular aceptación sumando clics. La aprobación de una asignación modificada sirve para cerrar la revisión, pero no pasa a ser «aprobada sin modificaciones».
+El mismo curso se cuenta una vez en el denominador, aunque se modifique varias veces. No calcular aceptación sumando clics. Una asignación modificada no vuelve a contarse como «sin modificaciones», aunque luego se deshaga el cambio.
 
-«Finalizar revisión» requiere todos los cursos asignados y revisados, sin violaciones vigentes. Un caso sin solución puede exportarse como prueba incompleta con sus causas, sin presentarse como piloto exitoso.
+«Finalizar revisión» requiere todos los cursos asignados y sin violaciones vigentes. Un caso sin solución puede exportarse como prueba incompleta con sus causas, sin presentarse como piloto exitoso.
 
 ### Protocolo externo mínimo
 
@@ -423,7 +421,7 @@ El README de la implementación debe explicar instalación, desarrollo, pruebas,
 | Caso | Resultado exigido |
 | --- | --- |
 | Primera apertura | Dataset visible y cero asignaciones; no se ve una propuesta previamente fabricada. |
-| Generar sobre el fixture público | Los 65 cursos quedan asignados, sin solapamientos ni excesos; el resultado se calcula, no se carga ya asignado. |
+| Generar sobre el fixture público | Los cursos del cuatrimestre elegido quedan asignados, sin solapamientos ni excesos; el otro cuatrimestre no forma parte de esa sesión. El resultado se calcula, no se carga ya asignado. |
 | Cambiar cupo u horarios en un fixture de test | El motor responde a la nueva entrada; no devuelve siempre el mismo resultado predefinido. |
 | Dos cursos consecutivos en la misma aula | Final 20:00 e inicio 20:00 son compatibles. |
 | Solapamiento parcial | 18:00–20:00 y 19:00–21:00 en la misma aula se rechazan. |
@@ -447,14 +445,13 @@ Fixture de retroceso, solo para tests: dos aulas R1=40 y R2=60; lunes, X cupo 60
 | Confirmación duplicada o contexto obsoleto | No duplica ni aplica la operación sobre un estado distinto al revisado. |
 | Deshacer un cambio | Restaura el aula anterior, actualiza vistas, consume la acción y conserva la evidencia de modificación. |
 | Deshacer con revisión/destino que ya no coinciden | Rechazo explicable, sin sobrescribir estado ajeno. |
-| Recargar una sesión válida | Conserva propuesta original, estado vigente, aprobaciones y posibilidad válida de deshacer. |
+| Recargar una sesión válida | Conserva propuesta original, estado vigente, evidencia de modificaciones y posibilidad válida de deshacer. |
 | JSON local corrupto o almacenamiento denegado | Recuperación controlada; no pantalla en blanco ni falsa confirmación de persistencia. |
 
 ### Medición, navegación y entrega
 
-- La aprobación sin cambios usa como denominador los 65 cursos de la entrada. Un pendiente, no asignado o modificado no se elimina del denominador.
-- Cambiar y deshacer no hace pasar un curso por «nunca modificado». Repetir clics de aprobación no multiplica la aceptación.
-- Una aprobación se invalida al modificar el curso, aunque el resultado siga siendo técnicamente válido.
+- Las asignaciones sin cambios usan como denominador todos los cursos del cuatrimestre elegido. Un curso no asignado o modificado no se elimina del denominador.
+- Cambiar y deshacer no hace pasar un curso por «nunca modificado».
 - Las sesiones de ejercicios forzados no se confunden con el piloto de aceptación espontánea.
 - Exportación JSON contiene suficiente información para recalcular métricas y no afirma que las valide un servidor.
 - No se puede finalizar una revisión incompleta o con errores. Finalizar congela esa sesión; «Nueva prueba» conserva la posibilidad de exportar antes de reiniciar.
@@ -473,7 +470,7 @@ Estos paquetes definen responsabilidades y dependencias para una futura ejecuci�
 | --- | --- | --- | --- |
 | 1 Base y contratos | Setup mínimo, scripts, tipos, fixture y configuración de build. | Configuración raíz, `src/domain/types.ts`, `src/data/`. | Primero; entrega contratos usados por los demás y build vacío funcional. |
 | 2 Dominio | Asignación, validación temporal/capacidad y métricas puras. | `src/domain/`, tests de dominio. | Usa contratos de 1; entrega casos positivos, imposibles y retroceso. |
-| 3 Estado | Transiciones atómicas, aprobación, H3/H4, persistencia y exportación. | `src/state/`, tests de reducer/metrics. | Usa dominio de 2; no duplica las reglas de conflicto. |
+| 3 Estado | Transiciones atómicas, evidencia de modificaciones, H3/H4, persistencia y exportación. | `src/state/`, tests de reducer/metrics. | Usa dominio de 2; no duplica las reglas de conflicto. |
 | 4 Interfaz | Cuatro pantallas, mapa existente, filtros, selección y feedback H1/H2. | `src/screens/`, `src/components/`, CSS, `public/mapa-campus.png`. | Usa contratos de 1 e integra 2/3; no guarda asignaciones independientes en componentes. |
 | 5 Integración y entrega | Recorrido completo, regresiones H1-H4, E2E, README y Vercel. | `e2e/`, documentación y config de despliegue. | Último; entrega instalación limpia, build y evidencia de comprobación. |
 
@@ -485,7 +482,7 @@ Evitar cambios simultáneos sin coordinación en `App.tsx`, tipos, reducer y `pa
 - [ ] Respeta las cuatro pantallas, la alternativa C, el mapa de referencia y el listado de respaldo.
 - [ ] Calcula asignaciones reales sobre entrada estática, partiendo sin asignaciones.
 - [ ] Revisa capacidad, intervalos completos y solapamientos con reglas compartidas.
-- [ ] Permite aprobación explícita y conserva la propuesta original para medir aceptación.
+- [ ] Conserva la propuesta original y registra modificaciones para medir aceptación implícita sin agregar aprobación por fila.
 - [ ] Cumple H1, H2, H3 y H4 con sus regresiones probadas.
 - [ ] Mantiene H9 y el resto de los módulos excluidos fuera del MVP.
 - [ ] Restaura la sesión local o explica una recuperación fallida; exporta evidencia reproducible.

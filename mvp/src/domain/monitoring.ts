@@ -1,12 +1,11 @@
-import type { Course, Day, Term } from './types'
+import type { Course, Day } from './types'
 
 export interface MonitorFilters {
-  term: Term
   day: Day | 0
   slot: string
 }
 
-export const defaultMonitorFilters: MonitorFilters = { term: 1, day: 0, slot: 'all' }
+export const defaultMonitorFilters: MonitorFilters = { day: 0, slot: 'all' }
 
 export const AGENDA_PAGE_SIZE = 3
 
@@ -43,14 +42,14 @@ export function hasTimeWindow(filters: MonitorFilters): boolean {
 }
 
 export function matchesFilters(course: Course, filters: MonitorFilters): boolean {
-  if (course.term !== filters.term || (filters.day !== 0 && course.day !== filters.day)) return false
+  if (filters.day !== 0 && course.day !== filters.day) return false
   const range = slotRange(filters.slot)
   return !range || (course.startMinutes < range[1] && range[0] < course.endMinutes)
 }
 
 export function describeFilters(filters: MonitorFilters): string {
   const slot = filters.slot === 'all' ? 'día completo' : SLOT_OPTIONS.find((option) => option.value === filters.slot)?.label ?? filters.slot
-  return `${filters.term}.º cuatrimestre · ${dayLabel(filters.day)} · ${slot}`
+  return `${dayLabel(filters.day)} · ${slot}`
 }
 
 export function describeOccupancy(count: number, filters: MonitorFilters): string {

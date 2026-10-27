@@ -22,7 +22,7 @@
 
   function scope() {
     const slot = state.slot === 'all' ? 'día completo' : state.slot.split('-').map(Number).map(time).join('–');
-    return `${state.term}.º cuatrimestre · ${days[state.day]} · ${slot}`;
+    return `${state.term}.º cuatrimestre planificado · ${days[state.day]} · ${slot}`;
   }
 
   function roomCourses(id) {
@@ -122,7 +122,10 @@
   }
 
   function renderProposal() {
-    $('proposal-preview').innerHTML = courses.slice(0, 6).map(course => {
+    const planned = courses.filter(course => course.term === state.term);
+    $('proposal-term').textContent = `${state.term}.º cuatrimestre`;
+    $('planning-course-count').textContent = `${planned.length} cursos ilustrativos del ${state.term}.º cuatrimestre.`;
+    $('proposal-preview').innerHTML = planned.slice(0, 6).map(course => {
       const room = rooms.find(item => item.id === course.roomId);
       return `<tr><td>${escape(course.subject)}</td><td>${course.term}.º C · ${days[course.day]} ${range(course)}</td><td>${room.name}</td><td>${course.estimatedSeats} / ${room.capacity}</td></tr>`;
     }).join('');
@@ -143,7 +146,17 @@
 
   document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => go(button.dataset.go)));
   document.querySelectorAll('.map-marker').forEach(button => button.addEventListener('click', () => selectRoom(`room-${button.dataset.room}`)));
-  for (const [id, key] of [['mon-term', 'term'], ['mon-day', 'day'], ['mon-slot', 'slot']]) {
+  $('planning-term').addEventListener('change', event => {
+    state.term = Number(event.target.value);
+    state.day = 0;
+    state.slot = 'all';
+    state.page = 0;
+    state.query = '';
+    $('mon-day').value = '0'; $('mon-slot').value = 'all'; $('agenda-search').value = '';
+    renderProposal();
+    renderRooms();
+  });
+  for (const [id, key] of [['mon-day', 'day'], ['mon-slot', 'slot']]) {
     $(id).addEventListener('change', event => {
       state[key] = key === 'slot' ? event.target.value : Number(event.target.value);
       state.page = 0;
@@ -153,8 +166,8 @@
     });
   }
   $('reset-filters').addEventListener('click', () => {
-    Object.assign(state, { term: 1, day: 0, slot: 'all', page: 0, query: '' });
-    $('mon-term').value = '1'; $('mon-day').value = '0'; $('mon-slot').value = 'all'; $('agenda-search').value = '';
+    Object.assign(state, { day: 0, slot: 'all', page: 0, query: '' });
+    $('mon-day').value = '0'; $('mon-slot').value = 'all'; $('agenda-search').value = '';
     renderRooms();
   });
   $('agenda-search').addEventListener('input', event => { state.query = event.target.value; state.page = 0; renderAgenda(); });
