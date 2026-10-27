@@ -2,8 +2,8 @@ import { courses, DATASET_VERSION, rooms } from '../data/demoDataset'
 import type { SessionState } from '../domain/types'
 import { validateAssignments } from '../domain/validation'
 
-const OLD_STORAGE_KEYS = ['roomeet:mvp:session:v1', 'roomeet:mvp:session:v2', 'roomeet:mvp:session:v3']
-export const STORAGE_KEY = 'roomeet:mvp:session:v4'
+const OLD_STORAGE_KEYS = ['roomeet:mvp:session:v1', 'roomeet:mvp:session:v2', 'roomeet:mvp:session:v3', 'roomeet:mvp:session:v4']
+export const STORAGE_KEY = 'roomeet:mvp:session:v5'
 
 export interface StorageLoadResult {
   state: SessionState | null
@@ -13,12 +13,11 @@ export interface StorageLoadResult {
 function looksLikeState(value: unknown): value is SessionState {
   if (!value || typeof value !== 'object') return false
   const state = value as Partial<SessionState>
-  return state.schemaVersion === 3
+  return state.schemaVersion === 4
     && state.datasetVersion === DATASET_VERSION
     && typeof state.sessionId === 'string'
     && typeof state.revision === 'number'
     && ['not-started', 'running', 'finished'].includes(state.phase ?? '')
-    && (state.planningTerm === 1 || state.planningTerm === 2)
     && Array.isArray(state.originalAssignments)
     && Array.isArray(state.currentAssignments)
     && Array.isArray(state.unassigned)

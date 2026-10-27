@@ -1,7 +1,7 @@
 import type { Assignment, ChangeValidation, Course, EditContext, Room, SessionState, Violation } from './types'
 
 export function coursesOverlap(a: Course, b: Course): boolean {
-  return a.term === b.term && a.day === b.day && a.startMinutes < b.endMinutes && b.startMinutes < a.endMinutes
+  return a.day === b.day && a.startMinutes < b.endMinutes && b.startMinutes < a.endMinutes
 }
 
 export function validateDataset(rooms: Room[], courses: Course[]): Violation[] {
@@ -18,7 +18,7 @@ export function validateDataset(rooms: Room[], courses: Course[]): Violation[] {
 
   for (const course of courses) {
     const invalidInterval = course.startMinutes < 0 || course.startMinutes >= course.endMinutes || course.endMinutes > 1440
-    if (!course.id || !course.name || courseIds.has(course.id) || invalidInterval || course.day < 1 || course.day > 5 || ![1, 2].includes(course.term) || course.estimatedSeats <= 0) {
+    if (!course.id || !course.name || courseIds.has(course.id) || invalidInterval || course.day < 1 || course.day > 5 || course.estimatedSeats <= 0) {
       violations.push({ code: 'invalid-data', message: `El curso ${course.id || '(sin ID)'} tiene datos inválidos o un ID duplicado.`, courseIds: [course.id] })
     }
     courseIds.add(course.id)

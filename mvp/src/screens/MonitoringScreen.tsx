@@ -70,7 +70,7 @@ export function MonitoringScreen({ rooms, courses, assignments, phase, selectedR
 
   return (
     <main id="main-content" className="page-shell">
-      <header className="page-heading"><p className="eyebrow">Paso 3 · Monitoreo y corrección · {courses[0]?.term}.º cuatrimestre</p><h1>Consultá la ocupación</h1><p>Compará las aulas en el listado y abrí una agenda para revisar sus cursos. Los filtros se aplican al mapa, a la agenda y al listado.</p></header>
+      <header className="page-heading"><p className="eyebrow">Paso 3 · Monitoreo y corrección · Cuatrimestre vigente</p><h1>Consultá la ocupación</h1><p>Compará las aulas en el listado y abrí una agenda para revisar sus cursos. Los filtros se aplican al mapa, a la agenda y al listado.</p></header>
 
       <section className="monitor-filters" aria-label="Filtros de ocupación">
         <label className="filter-control">Día<select value={filters.day} onChange={(event) => changeFilters({ ...filters, day: Number(event.target.value) as Day | 0 })}>{DAY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>

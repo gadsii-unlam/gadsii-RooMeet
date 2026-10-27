@@ -26,7 +26,7 @@ export function ChangeScreen({ rooms, courses, assignments, context, destination
         const validation = getValidation(room.id)
         const sameRoom = room.id === origin.id
         const reason = sameRoom ? 'Es el aula actual.' : validation.violations[0]?.message
-        const occupiedBy = assignments.filter((assignment) => assignment.roomId === room.id && assignment.courseId !== course.id).map((assignment) => courses.find((item) => item.id === assignment.courseId)!).filter((item) => item.term === course.term && item.day === course.day && item.startMinutes < course.endMinutes && course.startMinutes < item.endMinutes)
+        const occupiedBy = assignments.filter((assignment) => assignment.roomId === room.id && assignment.courseId !== course.id).map((assignment) => courses.find((item) => item.id === assignment.courseId)!).filter((item) => item.day === course.day && item.startMinutes < course.endMinutes && course.startMinutes < item.endMinutes)
         return <label key={room.id} className={`destination-option ${!validation.valid ? 'invalid' : ''}`}><input type="radio" name="destination" value={room.id} checked={destinationId === room.id} disabled={!validation.valid} onChange={() => onDestination(room.id)} /><span className="radio-visual" /><span className="destination-copy"><strong>{room.name}<small>Capacidad {room.capacity}</small></strong>{validation.valid ? <span className="status ok">✓ Disponible · capacidad suficiente</span> : <span className="status error">{reason}</span>}{occupiedBy.length > 0 && <small>En conflicto: {occupiedBy.map((item) => item.name).join(', ')}</small>}</span></label>
       })}</div></fieldset>
 

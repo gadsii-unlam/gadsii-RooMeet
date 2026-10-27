@@ -1,5 +1,4 @@
 export type Day = 1 | 2 | 3 | 4 | 5
-export type Term = 1 | 2
 export type Phase = 'not-started' | 'running' | 'finished'
 export type Screen = 'datos' | 'propuesta' | 'monitoreo' | 'cambio'
 
@@ -16,7 +15,6 @@ export interface Course {
   subject: string
   curriculumCode: string
   careerId: string
-  term: Term
   weeklyHours: number
   estimatedSeats: number
   enrollmentHistory: number[]
@@ -73,12 +71,11 @@ export interface EditContext {
 }
 
 export interface SessionState {
-  schemaVersion: 3
+  schemaVersion: 4
   datasetVersion: string
   sessionId: string
   revision: number
   phase: Phase
-  planningTerm: Term | null
   originalAssignments: Assignment[]
   currentAssignments: Assignment[]
   unassigned: UnassignedCourse[]

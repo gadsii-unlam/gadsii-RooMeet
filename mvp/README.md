@@ -2,11 +2,11 @@
 
 Aplicación web para probar la hipótesis central de RooMeet: generar y revisar propuestas de asignación de aulas sin superposiciones ni excesos de capacidad, y medir cuántas propuestas son aceptadas sin modificaciones y cuánto demora el recorrido.
 
-El dataset incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. Cada prueba elige y planifica **un solo cuatrimestre**; no genera una asignación anual. Los horarios, cupos, historiales, aulas y posiciones del mapa son simulados. Funciona completamente en el navegador, sin conexión con SIU Guaraní, backend, credenciales ni variables de entorno. [Fuentes y criterios del dataset](docs/dataset-diit.md).
+El dataset incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. La propuesta representa la **asignación completa de aulas del cuatrimestre vigente**; la ubicación de cada materia dentro de su plan no divide la propuesta. Los horarios, cupos, historiales, cuatro aulas y posiciones del mapa son simulados. Funciona completamente en el navegador, sin conexión con SIU Guaraní, backend, credenciales ni variables de entorno. [Fuentes y criterios del dataset](docs/dataset-diit.md).
 
 ## Alcance implementado
 
-- Elección del cuatrimestre antes de generar la propuesta y revisión por carrera de sus materias, aulas, capacidades, cupos, horarios completos e historial ilustrativo. Las materias presentes en varios planes se señalan en la tabla.
+- Revisión por carrera de todas las materias incluidas, aulas, capacidades, cupos, horarios completos e historial ilustrativo. Las materias presentes en varios planes se señalan en la tabla.
 - Generación real y determinista de asignaciones mediante búsqueda con retroceso.
 - Validación independiente de capacidad, duplicados y superposición horaria.
 - Revisión de la propuesta y modificación opcional de las asignaciones.

@@ -2,12 +2,11 @@ import { DATASET_VERSION } from '../data/demoDataset'
 import type { AllocationResult, SessionEvent, SessionState } from '../domain/types'
 
 export const initialState: SessionState = {
-  schemaVersion: 3,
+  schemaVersion: 4,
   datasetVersion: DATASET_VERSION,
   sessionId: '',
   revision: 0,
   phase: 'not-started',
-  planningTerm: null,
   originalAssignments: [],
   currentAssignments: [],
   unassigned: [],
@@ -25,7 +24,7 @@ export const initialState: SessionState = {
 type Timed = { now: string; eventId: string }
 
 export type SessionAction =
-  | ({ type: 'GENERATE'; result: AllocationResult; sessionId: string; planningTerm: 1 | 2 } & Timed)
+  | ({ type: 'GENERATE'; result: AllocationResult; sessionId: string } & Timed)
   | { type: 'OPEN_EDIT'; courseId: string; fromRoomId: string }
   | { type: 'CANCEL_EDIT' }
   | ({ type: 'APPLY_CHANGE'; courseId: string; fromRoomId: string; toRoomId: string; changeId: string; message: string } & Timed)
@@ -50,7 +49,6 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         ...initialState,
         sessionId: action.sessionId,
         phase: 'running',
-        planningTerm: action.planningTerm,
         revision,
         originalAssignments: action.result.assignments.map((assignment) => ({ ...assignment })),
         currentAssignments: action.result.assignments.map((assignment) => ({ ...assignment })),

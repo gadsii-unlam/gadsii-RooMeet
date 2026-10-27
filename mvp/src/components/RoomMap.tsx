@@ -12,7 +12,7 @@ export function RoomMap({ rooms, counts, filters, selectedRoomId, onSelectRoom }
   return (
     <figure className="campus-map">
       <div className="map-canvas">
-        <img src="/mapa-campus.png" alt="Plano ilustrativo del campus con las tres aulas de prueba" />
+        <img src="/mapa-campus.png" alt="Plano ilustrativo del campus con las cuatro aulas de prueba" />
         {rooms.map((room) => {
           const occupied = (counts[room.id] ?? 0) > 0
           const selected = selectedRoomId === room.id

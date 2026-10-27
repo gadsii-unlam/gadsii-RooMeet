@@ -5,13 +5,13 @@ import type { Course } from '../domain/types'
 function course(overrides: Partial<Course>): Course {
   return {
     id: 'c', name: 'Curso c', subject: 'Análisis Matemático I', curriculumCode: '3622', careerId: 'informatica',
-    term: 1, weeklyHours: 4, estimatedSeats: 40, enrollmentHistory: [], day: 1, startMinutes: 480, endMinutes: 720,
+    weeklyHours: 4, estimatedSeats: 40, enrollmentHistory: [], day: 1, startMinutes: 480, endMinutes: 720,
     ...overrides,
   }
 }
 
 describe('filtros del monitoreo', () => {
-  it('filtra por día dentro del cuatrimestre ya planificado', () => {
+  it('filtra por día dentro del cuatrimestre vigente', () => {
     expect(matchesFilters(course({ day: 3 }), { ...defaultMonitorFilters, day: 3 })).toBe(true)
     expect(matchesFilters(course({ day: 3 }), { ...defaultMonitorFilters, day: 2 })).toBe(false)
   })

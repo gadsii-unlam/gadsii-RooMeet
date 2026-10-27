@@ -5,9 +5,9 @@ import { validateChange } from '../src/domain/validation'
 import { initialState } from '../src/state/reducer'
 import { STORAGE_KEY } from '../src/state/storage'
 
-const pilotCourses = courses.filter((course) => course.term === 1)
+const pilotCourses = courses
 const result = generateAssignments(rooms, pilotCourses)
-const state = { ...initialState, phase: 'running' as const, planningTerm: 1 as const, currentAssignments: result.assignments, originalAssignments: result.assignments }
+const state = { ...initialState, phase: 'running' as const, currentAssignments: result.assignments, originalAssignments: result.assignments }
 const moves = result.assignments.flatMap((assignment) => rooms.filter((room) => validateChange(rooms, pilotCourses, state, {
   courseId: assignment.courseId,
   fromRoomId: assignment.roomId,
@@ -39,7 +39,7 @@ test('genera, revisa y corrige una propuesta con feedback y deshacer', async ({ 
   await expect(page.getByRole('heading', { name: 'Revisá la entrada de la prueba' })).toBeVisible()
   await expect(page.getByText(String(pilotCourses.length), { exact: true }).first()).toBeVisible()
   await page.getByLabel('Carrera').selectOption('mecanica')
-  await expect(page.getByText(`3 de ${pilotCourses.length} visibles`)).toBeVisible()
+  await expect(page.getByText(`8 de ${pilotCourses.length} visibles`)).toBeVisible()
   await page.getByLabel('Carrera').selectOption('all')
   await page.getByRole('button', { name: 'Generar propuesta' }).click()
   await expect(page.getByRole('heading', { name: 'Revisá la propuesta' })).toBeVisible()

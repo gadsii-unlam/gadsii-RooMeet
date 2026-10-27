@@ -22,14 +22,13 @@
 <main>
  <section id="datos" class="screen active" aria-labelledby="datos-t">
   <h2 id="datos-t">1 Revisar datos de prueba</h2>
-  <p>Entrada preparada manualmente para evaluar la generación de una propuesta de un único cuatrimestre.</p>
-  <label for="planning-term">Período a planificar<select id="planning-term"><option value="1">1.º cuatrimestre</option><option value="2">2.º cuatrimestre</option></select></label>
-  <div class="row"><div class="box"><h3>Aulas</h3><p>Aula 1 · capacidad 40<br>Aula 2 · capacidad 60<br>Aula 3 · capacidad 50</p></div><div class="box"><h3>Cursos del período</h3><p id="planning-course-count"></p><p>Los horarios y los cupos son simulados.</p></div></div>
+  <p>Entrada preparada manualmente para evaluar la asignación completa de aulas del cuatrimestre vigente.</p>
+  <div class="row"><div class="box"><h3>Aulas</h3><p>Aula 1 · capacidad 40<br>Aula 2 · capacidad 60<br>Aula 3 · capacidad 50<br>Aula 4 · capacidad 45</p></div><div class="box"><h3>Cursos incluidos</h3><p id="planning-course-count"></p><p>Los horarios y los cupos son simulados.</p></div></div>
   <aside>Decisión: mostrar capacidad, cupo y horario antes de generar para que la entrada sea revisable. Los valores son ficticios.</aside>
   <div class="controls"><button class="primary" data-go="propuesta">Generar propuesta →</button></div>
  </section>
  <section id="propuesta" class="screen" aria-labelledby="propuesta-t">
-  <h2 id="propuesta-t">2 Revisar propuesta del <span id="proposal-term">1.º cuatrimestre</span></h2>
+  <h2 id="propuesta-t">2 Revisar propuesta completa</h2>
   <p>Propuesta ilustrativa: el MVP real deberá calcularla mediante su componente propio.</p>
   <div class="table-scroll"><table><thead><tr><th>Curso</th><th>Horario</th><th>Aula propuesta</th><th>Cupo / capacidad</th></tr></thead><tbody id="proposal-preview"></tbody></table></div>
   <p class="muted">Se muestran seis cursos de la muestra para contextualizar el recorrido.</p>
@@ -54,9 +53,10 @@
      <button class="map-marker occupied selected" type="button" data-room="1" style="left:42%;top:62%" aria-label="Ver Aula 1, ocupada">1</button>
      <button class="map-marker occupied" type="button" data-room="2" style="left:56%;top:45%" aria-label="Ver Aula 2, ocupada">2</button>
      <button class="map-marker" type="button" data-room="3" style="left:70%;top:71%" aria-label="Ver Aula 3, disponible">3</button>
+     <button class="map-marker" type="button" data-room="4" style="left:31%;top:40%" aria-label="Ver Aula 4, disponible">4</button>
     </div>
     <div class="map-key"><span><span class="key-symbol occupied"></span><span id="map-key-occupied">Con cursos en el filtro</span></span><span><span class="key-symbol"></span><span id="map-key-free">Sin cursos en el filtro</span></span></div>
-    <figcaption class="map-caption">Mapa real aportado por el usuario. La ubicación de los marcadores 1, 2 y 3 es solo un ejemplo de interfaz; se debe vincular cada aula con su posición comprobada antes de usar el visor con datos reales.</figcaption>
+    <figcaption class="map-caption">Mapa real aportado por el usuario. La ubicación de los marcadores 1, 2, 3 y 4 es solo un ejemplo de interfaz; se debe vincular cada aula con su posición comprobada antes de usar el visor con datos reales.</figcaption>
    </figure>
    <section class="map-details" aria-labelledby="room-title">
     <div class="agenda-heading"><div><p class="overline">Agenda del aula</p><h3 id="room-title" tabindex="-1">Aula 1</h3></div><p id="room-capacity" class="capacity-pill">40 lugares</p></div>

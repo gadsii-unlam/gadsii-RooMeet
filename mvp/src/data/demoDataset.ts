@@ -1,6 +1,6 @@
-import type { Course, Day, Room, Term } from '../domain/types'
+import type { Course, Day, Room } from '../domain/types'
 
-export const DATASET_VERSION = 'roomeet-diit-primer-anio-2026-10-v2'
+export const DATASET_VERSION = 'roomeet-diit-primer-anio-2026-10-v3'
 
 export interface Career {
   id: string
@@ -22,6 +22,7 @@ export const rooms: Room[] = [
   { id: 'room-1', name: 'Aula 1', capacity: 40, mapPosition: { xPercent: 42, yPercent: 62 } },
   { id: 'room-2', name: 'Aula 2', capacity: 60, mapPosition: { xPercent: 56, yPercent: 45 } },
   { id: 'room-3', name: 'Aula 3', capacity: 50, mapPosition: { xPercent: 70, yPercent: 71 } },
+  { id: 'room-4', name: 'Aula 4', capacity: 45, mapPosition: { xPercent: 31, yPercent: 40 } },
 ]
 
 type SubjectSeed = readonly [code: string, title: string, weeklyHours: number]
@@ -90,15 +91,15 @@ const SEAT_BASE: Record<string, number> = {
 
 const LONG_SLOTS: Record<string, { day: Day; startMinutes: number }> = {
   '1023': { day: 1, startMinutes: 480 },
+  '2952': { day: 1, startMinutes: 960 },
   '1024': { day: 2, startMinutes: 480 },
-  '1027': { day: 3, startMinutes: 480 },
-  '2952': { day: 5, startMinutes: 480 },
-  '2957': { day: 1, startMinutes: 480 },
-  '1030': { day: 5, startMinutes: 480 },
-  '4130': { day: 5, startMinutes: 960 },
+  '1027': { day: 2, startMinutes: 960 },
+  '2957': { day: 3, startMinutes: 480 },
+  '1030': { day: 3, startMinutes: 960 },
+  '4130': { day: 4, startMinutes: 480 },
 }
 
-function makeCourse(careerId: string, term: Term, seed: SubjectSeed, index: number): Course {
+function makeCourse(careerId: string, seed: SubjectSeed, index: number): Course {
   const [curriculumCode, subject, weeklyHours] = seed
   const estimatedSeats = curriculumCode === '3622' || curriculumCode === '3627'
     ? 54
@@ -109,7 +110,6 @@ function makeCourse(careerId: string, term: Term, seed: SubjectSeed, index: numb
     subject,
     curriculumCode,
     careerId,
-    term,
     weeklyHours,
     estimatedSeats,
     enrollmentHistory: [estimatedSeats - 5, estimatedSeats - 2],
@@ -119,36 +119,49 @@ function makeCourse(careerId: string, term: Term, seed: SubjectSeed, index: numb
   }
 }
 
-function buildTerm(term: Term): Course[] {
-  const byCareer = plans.map((plan) => ({
-    careerId: plan.careerId,
-    items: (term === 1 ? plan.first : plan.second).map((seed, index) => makeCourse(plan.careerId, term, seed, index)),
-  }))
-  const regular: Course[] = []
-  const long: Course[] = []
-  const rounds = Math.max(...byCareer.map((entry) => entry.items.length))
-  for (let index = 0; index < rounds; index += 1) {
-    for (const entry of byCareer) {
-      const course = entry.items[index]
-      if (course) (course.weeklyHours === 4 ? regular : long).push(course)
+function buildCourses(): Course[] {
+  const source = plans.flatMap((plan) => [...plan.first, ...plan.second].map((seed, index) => makeCourse(plan.careerId, seed, index)))
+  const laneCapacities = [40, 45, 50, 60]
+  const occupied = laneCapacities.map(() => Array<boolean>(20).fill(false))
+  const scheduled = new Map<string, Course>()
+
+  const place = (course: Course, lane: number, day: Day, startMinutes: number) => {
+    const firstBlock = (day - 1) * 4 + (startMinutes - 480) / 240
+    const blockCount = Math.ceil(course.weeklyHours / 4)
+    if (!Number.isInteger(firstBlock) || firstBlock < 0 || firstBlock + blockCount > day * 4) throw new Error(`Horario inválido para ${course.curriculumCode}.`)
+    for (let block = firstBlock; block < firstBlock + blockCount; block += 1) {
+      if (occupied[lane][block]) throw new Error(`Horario de prueba duplicado para ${course.curriculumCode}.`)
+      occupied[lane][block] = true
     }
+    scheduled.set(course.id, { ...course, day, startMinutes, endMinutes: startMinutes + course.weeklyHours * 60 })
   }
-  const scheduledRegular = regular.map((course, index) => {
-    // Dos cursos por franja dejan un aula libre para los bloques largos.
-    const slot = Math.floor(index / 2)
-    const day = (Math.floor(slot / 3) + 1) as Day
-    const startMinutes = 480 + (slot % 3) * 240
-    return { ...course, day, startMinutes, endMinutes: startMinutes + 240 }
-  })
-  const scheduledLong = long.map((course) => {
+
+  const longCourses = source.filter((course) => course.weeklyHours !== 4)
+  for (const course of longCourses) {
     const slot = LONG_SLOTS[course.curriculumCode]
     if (!slot) throw new Error(`Falta un horario de prueba para la materia ${course.curriculumCode}.`)
-    return { ...course, day: slot.day, startMinutes: slot.startMinutes, endMinutes: slot.startMinutes + course.weeklyHours * 60 }
-  })
-  return [...scheduledRegular, ...scheduledLong]
+    place(course, 0, slot.day, slot.startMinutes)
+  }
+
+  const regularCourses = source.filter((course) => course.weeklyHours === 4).sort((left, right) => right.estimatedSeats - left.estimatedSeats || left.id.localeCompare(right.id))
+  for (const course of regularCourses) {
+    let placed = false
+    for (let lane = 0; lane < laneCapacities.length && !placed; lane += 1) {
+      if (laneCapacities[lane] < course.estimatedSeats) continue
+      const block = occupied[lane].findIndex((value) => !value)
+      if (block < 0) continue
+      const day = (Math.floor(block / 4) + 1) as Day
+      const startMinutes = 480 + (block % 4) * 240
+      place(course, lane, day, startMinutes)
+      placed = true
+    }
+    if (!placed) throw new Error(`No hay un horario de prueba compatible para ${course.curriculumCode}.`)
+  }
+
+  return source.map((course) => scheduled.get(course.id)!)
 }
 
-export const courses: Course[] = [...buildTerm(1), ...buildTerm(2)]
+export const courses: Course[] = buildCourses()
 
 const careerCountBySubject = new Map<string, Set<string>>()
 for (const course of courses) {
@@ -179,7 +192,7 @@ export function formatTimeRange(course: Course): string {
 }
 
 export function formatCourseSchedule(course: Course): string {
-  return `${course.term}.º cuatrimestre · ${DAY_NAMES[course.day]} ${formatTimeRange(course)}`
+  return `${DAY_NAMES[course.day]} ${formatTimeRange(course)}`
 }
 
 export function getCourse(courseId: string): Course | undefined {

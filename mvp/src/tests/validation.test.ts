@@ -5,21 +5,20 @@ import type { Course } from '../domain/types'
 import { initialState } from '../state/reducer'
 
 const base = courses[0]
-const makeCourse = (id: string, seats: number, term: 1 | 2, startMinutes: number, endMinutes: number): Course => ({
+const makeCourse = (id: string, seats: number, startMinutes: number, endMinutes: number): Course => ({
   ...base, id, name: `Curso ${id}`, curriculumCode: id, subject: id,
-  estimatedSeats: seats, term, day: 1, startMinutes, endMinutes,
+  estimatedSeats: seats, day: 1, startMinutes, endMinutes,
 })
 
 describe('reglas de horarios y cambios', () => {
   it('acepta intervalos consecutivos y rechaza los superpuestos', () => {
-    const a = makeCourse('A', 35, 1, 1080, 1200)
-    expect(coursesOverlap(a, makeCourse('B', 35, 1, 1200, 1320))).toBe(false)
-    expect(coursesOverlap(a, makeCourse('B', 35, 2, 1140, 1260))).toBe(false)
-    expect(coursesOverlap(a, makeCourse('B', 35, 1, 1140, 1260))).toBe(true)
+    const a = makeCourse('A', 35, 1080, 1200)
+    expect(coursesOverlap(a, makeCourse('B', 35, 1200, 1320))).toBe(false)
+    expect(coursesOverlap(a, makeCourse('B', 35, 1140, 1260))).toBe(true)
   })
 
   it('bloquea conflicto y capacidad, y acepta un destino libre', () => {
-    const testCourses = [makeCourse('A', 35, 1, 1080, 1200), makeCourse('B', 35, 1, 1080, 1200), makeCourse('C', 55, 2, 1080, 1200)]
+    const testCourses = [makeCourse('A', 35, 1080, 1200), makeCourse('B', 35, 1080, 1200), makeCourse('C', 55, 1080, 1200)]
     const assignments = [{ courseId: 'A', roomId: 'room-1' }, { courseId: 'B', roomId: 'room-2' }, { courseId: 'C', roomId: 'room-2' }]
     const state = { ...initialState, phase: 'running' as const, revision: 1, currentAssignments: assignments, originalAssignments: assignments }
     expect(validateChange(rooms, testCourses, state, { courseId: 'A', fromRoomId: 'room-1', toRoomId: 'room-2', expectedRevision: 1 }).violations.some((item) => item.code === 'overlap')).toBe(true)

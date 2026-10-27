@@ -44,7 +44,7 @@ El 90 % y la comparación con el proceso manual vienen del brief. No reemplazar 
 
 ### Recorrido indispensable
 
-Elegir el cuatrimestre → revisar sus datos preparados → generar una propuesta real para ese período → revisar asignaciones → consultar ocupación con filtros en mapa/listado → seleccionar un curso concreto → cambiarlo de aula si es necesario y válido → comprobar el resultado o deshacerlo.
+Revisar los datos preparados del cuatrimestre vigente → generar la propuesta completa de asignación → revisar asignaciones → consultar ocupación con filtros en mapa/listado → seleccionar un curso concreto → cambiarlo de aula si es necesario y válido → comprobar el resultado o deshacerlo.
 
 La prueba debe poder completarse sin cuentas, servicios externos ni datos reales. Se construye el comportamiento de asignación y modificación; se simulan los datos de entrada y cualquier relación con Guaraní.
 
@@ -155,7 +155,7 @@ Algoritmo de referencia, suficiente para esta escala:
 4. Si no hay solución completa, conservar una solución parcial con el mayor número de cursos asignados explorado; en empate, conservar la primera. Se puede podar una rama que ya no supere la mejor cobertura encontrada.
 5. Devolver asignaciones y cursos sin asignar con una explicación. Nunca forzar un aula inválida para conseguir cobertura del 100 %.
 
-No se exige optimizar globalmente uso de asientos, recorridos ni preferencias. El fixture conserva 65 cursos de primer año, pero cada búsqueda recibe únicamente los cursos del cuatrimestre elegido; no desarrollar una asignación anual ni un optimizador universitario de propósito general.
+No se exige optimizar globalmente uso de asientos, recorridos ni preferencias. El fixture conserva 65 cursos de primer año y la búsqueda recibe todos ellos como una única propuesta del cuatrimestre vigente; no desarrollar una asignación anual ni un optimizador universitario de propósito general.
 
 Antes de aceptar el resultado, ejecutar un validador independiente del algoritmo que recalcule integridad referencial, capacidad, duplicados y solapamientos. Un resultado inválido no se publica como propuesta válida.
 
@@ -176,9 +176,9 @@ Los documentos no aportan una fórmula estadística validada para estimar cupos.
 
 ### Dataset público inicial
 
-El dataset vigente está en `src/data/demoDataset.ts` y sus fuentes y criterios en [docs/dataset-diit.md](docs/dataset-diit.md). Reemplaza por completo el fixture anterior de cursos A–J: contiene **65 materias de primer año** de las seis carreras de grado del DIIT, divididas en dos períodos. Cada sesión selecciona un único cuatrimestre antes de generar. Se conserva la decisión de tres aulas ilustrativas con capacidades 40, 60 y 50. Antes de generar no hay asignaciones.
+El dataset vigente está en `src/data/demoDataset.ts` y sus fuentes y criterios en [docs/dataset-diit.md](docs/dataset-diit.md). Reemplaza por completo el fixture anterior de cursos A–J: contiene **65 materias de primer año** de las seis carreras de grado del DIIT. Todas integran una única propuesta de asignación para el cuatrimestre vigente, independientemente de su ubicación en el plan. El fixture usa cuatro aulas ilustrativas con capacidades 40, 60, 50 y 45 para cubrir las 286 horas semanales y conservar alternativas de modificación. Antes de generar no hay asignaciones.
 
-Los nombres, códigos y cargas semanales se tomaron de los planes oficiales enlazados en la documentación del dataset. Una materia presente en más de un plan conserva un curso y código por carrera; eso no afirma que la UNLaM comparta físicamente las comisiones. Horarios, cupos e historial de inscriptos son simulados. El plan de Ingeniería Civil 2025 enumera las materias de primer año sin dividirlas por cuatrimestre; esa división en el fixture es una decisión de simulación.
+Los nombres, códigos y cargas semanales se tomaron de los planes oficiales enlazados en la documentación del dataset. Una materia presente en más de un plan conserva un curso y código por carrera; eso no afirma que la UNLaM comparta físicamente las comisiones. Horarios, cupos e historial de inscriptos son simulados.
 
 ### Tipos mínimos de dominio
 
@@ -198,7 +198,6 @@ interface Course {
   subject: string;
   curriculumCode: string;
   careerId: string;
-  term: 1 | 2;
   weeklyHours: number;
   estimatedSeats: number;
   enrollmentHistory: number[]; // Ilustrativo, solo lectura.
@@ -226,9 +225,9 @@ interface LastChange {
 }
 ```
 
-Cada curso tiene un único intervalo semanal simulado en este MVP. Los conflictos se comparan dentro del mismo cuatrimestre, día e intervalo. Cada curso puede tener como máximo una asignación; un aula puede alojar varios cursos en intervalos compatibles. Los nombres son para presentación y los ID son estables.
+Cada curso tiene un único intervalo semanal simulado en este MVP. Los conflictos se comparan por día e intervalo dentro de la propuesta completa del cuatrimestre vigente. Cada curso puede tener como máximo una asignación; un aula puede alojar varios cursos en intervalos compatibles. Los nombres son para presentación y los ID son estables.
 
-El estado de sesión debe incluir `schemaVersion`, `datasetVersion`, `sessionId`, `revision`, `planningTerm`, estado de prueba (`not-started`, `running`, `finished`), `originalAssignments`, `currentAssignments`, cursos sin asignar, evidencia de modificaciones, última modificación, marcas de tiempo y eventos mínimos. La lista original queda inmutable después de la primera generación. Selecciones y filtros de la interfaz no son otra fuente de asignaciones.
+El estado de sesión debe incluir `schemaVersion`, `datasetVersion`, `sessionId`, `revision`, estado de prueba (`not-started`, `running`, `finished`), `originalAssignments`, `currentAssignments`, cursos sin asignar, evidencia de modificaciones, última modificación, marcas de tiempo y eventos mínimos. La lista original queda inmutable después de la primera generación. Selecciones y filtros de la interfaz no son otra fuente de asignaciones.
 
 Funciones compartidas mínimas:
 
@@ -244,7 +243,7 @@ Definir tipos explícitos para resultados y errores. Compartir el validador entr
 
 ## 8. Estado y persistencia local
 
-**Decisión técnica:** estado en React mediante un reducer y un contexto pequeño si hace falta. Persistir una instantánea JSON con `schemaVersion: 3` en `localStorage`, bajo la clave `roomeet:mvp:session:v4`. Las claves anteriores se eliminan al iniciar la aplicación porque cambió el flujo y ahora cada sesión fija su cuatrimestre.
+**Decisión técnica:** estado en React mediante un reducer y un contexto pequeño si hace falta. Persistir una instantánea JSON con `schemaVersion: 4` en `localStorage`, bajo la clave `roomeet:mvp:session:v5`. Las claves anteriores se eliminan al iniciar la aplicación porque cambió el alcance de la propuesta.
 
 - Restaurar la sesión al recargar. No regenerar resultados ni modificar cursos durante el arranque.
 - Validar estructura, versión de dataset, IDs, capacidad y horarios antes de restaurar. Estado inválido o incompatible requiere explicar el problema y ofrecer reinicio explícito; no migrarlo de forma silenciosa ni inventar una sesión válida.
@@ -262,7 +261,7 @@ Registrar creación de propuesta, cambios confirmados, deshacer, finalización y
 
 Guardar `startedAt` al ejecutar la primera generación y `finishedAt` al finalizar la revisión. La duración incluye cálculo, revisión y correcciones del participante; no es solo el tiempo que tarda el algoritmo. Una recarga/interrupción queda registrada y no produce una duración artificial de cero. Si el reloj arroja valores inválidos, marcar el dato como no medible.
 
-«Exportar prueba» descarga un único JSON con versiones, ID anónimo de sesión, cuatrimestre planificado, dataset utilizado, propuesta original, estado final, evidencia de modificaciones, eventos, fechas, duración y métricas calculadas. No requiere servidor ni importación posterior. Mostrar un resumen compacto, sin gráficos ni dashboard adicional.
+«Exportar prueba» descarga un único JSON con versiones, ID anónimo de sesión, dataset utilizado, propuesta original, estado final, evidencia de modificaciones, eventos, fechas, duración y métricas calculadas. No requiere servidor ni importación posterior. Mostrar un resumen compacto, sin gráficos ni dashboard adicional.
 
 ### Cálculos
 
@@ -421,7 +420,7 @@ El README de la implementación debe explicar instalación, desarrollo, pruebas,
 | Caso | Resultado exigido |
 | --- | --- |
 | Primera apertura | Dataset visible y cero asignaciones; no se ve una propuesta previamente fabricada. |
-| Generar sobre el fixture público | Los cursos del cuatrimestre elegido quedan asignados, sin solapamientos ni excesos; el otro cuatrimestre no forma parte de esa sesión. El resultado se calcula, no se carga ya asignado. |
+| Generar sobre el fixture público | Los 65 cursos quedan incluidos en una única propuesta del cuatrimestre vigente, sin solapamientos ni excesos. El resultado se calcula, no se carga ya asignado. |
 | Cambiar cupo u horarios en un fixture de test | El motor responde a la nueva entrada; no devuelve siempre el mismo resultado predefinido. |
 | Dos cursos consecutivos en la misma aula | Final 20:00 e inicio 20:00 son compatibles. |
 | Solapamiento parcial | 18:00–20:00 y 19:00–21:00 en la misma aula se rechazan. |
@@ -438,7 +437,7 @@ Fixture de retroceso, solo para tests: dos aulas R1=40 y R2=60; lunes, X cupo 60
 | Caso | Resultado exigido |
 | --- | --- |
 | Abrir edición de un curso desde el listado o detalle | Encabezado y origen corresponden al curso elegido; confirmar el cambio no altera otros cursos. Es la regresión principal de H4. |
-| Mover a un aula ocupada en el mismo cuatrimestre e intervalo | Rechazado aunque el curso en conflicto no se vea en el filtro de interfaz. |
+| Mover a un aula ocupada en el mismo día e intervalo | Rechazado aunque el curso en conflicto no se vea en el filtro de interfaz. |
 | Mover un curso de cupo 54 a un aula de capacidad 50 | Rechazado con mensaje que informa cupo y capacidad. |
 | Mover un curso a un aula compatible | Cambio válido; mapa, detalle y listado coinciden; mensaje H1 con origen, destino e intervalo. |
 | Cancelar edición | No altera asignaciones ni genera un cambio efectivo en las métricas. |
@@ -450,7 +449,7 @@ Fixture de retroceso, solo para tests: dos aulas R1=40 y R2=60; lunes, X cupo 60
 
 ### Medición, navegación y entrega
 
-- Las asignaciones sin cambios usan como denominador todos los cursos del cuatrimestre elegido. Un curso no asignado o modificado no se elimina del denominador.
+- Las asignaciones sin cambios usan como denominador todos los cursos de la propuesta del cuatrimestre vigente. Un curso no asignado o modificado no se elimina del denominador.
 - Cambiar y deshacer no hace pasar un curso por «nunca modificado».
 - Las sesiones de ejercicios forzados no se confunden con el piloto de aceptación espontánea.
 - Exportación JSON contiene suficiente información para recalcular métricas y no afirma que las valide un servidor.

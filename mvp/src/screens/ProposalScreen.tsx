@@ -20,7 +20,7 @@ export function ProposalScreen({ rooms, courses, assignments, unassigned, onCont
   })
   return (
     <main id="main-content" className="page-shell">
-      <header className="page-heading"><p className="eyebrow">Paso 2 · Revisión</p><h1>Revisá la propuesta del {courses[0]?.term}.º cuatrimestre</h1><p>Consultá las aulas sugeridas. Si necesitás ajustar una asignación, podés hacerlo desde la agenda del aula.</p></header>
+      <header className="page-heading"><p className="eyebrow">Paso 2 · Revisión · Cuatrimestre vigente</p><h1>Revisá la propuesta completa</h1><p>Consultá las aulas sugeridas para todos los cursos. Si necesitás ajustar una asignación, podés hacerlo desde la agenda del aula.</p></header>
       <section className="panel">
         <div className="filter-row">
           <label className="filter-control">Carrera<select value={careerFilter} onChange={(event) => setCareerFilter(event.target.value)}><option value="all">Todas las carreras</option>{careers.map((career) => <option key={career.id} value={career.id}>{career.name}</option>)}</select></label>

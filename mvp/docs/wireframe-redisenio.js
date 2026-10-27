@@ -3,7 +3,7 @@
   const courses = sourceCourses.map(course => ({ ...course }));
   const days = ['Todos los días', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
   const pageSize = 3;
-  const state = { term: 1, day: 0, slot: 'all', roomId: rooms[0].id, query: '', page: 0, editId: null, lastChange: null };
+  const state = { day: 0, slot: 'all', roomId: rooms[0].id, query: '', page: 0, editId: null, lastChange: null };
   const $ = id => document.getElementById(id);
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const time = minutes => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
@@ -11,10 +11,10 @@
   const career = course => careers.find(item => item.id === course.careerId)?.name || '';
   const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const byTime = (left, right) => left.day - right.day || left.startMinutes - right.startMinutes || left.subject.localeCompare(right.subject);
-  const overlaps = (left, right) => left.term === right.term && left.day === right.day && left.startMinutes < right.endMinutes && right.startMinutes < left.endMinutes;
+  const overlaps = (left, right) => left.day === right.day && left.startMinutes < right.endMinutes && right.startMinutes < left.endMinutes;
 
   function inFilter(course) {
-    if (course.term !== state.term || (state.day && course.day !== state.day)) return false;
+    if (state.day && course.day !== state.day) return false;
     if (state.slot === 'all') return true;
     const [start, end] = state.slot.split('-').map(Number);
     return course.startMinutes < end && start < course.endMinutes;
@@ -22,7 +22,7 @@
 
   function scope() {
     const slot = state.slot === 'all' ? 'día completo' : state.slot.split('-').map(Number).map(time).join('–');
-    return `${state.term}.º cuatrimestre planificado · ${days[state.day]} · ${slot}`;
+    return `Cuatrimestre vigente · ${days[state.day]} · ${slot}`;
   }
 
   function roomCourses(id) {
@@ -115,19 +115,17 @@
     const course = courses.find(item => item.id === state.editId);
     if (!course) return;
     const room = rooms.find(item => item.id === course.roomId);
-    $('change-context').innerHTML = `<h3>${escape(course.subject)}</h3><p>${escape(career(course))} · Código ${escape(course.curriculumCode)}</p><p>${course.term}.º cuatrimestre · ${days[course.day]} ${range(course)}</p><p>Cupo ${course.estimatedSeats} · Aula actual: <strong>${room.name}</strong></p>`;
+    $('change-context').innerHTML = `<h3>${escape(course.subject)}</h3><p>${escape(career(course))} · Código ${escape(course.curriculumCode)}</p><p>${days[course.day]} ${range(course)}</p><p>Cupo ${course.estimatedSeats} · Aula actual: <strong>${room.name}</strong></p>`;
     $('aula').innerHTML = '<option value="">Seleccionar</option>' + rooms.filter(item => item.id !== course.roomId).map(item => `<option value="${item.id}">${item.name} · capacidad ${item.capacity}</option>`).join('');
     $('control').textContent = 'Seleccioná un aula para comprobar capacidad y horario.';
     $('confirmar').disabled = true;
   }
 
   function renderProposal() {
-    const planned = courses.filter(course => course.term === state.term);
-    $('proposal-term').textContent = `${state.term}.º cuatrimestre`;
-    $('planning-course-count').textContent = `${planned.length} cursos ilustrativos del ${state.term}.º cuatrimestre.`;
-    $('proposal-preview').innerHTML = planned.slice(0, 6).map(course => {
+    $('planning-course-count').textContent = `${courses.length} cursos ilustrativos del cuatrimestre vigente.`;
+    $('proposal-preview').innerHTML = courses.slice(0, 6).map(course => {
       const room = rooms.find(item => item.id === course.roomId);
-      return `<tr><td>${escape(course.subject)}</td><td>${course.term}.º C · ${days[course.day]} ${range(course)}</td><td>${room.name}</td><td>${course.estimatedSeats} / ${room.capacity}</td></tr>`;
+      return `<tr><td>${escape(course.subject)}</td><td>${days[course.day]} ${range(course)}</td><td>${room.name}</td><td>${course.estimatedSeats} / ${room.capacity}</td></tr>`;
     }).join('');
   }
 
@@ -146,16 +144,6 @@
 
   document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => go(button.dataset.go)));
   document.querySelectorAll('.map-marker').forEach(button => button.addEventListener('click', () => selectRoom(`room-${button.dataset.room}`)));
-  $('planning-term').addEventListener('change', event => {
-    state.term = Number(event.target.value);
-    state.day = 0;
-    state.slot = 'all';
-    state.page = 0;
-    state.query = '';
-    $('mon-day').value = '0'; $('mon-slot').value = 'all'; $('agenda-search').value = '';
-    renderProposal();
-    renderRooms();
-  });
   for (const [id, key] of [['mon-day', 'day'], ['mon-slot', 'slot']]) {
     $(id).addEventListener('change', event => {
       state[key] = key === 'slot' ? event.target.value : Number(event.target.value);

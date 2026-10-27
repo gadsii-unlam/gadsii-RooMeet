@@ -63,10 +63,6 @@ small { color: var(--muted); }
 .section-title p { color: var(--muted); font-size: 0.88rem; margin-top: 0.15rem; }
 
 .summary-strip { background: var(--navy); color: white; border-radius: 1rem; padding: 1rem 1.25rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.2rem; box-shadow: var(--shadow); }
-.planning-period { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.2rem; }
-.planning-period h2, .planning-period p { margin-bottom: 0; }
-.planning-period p { color: var(--muted); margin-top: .25rem; }
-.planning-period .filter-control { min-width: 230px; }
 .summary-strip div { display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,.16); padding-left: 1rem; }
 .summary-strip div:first-child { padding-left: 0; }
 .summary-strip div:last-child { border-right: 0; }
@@ -225,8 +221,6 @@ footer { margin-top: auto; min-height: 64px; background: #e9edf4; color: var(--m
 }
 
 @media (max-width: 600px) {
-  .planning-period { align-items: stretch; flex-direction: column; }
-  .planning-period .filter-control { min-width: 0; }
   .app-header { min-height: 68px; }
   .brand small { display: none; }
   .brand-mark { width: 36px; height: 36px; }
