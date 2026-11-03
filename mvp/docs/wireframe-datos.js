@@ -62,6 +62,24 @@ window.ROOMEET_WIREFRAME = {
         "xPercent": 31,
         "yPercent": 40
       }
+    },
+    {
+      "id": "room-5",
+      "name": "Aula 5",
+      "capacity": 55,
+      "mapPosition": {
+        "xPercent": 79,
+        "yPercent": 34
+      }
+    },
+    {
+      "id": "room-6",
+      "name": "Aula 6",
+      "capacity": 35,
+      "mapPosition": {
+        "xPercent": 51,
+        "yPercent": 81
+      }
     }
   ],
   "courses": [
@@ -74,7 +92,7 @@ window.ROOMEET_WIREFRAME = {
       "startMinutes": 480,
       "endMinutes": 720,
       "estimatedSeats": 36,
-      "roomId": "room-1"
+      "roomId": "room-5"
     },
     {
       "id": "civil-4121",
@@ -85,7 +103,7 @@ window.ROOMEET_WIREFRAME = {
       "startMinutes": 720,
       "endMinutes": 960,
       "estimatedSeats": 34,
-      "roomId": "room-1"
+      "roomId": "room-6"
     },
     {
       "id": "electronica-3682",
@@ -184,7 +202,7 @@ window.ROOMEET_WIREFRAME = {
       "startMinutes": 480,
       "endMinutes": 720,
       "estimatedSeats": 43,
-      "roomId": "room-2"
+      "roomId": "room-4"
     },
     {
       "id": "industrial-4052",
@@ -195,7 +213,7 @@ window.ROOMEET_WIREFRAME = {
       "startMinutes": 720,
       "endMinutes": 960,
       "estimatedSeats": 42,
-      "roomId": "room-2"
+      "roomId": "room-4"
     },
     {
       "id": "informatica-3622",
@@ -206,7 +224,7 @@ window.ROOMEET_WIREFRAME = {
       "startMinutes": 960,
       "endMinutes": 1200,
       "estimatedSeats": 54,
-      "roomId": "room-2"
+      "roomId": "room-5"
     },
     {
       "id": "industrial-4053",
@@ -217,7 +235,7 @@ window.ROOMEET_WIREFRAME = {
       "startMinutes": 480,
       "endMinutes": 720,
       "estimatedSeats": 43,
-      "roomId": "room-2"
+      "roomId": "room-4"
     },
     {
       "id": "informatica-3627",

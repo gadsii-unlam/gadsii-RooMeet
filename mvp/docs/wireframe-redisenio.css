@@ -75,5 +75,6 @@ button:disabled{background:#f5f5f3;border-color:#ddd;color:#999}
 [hidden]{display:none!important}
 #change-context p{margin:4px 0}
 #change-context h3{font-size:20px;margin:0 0 6px}
+.available-rooms{margin:12px 0;padding:10px 12px;border:2px solid #287a56;background:#e5f4eb;color:#174c36;font-size:13px}
 @media(max-width:800px){body{padding:16px}.map-layout{grid-template-columns:1fr}.map-details{min-height:0}.map-frame{max-height:440px}.map-frame img{width:100%;height:440px;object-fit:cover}.screen{padding:18px}.backup-heading{display:block}.backup-heading>span{display:block;margin-bottom:12px}}
 @media(max-width:460px){body{padding:10px}header h1{font-size:21px}.screen{padding:13px}.monitor-filters{padding:12px;gap:10px}.monitor-filters label{flex-basis:100%}.monitor-filters button{width:100%}.map-details{padding:13px}.agenda-course summary{grid-template-columns:80px minmax(0,1fr) 12px;gap:8px;padding:10px}.course-slot,.course-slot strong{font-size:11px}.backup-panel{padding:12px}.change-feedback{align-items:start;flex-direction:column}.map-frame,.map-frame img{height:auto;max-height:none}}

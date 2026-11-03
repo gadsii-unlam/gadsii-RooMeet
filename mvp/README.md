@@ -2,7 +2,7 @@
 
 Aplicación web para probar la hipótesis central de RooMeet: generar y revisar propuestas de asignación de aulas sin superposiciones ni excesos de capacidad, y medir cuántas propuestas son aceptadas sin modificaciones y cuánto demora el recorrido.
 
-El dataset incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. La propuesta representa la **asignación completa de aulas del cuatrimestre vigente**; la ubicación de cada materia dentro de su plan no divide la propuesta. Los horarios, cupos, historiales, cuatro aulas y posiciones del mapa son simulados. Funciona completamente en el navegador, sin conexión con SIU Guaraní, backend, credenciales ni variables de entorno. [Fuentes y criterios del dataset](docs/dataset-diit.md).
+El dataset incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. La propuesta representa la **asignación completa de aulas del cuatrimestre vigente**; la ubicación de cada materia dentro de su plan no divide la propuesta. Los horarios, cupos, historiales, seis aulas y posiciones del mapa son simulados. Funciona completamente en el navegador, sin conexión con SIU Guaraní, backend, credenciales ni variables de entorno. [Fuentes y criterios del dataset](docs/dataset-diit.md).
 
 ## Alcance implementado
 
@@ -11,7 +11,7 @@ El dataset incluye el primer año de las seis carreras de grado del DIIT de la U
 - Validación independiente de capacidad, duplicados y superposición horaria.
 - Revisión de la propuesta y modificación opcional de las asignaciones.
 - Consulta de ocupación mediante mapa ilustrativo y listado accesible.
-- Cambio de aula asociado al curso seleccionado, con validación al confirmar.
+- Cambio de aula asociado al curso seleccionado, con aviso previo y resaltado en verde de las aulas libres que cumplen horario y capacidad.
 - Confirmación visible del cambio y posibilidad de deshacer la última modificación.
 - Persistencia local de una sesión y exportación JSON de evidencia.
 - Finalización cuando todos los cursos están asignados y no existen conflictos.
@@ -59,7 +59,7 @@ npm run test:e2e
 4. Vercel tomará de `vercel.json` la instalación `npm ci`, el build `npm run build` y la salida `dist`.
 5. No configurar variables de entorno.
 
-El almacenamiento es `localStorage`: cada navegador y dispositivo mantiene su propia prueba. No hay sincronización multiusuario ni almacenamiento institucional.
+El almacenamiento es `localStorage`: cada navegador y dispositivo mantiene su propia prueba. No hay sincronización multiusuario ni almacenamiento institucional. Cuando cambia la versión del dataset de demostración, una sesión anterior se descarta automáticamente para evitar mezclar aulas o asignaciones incompatibles.
 
 ## Protocolo de prueba
 

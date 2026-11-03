@@ -8,6 +8,7 @@ import { initialState } from '../state/reducer'
 describe('generateAssignments', () => {
   it('asigna la propuesta completa del cuatrimestre vigente y sin conflictos', () => {
     expect(careers).toHaveLength(6)
+    expect(rooms).toHaveLength(6)
     expect(courses).toHaveLength(65)
     expect(new Set(courses.map((course) => course.id)).size).toBe(courses.length)
     expect(courses.filter((course) => course.careerId === 'informatica')).toHaveLength(12)
@@ -18,6 +19,7 @@ describe('generateAssignments', () => {
     expect(result.unassigned).toEqual([])
     expect(result.assignments).toHaveLength(courses.length)
     expect(validateAssignments(rooms, courses, result.assignments)).toEqual([])
+    expect(new Set(result.assignments.map((assignment) => assignment.roomId))).toEqual(new Set(rooms.map((room) => room.id)))
     const state = { ...initialState, phase: 'running' as const, currentAssignments: result.assignments, originalAssignments: result.assignments }
     const hasValidAlternative = result.assignments.some((assignment) => rooms.some((room) => validateChange(rooms, courses, state, {
       courseId: assignment.courseId,

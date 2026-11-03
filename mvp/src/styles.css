@@ -193,10 +193,15 @@ td small { display: block; margin-top: 0.18rem; }
 .destination-fieldset { border: 1px solid var(--line); margin: 0; }
 .destination-fieldset legend { font-family: 'Manrope'; color: var(--navy); font-weight: 700; padding: 0 .45rem; }
 .destination-fieldset > p { color: var(--muted); font-size: .87rem; }
+.destination-fieldset .availability-summary { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; color: #15584f; background: var(--teal-soft); border: 1px solid #9bd8ce; border-radius: .7rem; padding: .8rem .9rem; }
+.availability-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); flex: none; }
 .destination-list { display: grid; gap: .7rem; }
 .destination-option { display: grid; grid-template-columns: auto 24px 1fr; align-items: center; border: 1px solid #b9c4d7; border-radius: .75rem; padding: .9rem; cursor: pointer; }
 .destination-option:has(input:checked) { border-color: var(--blue); background: #f5f8ff; box-shadow: 0 0 0 2px rgba(33,85,165,.12); }
-.destination-option.invalid { cursor: not-allowed; background: #fafafa; }
+.destination-option.available { border-color: #83cabe; background: var(--teal-soft); }
+.destination-option.available:hover { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(20,132,119,.12); }
+.destination-option.invalid { cursor: not-allowed; background: var(--red-soft); border-color: #edc8ca; }
+.destination-option.current { cursor: not-allowed; background: #f4f6fa; }
 .destination-option input { position: absolute; opacity: 0; pointer-events: none; }
 .radio-visual { width: 18px; height: 18px; border: 2px solid #9eabc0; border-radius: 50%; margin-right: .2rem; }
 .destination-option:has(input:checked) .radio-visual { border: 5px solid var(--blue); }

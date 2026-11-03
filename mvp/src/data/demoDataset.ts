@@ -1,6 +1,6 @@
 import type { Course, Day, Room } from '../domain/types'
 
-export const DATASET_VERSION = 'roomeet-diit-primer-anio-2026-10-v3'
+export const DATASET_VERSION = 'roomeet-diit-primer-anio-2026-10-v4'
 
 export interface Career {
   id: string
@@ -23,6 +23,8 @@ export const rooms: Room[] = [
   { id: 'room-2', name: 'Aula 2', capacity: 60, mapPosition: { xPercent: 56, yPercent: 45 } },
   { id: 'room-3', name: 'Aula 3', capacity: 50, mapPosition: { xPercent: 70, yPercent: 71 } },
   { id: 'room-4', name: 'Aula 4', capacity: 45, mapPosition: { xPercent: 31, yPercent: 40 } },
+  { id: 'room-5', name: 'Aula 5', capacity: 55, mapPosition: { xPercent: 79, yPercent: 34 } },
+  { id: 'room-6', name: 'Aula 6', capacity: 35, mapPosition: { xPercent: 51, yPercent: 81 } },
 ]
 
 type SubjectSeed = readonly [code: string, title: string, weeklyHours: number]
@@ -121,7 +123,7 @@ function makeCourse(careerId: string, seed: SubjectSeed, index: number): Course 
 
 function buildCourses(): Course[] {
   const source = plans.flatMap((plan) => [...plan.first, ...plan.second].map((seed, index) => makeCourse(plan.careerId, seed, index)))
-  const laneCapacities = [40, 45, 50, 60]
+  const laneCapacities = [35, 40, 45, 50, 55, 60]
   const occupied = laneCapacities.map(() => Array<boolean>(20).fill(false))
   const scheduled = new Map<string, Course>()
 

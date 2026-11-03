@@ -21,8 +21,14 @@ export function generateAssignments(rooms: Room[], courses: Course[]): Allocatio
     if (partial.length + (sortedCourses.length - index) <= best.length && best.length === sortedCourses.length) return false
 
     const course = sortedCourses[index]
-    for (const room of sortedRooms) {
-      if (!canAssign(course, room, partial)) continue
+    const assignmentCount = new Map<string, number>()
+    for (const assignment of partial) assignmentCount.set(assignment.roomId, (assignmentCount.get(assignment.roomId) ?? 0) + 1)
+    const candidates = sortedRooms
+      .filter((room) => canAssign(course, room, partial))
+      .sort((a, b) => (assignmentCount.get(a.id) ?? 0) - (assignmentCount.get(b.id) ?? 0)
+        || (a.capacity - course.estimatedSeats) - (b.capacity - course.estimatedSeats)
+        || a.id.localeCompare(b.id))
+    for (const room of candidates) {
       partial.push({ courseId: course.id, roomId: room.id })
       if (search(index + 1, partial)) return true
       partial.pop()

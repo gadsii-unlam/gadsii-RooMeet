@@ -117,6 +117,8 @@
     const room = rooms.find(item => item.id === course.roomId);
     $('change-context').innerHTML = `<h3>${escape(course.subject)}</h3><p>${escape(career(course))} · Código ${escape(course.curriculumCode)}</p><p>${days[course.day]} ${range(course)}</p><p>Cupo ${course.estimatedSeats} · Aula actual: <strong>${room.name}</strong></p>`;
     $('aula').innerHTML = '<option value="">Seleccionar</option>' + rooms.filter(item => item.id !== course.roomId).map(item => `<option value="${item.id}">${item.name} · capacidad ${item.capacity}</option>`).join('');
+    const available = rooms.filter(item => validateDestination(item.id).valid);
+    $('available-rooms').innerHTML = `<strong>${available.length} ${available.length === 1 ? 'aula disponible' : 'aulas disponibles'}:</strong> ${available.length ? available.map(item => escape(item.name)).join(', ') : 'ninguna'}. Se remarcan en verde antes de elegir.`;
     $('control').textContent = 'Seleccioná un aula para comprobar capacidad y horario.';
     $('confirmar').disabled = true;
   }

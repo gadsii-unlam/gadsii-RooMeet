@@ -74,7 +74,7 @@ La exportación de evidencia y el registro de modificaciones son apoyos mínimos
 | H3 | Permitir deshacer o restaurar la asignación anterior e identificar qué cambio se revierte. | Acción «Deshacer cambio de [curso]» en el resumen de la última modificación. Restaurar el aula anterior tras revalidar el estado actual. Actualizar todas las vistas y mostrar confirmación. Basta deshacer la última modificación; no construir un sistema completo de versiones o de rehacer. |
 | H4 | La edición debe corresponder al curso/aula elegidos y validarse antes de confirmar. | Pasar `courseId` y el aula de origen del registro seleccionado; mostrar materia, curso, día, inicio, fin, cupo, aula actual y aula destino. Revalidar contra el estado vigente al confirmar. Editar un curso debe modificar solo ese curso. |
 
-**H9 se posterga:** cuando un aula no está disponible, explicar el conflicto y bloquear la confirmación. No buscar, sugerir, seleccionar ni recomendar automáticamente otra aula. El listado de opciones con sus estados y la elección manual del usuario ya forman parte del wireframe y se conservan.
+**H9 se mantiene postergada en su parte automática:** cuando un aula no está disponible, explicar el conflicto y bloquear la confirmación. RooMeet no selecciona ni recomienda una alternativa. Por un cambio posterior del MVP, la pantalla sí valida todas las aulas y remarca en verde las compatibles con el horario y el cupo; la elección continúa siendo manual.
 
 ## 5. Diseño que se debe respetar
 
@@ -112,7 +112,7 @@ Conservar la alternativa C, «Revisión segura», y sus cuatro pasos. Se puede m
 
 - Acceder solo mediante un curso identificado. Mostrar sus datos completos y el aula de origen antes de elegir destino.
 - Listar las aulas de la prueba con capacidad y estado para el horario fijo del curso. Mostrar causas junto a las opciones inválidas; no ocultar información necesaria para entender el rechazo.
-- Comenzar sin destino seleccionado. No seleccionar automáticamente una alternativa disponible.
+- Comenzar sin destino seleccionado. Mostrar y remarcar en verde las aulas libres que cumplen horario y capacidad, sin seleccionar automáticamente una alternativa.
 - La acción cambia únicamente el aula: conserva curso, cupo, día, inicio y fin. No ofrece mover horarios para resolver un conflicto.
 - Mostrar el resumen origen → destino y los controles antes de «Confirmar cambio local».
 - Botón deshabilitado cuando falta destino, es el aula actual, falta capacidad, hay solapamiento o el contexto quedó desactualizado.
@@ -176,7 +176,7 @@ Los documentos no aportan una fórmula estadística validada para estimar cupos.
 
 ### Dataset público inicial
 
-El dataset vigente está en `src/data/demoDataset.ts` y sus fuentes y criterios en [docs/dataset-diit.md](docs/dataset-diit.md). Reemplaza por completo el fixture anterior de cursos A–J: contiene **65 materias de primer año** de las seis carreras de grado del DIIT. Todas integran una única propuesta de asignación para el cuatrimestre vigente, independientemente de su ubicación en el plan. El fixture usa cuatro aulas ilustrativas con capacidades 40, 60, 50 y 45 para cubrir las 286 horas semanales y conservar alternativas de modificación. Antes de generar no hay asignaciones.
+El dataset vigente está en `src/data/demoDataset.ts` y sus fuentes y criterios en [docs/dataset-diit.md](docs/dataset-diit.md). Reemplaza por completo el fixture anterior de cursos A–J: contiene **65 materias de primer año** de las seis carreras de grado del DIIT. Todas integran una única propuesta de asignación para el cuatrimestre vigente, independientemente de su ubicación en el plan. El fixture usa seis aulas ilustrativas con capacidades 40, 60, 50, 45, 55 y 35 para cubrir las 286 horas semanales y ofrecer alternativas de modificación. El motor considera y distribuye cursos entre todas ellas. Antes de generar no hay asignaciones.
 
 Los nombres, códigos y cargas semanales se tomaron de los planes oficiales enlazados en la documentación del dataset. Una materia presente en más de un plan conserva un curso y código por carrera; eso no afirma que la UNLaM comparta físicamente las comisiones. Horarios, cupos e historial de inscriptos son simulados.
 
@@ -483,7 +483,7 @@ Evitar cambios simultáneos sin coordinación en `App.tsx`, tipos, reducer y `pa
 - [ ] Revisa capacidad, intervalos completos y solapamientos con reglas compartidas.
 - [ ] Conserva la propuesta original y registra modificaciones para medir aceptación implícita sin agregar aprobación por fila.
 - [ ] Cumple H1, H2, H3 y H4 con sus regresiones probadas.
-- [ ] Mantiene H9 y el resto de los módulos excluidos fuera del MVP.
+- [ ] Mantiene fuera del MVP la recomendación o selección automática de H9 y el resto de los módulos excluidos; solo informa y remarca las aulas compatibles para que el usuario elija.
 - [ ] Restaura la sesión local o explica una recuperación fallida; exporta evidencia reproducible.
 - [ ] No presenta datos ficticios, ubicaciones o resultados técnicos como evidencia de validación institucional.
 - [ ] Pasa lint, tipos, tests de dominio, recorridos E2E y revisión visual de las cuatro pantallas.
@@ -493,4 +493,4 @@ Evitar cambios simultáneos sin coordinación en `App.tsx`, tipos, reducer y `pa
 
 ## 14. Prompt de arranque para implementación
 
-> Implementá el MVP de RooMeet siguiendo `MVP-AGENTES.md`. Leé primero las fuentes de producto y el wireframe indicados en la sección 1. Conservá sus cuatro pantallas y la alternativa C. Construí la generación real de asignaciones, revisión, monitoreo y cambio local sobre el dataset de primer año del DIIT descrito en `docs/dataset-diit.md`. Incorporá H1-H4 de las páginas 9 y 10 del PDF recibido; mantené H9 postergada. Seguí las decisiones técnicas y contratos de esta guía, preservá la documentación existente y no agregues módulos del producto completo. Entregá una app funcional, comprobada con los criterios de aceptación, con README y configuración listos para Vercel. Separá la verificación técnica de cualquier afirmación de validación con usuarios reales.
+> Implementá el MVP de RooMeet siguiendo `MVP-AGENTES.md`. Leé primero las fuentes de producto y el wireframe indicados en la sección 1. Conservá sus cuatro pantallas y la alternativa C. Construí la generación real de asignaciones, revisión, monitoreo y cambio local sobre el dataset de primer año del DIIT descrito en `docs/dataset-diit.md`. Incorporá H1-H4 de las páginas 9 y 10 del PDF recibido; mantené postergada la recomendación o selección automática de H9, aunque se deben informar y remarcar las aulas compatibles. Seguí las decisiones técnicas y contratos de esta guía, preservá la documentación existente y no agregues módulos del producto completo. Entregá una app funcional, comprobada con los criterios de aceptación, con README y configuración listos para Vercel. Separá la verificación técnica de cualquier afirmación de validación con usuarios reales.
