@@ -24,3 +24,23 @@ Thumbs.db
 
 # Logs
 *.log
+
+
+# Dependencias y builds
+mvp/node_modules/
+mvp/dist/
+mvp/coverage/
+mvp/playwright-report/
+mvp/test-results/
+
+# Entorno local
+mvp/.env
+mvp/.env.local
+mvp/*.log
+mvp/npm-debug.log*
+
+# Editores y sistema operativo
+mvp/.vscode/
+mvp/.idea/
+mvp/.DS_Store
+mvp/Thumbs.db
