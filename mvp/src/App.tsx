@@ -7,6 +7,7 @@ import { defaultMonitorFilters } from './domain/monitoring'
 import type { Screen, SessionState } from './domain/types'
 import { validateAssignments, validateChange } from './domain/validation'
 import { ChangeScreen } from './screens/ChangeScreen'
+import { CompletionScreen } from './screens/CompletionScreen'
 import { DataScreen } from './screens/DataScreen'
 import { MonitoringScreen } from './screens/MonitoringScreen'
 import { ProposalScreen } from './screens/ProposalScreen'
@@ -190,7 +191,7 @@ export default function App() {
   }
 
   const newSession = () => {
-    const confirmed = state.phase === 'not-started' || window.confirm('Se eliminará la sesión local actual. Si necesitás conservarla, cancelá y exportala primero. ¿Iniciar una prueba nueva?')
+    const confirmed = state.phase !== 'running' || window.confirm('Se eliminará la sesión local actual. Si necesitás conservarla, cancelá y exportala primero. ¿Iniciar una prueba nueva?')
     if (!confirmed) return
     clearSession()
     dispatch({ type: 'NEW_SESSION' })
@@ -209,12 +210,14 @@ export default function App() {
   return (
     <div className="app">
       <a className="skip-link" href="#main-content">Saltar al contenido</a>
-      <header className="app-header"><button className="brand" onClick={() => navigate('datos')} aria-label="Ir a los datos de RooMeet"><span className="brand-mark">R</span><span><strong>RooMeet</strong><small>Revisión segura de aulas</small></span></button><StepNavigation screen={activeScreen} phase={state.phase} onNavigate={navigate} /></header>
+      <header className="app-header">{state.phase === 'finished' ? <div className="brand"><span className="brand-mark">R</span><span><strong>RooMeet</strong><small>Revisión segura de aulas</small></span></div> : <><button className="brand" onClick={() => navigate('datos')} aria-label="Ir a los datos de RooMeet"><span className="brand-mark">R</span><span><strong>RooMeet</strong><small>Revisión segura de aulas</small></span></button><StepNavigation screen={activeScreen} phase={state.phase} onNavigate={navigate} /></>}</header>
       {(state.storageWarning || state.errorMessage) && <div className={`global-message ${state.errorMessage ? 'error' : 'warning'}`} role="alert"><span>{state.errorMessage ?? state.storageWarning}</span><button aria-label="Cerrar mensaje" onClick={() => dispatch({ type: 'CLEAR_STATUS' })}>×</button></div>}
-      {activeScreen === 'datos' && <DataScreen rooms={rooms} courses={courses} phase={state.phase} onGenerate={generate} onContinue={() => navigate('propuesta')} />}
-      {activeScreen === 'propuesta' && <ProposalScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} unassigned={state.unassigned} onContinue={() => navigate('monitoreo')} />}
-      {activeScreen === 'monitoreo' && <MonitoringScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} phase={state.phase} selectedRoomId={selectedRoomId} filters={monitorFilters} lastChange={state.lastChange} statusMessage={state.statusMessage} metrics={metrics} canFinish={canFinish} onSelectRoom={setSelectedRoomId} onFiltersChange={setMonitorFilters} onResetFilters={() => setMonitorFilters(defaultMonitorFilters)} onEdit={openEdit} onUndo={undo} onFinish={finish} onExport={exportSession} onNew={newSession} />}
-      {activeScreen === 'cambio' && state.editContext && <ChangeScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} context={state.editContext} destinationId={destinationId} getValidation={getDestinationValidation} onDestination={setDestinationId} onConfirm={confirmChange} onCancel={cancelEdit} />}
+      {state.phase === 'finished'
+        ? <CompletionScreen courseCount={courses.length} roomCount={rooms.length} onRestart={newSession} />
+        : <>{activeScreen === 'datos' && <DataScreen rooms={rooms} courses={courses} phase={state.phase} onGenerate={generate} onContinue={() => navigate('propuesta')} />}
+          {activeScreen === 'propuesta' && <ProposalScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} unassigned={state.unassigned} onContinue={() => navigate('monitoreo')} />}
+          {activeScreen === 'monitoreo' && <MonitoringScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} phase={state.phase} selectedRoomId={selectedRoomId} filters={monitorFilters} lastChange={state.lastChange} statusMessage={state.statusMessage} metrics={metrics} canFinish={canFinish} onSelectRoom={setSelectedRoomId} onFiltersChange={setMonitorFilters} onResetFilters={() => setMonitorFilters(defaultMonitorFilters)} onEdit={openEdit} onUndo={undo} onFinish={finish} onExport={exportSession} onNew={newSession} />}
+          {activeScreen === 'cambio' && state.editContext && <ChangeScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} context={state.editContext} destinationId={destinationId} getValidation={getDestinationValidation} onDestination={setDestinationId} onConfirm={confirmChange} onCancel={cancelEdit} />}</>}
       <footer><span>RooMeet MVP · Planes DIIT, cursadas simuladas</span><span>Sin conexión con SIU Guaraní</span></footer>
     </div>
   )

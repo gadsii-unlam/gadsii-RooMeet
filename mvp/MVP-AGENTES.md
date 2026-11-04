@@ -2,7 +2,7 @@
 
 Fecha: 25 de octubre de 2026. Base documental del repositorio: `bd90aa3`.
 
-Este documento es el punto de entrada para los agentes que implementen RooMeet. Define el alcance mínimo, el comportamiento esperado, las correcciones aceptadas, los contratos de datos, las pruebas y la preparación para Vercel. El resultado esperado es una aplicación funcional para un piloto con personal administrativo, respetando las cuatro pantallas del wireframe.
+Este documento es el punto de entrada para los agentes que implementen RooMeet. Define el alcance mínimo, el comportamiento esperado, las correcciones aceptadas, los contratos de datos, las pruebas y la preparación para Vercel. El resultado esperado es una aplicación funcional para un piloto con personal administrativo, respetando las cuatro pantallas operativas del wireframe y una pantalla terminal de confirmación simulada.
 
 Los requisitos del producto provienen de las fuentes indicadas abajo. Las elecciones de stack, algoritmo, dataset ampliado, almacenamiento y medición se identifican como decisiones de implementación de esta guía: no son hallazgos de entrevistas ni reglas oficiales de la UNLaM.
 
@@ -119,9 +119,15 @@ Conservar la alternativa C, «Revisión segura», y sus cuatro pasos. Se puede m
 - Repetir la validación en el momento de aplicar. Un botón deshabilitado no sustituye la validación de dominio.
 - «Cancelar» vuelve al monitoreo sin mutaciones ni registro de un cambio efectivo.
 
+### Pantalla terminal Finalización
+
+- Al finalizar una revisión válida, reemplazar el monitoreo por una confirmación de guardado y envío al SIU Guaraní.
+- El guardado y el envío son exclusivamente un mock del resultado esperado: indicarlo de forma visible y aclarar que no hubo conexión ni modificación institucional real.
+- Ofrecer una única acción principal «Reiniciar prueba», que elimina la sesión local finalizada y vuelve a Datos sin confirmación adicional.
+
 ### Mapa y estilo
 
-El HTML del wireframe en `../docs/` contiene el plano como PNG embebido en un `data:` URI. Durante la implementación, extraer ese mismo recurso a `public/mapa-campus.png` y reutilizarlo; no es necesario un proveedor de mapas. Conservar las posiciones ilustrativas actuales: Aula 1 `(42 %, 62 %)`, Aula 2 `(56 %, 45 %)`, Aula 3 `(70 %, 71 %)`. Mantener la aclaración «Ubicaciones ilustrativas, no verificadas». El mapa es referencia visual y no acredita ubicaciones oficiales.
+El HTML del wireframe en `../docs/` contiene el plano como PNG embebido en un `data:` URI. Durante la implementación, extraer ese mismo recurso a `public/mapa-campus.png` y reutilizarlo; no es necesario un proveedor de mapas. Conservar las posiciones ilustrativas actuales: Aula 1 `(42 %, 62 %)`, Aula 2 `(56 %, 45 %)`, Aula 3 `(70 %, 71 %)`, Aula 4 `(31 %, 40 %)`, Aula 5 `(79 %, 34 %)` y Aula 6 `(51 %, 81 %)`. Mantener la aclaración «Ubicaciones ilustrativas, no verificadas». El mapa es referencia visual y no acredita ubicaciones oficiales.
 
 Usar coordenadas relativas para que los marcadores acompañen la imagen. Marcadores como botones con nombre accesible; estado indicado por texto/símbolo además del color. Mantener el estilo sobrio del wireframe: fondo claro, tablas legibles, controles visibles y una sola acción principal por paso. No trasladar las anotaciones académicas del wireframe al producto; sí conservar las aclaraciones de simulación relevantes para el usuario.
 

@@ -185,6 +185,13 @@ td small { display: block; margin-top: 0.18rem; }
 .metrics-panel span { font-size: .72rem; color: #b8c9e7; }
 .metrics-panel strong { font-family: 'Manrope'; }
 .finished-badge { color: #09695e; background: var(--teal-soft); border-radius: .6rem; padding: .7rem 1rem; font-weight: 700; }
+.completion-page { display: grid; place-items: center; min-height: calc(100vh - 154px); }
+.completion-card { width: min(100%, 720px); padding: clamp(2rem, 6vw, 4.5rem); text-align: center; }
+.completion-card h1 { margin: .65rem 0 1rem; font-size: clamp(2rem, 5vw, 3.2rem); }
+.completion-icon { display: grid; place-items: center; width: 4.5rem; height: 4.5rem; margin: 0 auto 1.5rem; border-radius: 50%; color: #fff; background: var(--teal); font-size: 2.4rem; font-weight: 800; box-shadow: 0 12px 30px rgba(20,132,119,.24); }
+.completion-lead { max-width: 580px; margin: 0 auto; color: var(--muted); font-size: 1.15rem; line-height: 1.65; }
+.mock-notice { margin: 2rem 0; padding: 1.2rem 1.4rem; border: 1px solid #e4bf6c; border-radius: .8rem; background: #fff8e8; color: #6f4d00; text-align: left; }
+.mock-notice p { margin: .35rem 0 0; line-height: 1.55; }
 .finish-hint { color: var(--muted); font-size: .8rem; text-align: right; }
 
 .edit-context { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.2rem; border-top: 4px solid var(--blue); }

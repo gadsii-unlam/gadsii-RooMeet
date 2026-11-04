@@ -11,6 +11,7 @@ El dataset incluye el primer año de las seis carreras de grado del DIIT de la U
 - Validación independiente de capacidad, duplicados y superposición horaria.
 - Revisión de la propuesta y modificación opcional de las asignaciones.
 - Consulta de ocupación mediante mapa ilustrativo y listado accesible.
+- Pantalla final que simula el guardado y el envío al SIU Guaraní, identificada expresamente como mock y con opción para reiniciar la prueba.
 - Cambio de aula asociado al curso seleccionado, con aviso previo y resaltado en verde de las aulas libres que cumplen horario y capacidad.
 - Confirmación visible del cambio y posibilidad de deshacer la última modificación.
 - Persistencia local de una sesión y exportación JSON de evidencia.
