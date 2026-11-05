@@ -44,6 +44,7 @@ export function DataScreen({ rooms, courses, phase, onGenerate, onContinue }: { 
       </div>
 
       <section className="callout info"><strong>Qué se va a comprobar</strong><p>El motor buscará una asignación sin superposiciones y con capacidad suficiente. Después podrás revisar y corregir las asignaciones que lo necesiten.</p></section>
+      <p className="source-note">Al generar la propuesta comienza una prueba anónima: registramos el tiempo hasta finalizar, la cantidad de cambios de aula y, si querés, tu valoración. No se solicitan datos personales.</p>
 
       <div className="page-actions">
         {phase === 'not-started'

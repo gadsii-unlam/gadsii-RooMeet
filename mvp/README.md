@@ -58,9 +58,11 @@ npm run test:e2e
 2. Usar la raíz del repositorio como *Root Directory* del proyecto.
 3. Seleccionar el preset **Vite** y Node.js **22.x**.
 4. Vercel tomará de `vercel.json` la instalación `npm ci`, el build `npm run build` y la salida `dist`.
-5. No configurar variables de entorno.
+5. Para recopilar pruebas, conectar Neon Postgres y configurar `DATABASE_URL` y `METRICS_ADMIN_KEY` en las variables de entorno del proyecto.
 
-El almacenamiento es `localStorage`: cada navegador y dispositivo mantiene su propia prueba. No hay sincronización multiusuario ni almacenamiento institucional. Cuando cambia la versión del dataset de demostración, una sesión anterior se descarta automáticamente para evitar mezclar aulas o asignaciones incompatibles.
+La asignación continúa en `localStorage` para permitir recargar la página. Los datos anónimos de evaluación se envían además a Neon. Antes de desplegar, ejecutar [evaluation-schema.sql](docs/evaluation-schema.sql) en la consola SQL de la base. `DATABASE_URL` debe ser la conexión de Neon; `METRICS_ADMIN_KEY` debe ser una clave larga y aleatoria, distinta de las credenciales de la base. Configurar ambas para Production y Preview según el entorno que se quiera medir. No ponerlas en variables `VITE_`, porque esas se exponen al navegador. Volver a desplegar después de guardar las variables.
+
+La consulta está en `/resumen-estadisticas` y no aparece enlazada en el MVP. Muestra pruebas iniciadas/completadas, tiempo mediano, valoración media y detalle exportable a CSV. En Vercel pide la clave, que se mantiene solo en memoria de esa página; conocer la ruta no reemplaza esta protección. Las sesiones iniciadas sin finalizar figuran como incompletas, lo que puede incluir pestañas que todavía están abiertas. Con `npm run dev`, las métricas se guardan únicamente en el `localStorage` del navegador y la consulta local no pide clave; esto permite ensayar el flujo sin base de datos. El modo local no reúne pruebas de otras personas. Cuando cambia la versión del dataset de demostración, una sesión anterior se descarta automáticamente para evitar mezclar aulas o asignaciones incompatibles.
 
 ## Protocolo de prueba
 
