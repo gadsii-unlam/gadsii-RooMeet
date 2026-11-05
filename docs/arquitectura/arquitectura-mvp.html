@@ -1,0 +1,492 @@
+<title>Arquitectura RooMeet MVP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: una columna de lectura; el diagrama ocupa todo el ancho y se desplaza solo él en pantallas chicas. */
+:root {
+  --bg: #f5f6f8; --surface: #ffffff; --fg: #1b2330; --muted: #5a6474; --line: #cdd3dc; --band: #eaedf2;
+  --built: #1d6d68; --built-fill: #e2f1ef;
+  --sim: #a96200; --sim-fill: #fbefd9;
+  --absent: #8a93a3;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11151b; --surface: #171c24; --fg: #e3e8ef; --muted: #9aa4b4; --line: #343d4a; --band: #1a2029;
+  --built: #5cc2b6; --built-fill: #14302d; --sim: #e8a446; --sim-fill: #33270f; --absent: #6c7686; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #11151b; --surface: #171c24; --fg: #e3e8ef; --muted: #9aa4b4; --line: #343d4a; --band: #1a2029;
+  --built: #5cc2b6; --built-fill: #14302d; --sim: #e8a446; --sim-fill: #33270f; --absent: #6c7686; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font: 15px/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; }
+main { max-width: 1240px; margin: 0 auto; display: grid; gap: 40px; }
+.prose { max-width: 72ch; }
+h1, h2 { font-family: var(--font-display); text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: 2rem; font-weight: 700; }
+h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
+p { margin: 0 0 10px; }
+.eyebrow { font: 600 12px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+code { font: 0.88em var(--font-mono); background: var(--band); padding: 1px 5px; border-radius: 4px; }
+header.page { display: grid; gap: 12px; }
+.lede { color: var(--muted); max-width: 72ch; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 26px; height: 14px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.sw.built { border-color: var(--built); background: var(--built-fill); }
+.sw.sim { border-color: var(--sim); background: var(--sim-fill); border-style: dashed; }
+.sw.absent { border-color: var(--absent); border-style: dotted; }
+.ln { width: 30px; height: 0; border-top: 1.5px solid var(--fg); display: inline-block; }
+.ln.dash { border-top: 1.5px dashed var(--sim); }
+
+figure { margin: 0; display: grid; gap: 12px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.scroll svg { display: block; width: 100%; min-width: 980px; height: auto; color: var(--fg); }
+figcaption { font-size: 13.5px; color: var(--muted); max-width: 90ch; }
+
+/* Clases del SVG */
+svg text { font-family: var(--font-body); font-size: 11.5px; fill: var(--fg); }
+svg .mono { font-family: var(--font-mono); font-weight: 600; font-size: 12px; }
+svg .small { font-size: 10.5px; fill: var(--muted); }
+svg .lbl { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .07em; fill: var(--muted); }
+svg .band { fill: var(--band); }
+svg .boundary { fill: none; stroke: var(--fg); stroke-width: 1.5; }
+svg .b-built { fill: var(--built-fill); stroke: var(--built); stroke-width: 1.5; }
+svg .b-sim { fill: var(--sim-fill); stroke: var(--sim); stroke-width: 1.5; stroke-dasharray: 6 3; }
+svg .b-absent { fill: none; stroke: var(--absent); stroke-width: 1.5; stroke-dasharray: 2 3; }
+svg .b-actor { fill: var(--surface); stroke: var(--fg); stroke-width: 1.2; }
+svg .t-absent { fill: var(--absent); }
+svg .t-sim { fill: var(--sim); font-weight: 600; }
+svg .t-built { fill: var(--built); font-weight: 600; }
+svg .edge { fill: none; stroke: var(--fg); stroke-width: 1.3; }
+svg .edge-sim { fill: none; stroke: var(--sim); stroke-width: 1.3; stroke-dasharray: 5 4; }
+svg .head { fill: var(--fg); }
+svg .head-sim { fill: var(--sim); }
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+th { font: 600 12px/1.3 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--band); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+.pill { display: inline-block; font: 600 11.5px/1 var(--font-mono); padding: 4px 7px; border-radius: 99px; white-space: nowrap; }
+.pill.built { color: var(--built); background: var(--built-fill); }
+.pill.sim { color: var(--sim); background: var(--sim-fill); }
+.pill.absent { color: var(--absent); border: 1px dotted var(--absent); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+.two > * { min-width: 0; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+</style>
+
+<main>
+<header class="page">
+  <div class="eyebrow">GADSII · UNLaM · TP — Arquitectura as-is</div>
+  <h1>Arquitectura del MVP de RooMeet, tal como está en el código</h1>
+  <p class="lede">Relevada leyendo <code>mvp/</code> en la rama <code>mvp</code> (commit <code>ec1d439</code>). Es una SPA de React + TypeScript que corre entera en el navegador: no hay backend, base de datos, API ni conexión con SIU Guaraní. La clasificación construido / simulado sigue la tabla 8.2 del brief (TP3).</p>
+</header>
+
+<section>
+  <div class="legend" aria-label="Referencias">
+    <span><i class="sw built"></i>Construido</span>
+    <span><i class="sw sim"></i>Simulado o hardcodeado (según TP3)</span>
+    <span><i class="sw absent"></i>No existe en el código</span>
+    <span><i class="ln"></i>Dependencia: la flecha va de quien llama/importa hacia quien es usado</span>
+    <span><i class="ln dash"></i>Relación simulada</span>
+  </div>
+</section>
+
+<figure>
+<h2>Vista general del MVP</h2>
+<div class="scroll">
+<svg viewBox="0 0 1240 600" role="img" aria-label="Vista general del MVP: el código se construye y se publica como archivos estáticos en Vercel; el navegador del administrativo ejecuta la interfaz, la sesión, el motor, el validador y las métricas sobre un dataset simulado, y guarda la sesión en localStorage. Guaraní, base de datos, autenticación y notificaciones no existen.">
+  <text class="lbl" x="20" y="214">DESARROLLO</text>
+  <rect class="b-built" x="20" y="230" width="180" height="80" rx="6"/>
+  <text class="mono" x="32" y="254">Repositorio GitHub</text>
+  <text x="32" y="274">carpeta mvp/</text>
+  <text x="32" y="292">React + TypeScript + Vite</text>
+  <path class="edge" d="M200,270 H248" marker-end="url(#ah)"/>
+  <text class="small" x="224" y="262" text-anchor="middle">build</text>
+
+  <text class="lbl" x="250" y="214">HOSTING</text>
+  <rect class="b-built" x="250" y="230" width="180" height="80" rx="6"/>
+  <text class="mono" x="262" y="254">Vercel</text>
+  <text x="262" y="274">archivos estáticos (dist/)</text>
+  <text x="262" y="292">sin servidor de aplicación</text>
+  <path class="edge" d="M430,270 H478" marker-end="url(#ah)"/>
+  <text class="small" x="454" y="262" text-anchor="middle">HTTPS</text>
+  <text class="small" x="340" y="330" text-anchor="middle">solo entrega la app una vez;</text>
+  <text class="small" x="340" y="344" text-anchor="middle">no recibe datos de vuelta</text>
+
+  <rect class="b-actor" x="620" y="12" width="200" height="38" rx="19"/>
+  <text x="720" y="35" text-anchor="middle">Personal administrativo</text>
+  <path class="edge" d="M720,50 V108" marker-end="url(#ah)"/>
+
+  <rect class="boundary" x="480" y="70" width="480" height="514" rx="10"/>
+  <text class="lbl" x="494" y="90">NAVEGADOR · TODO CORRE ACÁ</text>
+
+  <rect class="b-built" x="500" y="110" width="440" height="66" rx="6"/>
+  <text class="mono" x="514" y="134">Interfaz en 4 pasos</text>
+  <text x="514" y="156">Datos → Propuesta → Monitoreo y mapa → Cambio local</text>
+
+  <path class="edge" d="M580,176 V228" marker-end="url(#ah)"/>
+  <text class="small" x="586" y="206">acciones del usuario</text>
+  <path class="edge" d="M860,228 V178" marker-end="url(#ah)"/>
+  <text class="small" x="854" y="206" text-anchor="end">estado actualizado</text>
+
+  <rect class="b-built" x="500" y="230" width="440" height="70" rx="6"/>
+  <text class="mono" x="514" y="254">Sesión de prueba (App + reducer)</text>
+  <text x="514" y="274">propuesta original y vigente, cambios, deshacer, eventos</text>
+  <text x="514" y="290">única fuente de verdad, en memoria</text>
+
+  <path class="edge" d="M570,300 V358" marker-end="url(#ah)"/>
+  <text class="small" x="576" y="334">generar</text>
+  <path class="edge" d="M720,300 V358" marker-end="url(#ah)"/>
+  <text class="small" x="726" y="334">validar cambio</text>
+  <path class="edge" d="M870,300 V358" marker-end="url(#ah)"/>
+  <text class="small" x="876" y="334">medir</text>
+
+  <rect class="b-built" x="500" y="360" width="140" height="80" rx="6"/>
+  <text class="mono" x="512" y="384">Motor</text>
+  <text x="512" y="404">asignación con</text>
+  <text x="512" y="420">retroceso</text>
+  <rect class="b-built" x="650" y="360" width="140" height="80" rx="6"/>
+  <text class="mono" x="662" y="384">Validador</text>
+  <text x="662" y="404">capacidad, solapes,</text>
+  <text x="662" y="420">contexto vigente</text>
+  <rect class="b-built" x="800" y="360" width="140" height="80" rx="6"/>
+  <text class="mono" x="812" y="384">Métricas</text>
+  <text x="812" y="404">cobertura, % sin</text>
+  <text x="812" y="420">modificar, duración</text>
+  <path class="edge" d="M640,400 H648" marker-end="url(#ah)"/>
+
+  <path class="edge" d="M570,440 V488" marker-end="url(#ah)"/>
+  <text class="small" x="576" y="468">lee aulas y cursos</text>
+
+  <rect class="b-sim" x="500" y="490" width="250" height="72" rx="6"/>
+  <text class="mono" x="512" y="512">Dataset DIIT simulado</text>
+  <text x="512" y="532">65 cursos · 6 aulas · en el bundle</text>
+  <text x="512" y="550">horarios y cupos inventados</text>
+  <rect class="b-built" x="770" y="490" width="170" height="72" rx="6"/>
+  <text class="mono" x="782" y="512">localStorage</text>
+  <text x="782" y="532">copia JSON de la sesión</text>
+  <text x="782" y="550">por navegador</text>
+
+  <path class="edge" d="M940,265 H952 V526 H942" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <text class="small" x="946" y="470" text-anchor="end">guarda / restaura</text>
+
+  <path class="edge" d="M920,230 V206 H998" marker-end="url(#ah)"/>
+  <text class="small" x="966" y="200" text-anchor="middle">exportar</text>
+  <rect class="b-built" x="1000" y="176" width="220" height="64" rx="6"/>
+  <text class="mono" x="1012" y="198">JSON de evidencia</text>
+  <text x="1012" y="216">archivo descargado por</text>
+  <text x="1012" y="232">el usuario</text>
+
+  <text class="lbl" x="1000" y="288">NO EXISTE EN EL MVP</text>
+  <rect class="b-sim" x="1000" y="300" width="220" height="50" rx="6"/>
+  <text class="mono" x="1012" y="321">SIU Guaraní</text>
+  <text x="1012" y="339">simulado con el dataset</text>
+  <rect class="b-absent" x="1000" y="362" width="220" height="40" rx="6"/>
+  <text class="t-absent" x="1012" y="387">Base de datos y API</text>
+  <rect class="b-absent" x="1000" y="414" width="220" height="40" rx="6"/>
+  <text class="t-absent" x="1012" y="439">Autenticación y roles</text>
+  <rect class="b-absent" x="1000" y="466" width="220" height="40" rx="6"/>
+  <text class="t-absent" x="1012" y="491">Notificaciones, docentes, alumnos</text>
+  <path class="edge-sim" d="M1000,340 H980 V575 H625 V564" marker-end="url(#ahs)"/>
+  <text class="small" x="860" y="572" text-anchor="middle" style="fill:var(--sim)">reemplazado por</text>
+</svg>
+</div>
+<figcaption>La aplicación es un único cliente estático. Vercel solo entrega los archivos; después, generar, validar, cambiar, medir y guardar ocurren en el navegador de cada administrativo. Del producto final faltan Guaraní (simulado con el dataset), el servidor con base de datos, la autenticación y las notificaciones. El motor reutiliza el validador.</figcaption>
+</figure>
+
+<figure>
+<h2>Vista de código</h2>
+<div class="scroll">
+<svg viewBox="0 0 1240 970" role="img" aria-label="Diagrama de arquitectura del MVP de RooMeet: una SPA en el navegador con capas de presentación, estado, dominio y datos; App.tsx orquesta todo; la sesión se guarda en localStorage; el dataset está hardcodeado y SIU Guaraní no está conectado.">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ahs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head-sim" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+
+  <!-- Actor -->
+  <rect class="b-actor" x="360" y="14" width="200" height="40" rx="20"/>
+  <text x="460" y="38" text-anchor="middle">Personal administrativo</text>
+
+  <!-- Columna izquierda: build y despliegue -->
+  <text class="lbl" x="20" y="116">BUILD Y DESPLIEGUE</text>
+  <rect class="b-built" x="18" y="128" width="208" height="56" rx="6"/>
+  <text class="mono" x="30" y="150">Vite + tsc -b</text>
+  <text x="30" y="170">npm run build → dist/</text>
+  <path class="edge" d="M122,184 V208" marker-end="url(#ah)"/>
+  <text class="small" x="130" y="200">dist/</text>
+  <rect class="b-built" x="18" y="210" width="208" height="56" rx="6"/>
+  <text class="mono" x="30" y="232">Vercel (estático)</text>
+  <text x="30" y="252">sin funciones ni env vars</text>
+  <path class="edge" d="M226,238 H246" marker-end="url(#ah)"/>
+  <text class="small" x="228" y="230">sirve</text>
+
+  <rect class="b-built" x="18" y="298" width="208" height="52" rx="6"/>
+  <text class="mono" x="30" y="319">scripts/extract-map.mjs</text>
+  <text x="30" y="338">PNG embebido del wireframe</text>
+  <path class="edge" d="M122,350 V370" marker-end="url(#ah)"/>
+  <rect class="b-sim" x="18" y="372" width="208" height="56" rx="6"/>
+  <text class="mono" x="30" y="394">public/mapa-campus.png</text>
+  <text x="30" y="414">plano ilustrativo, no verificado</text>
+
+  <text class="lbl" x="20" y="600">PRUEBAS (FUERA DEL BUNDLE)</text>
+  <rect class="b-built" x="18" y="612" width="208" height="56" rx="6"/>
+  <text class="mono" x="30" y="634">Vitest + jsdom</text>
+  <text x="30" y="654">6 archivos: dominio y estado</text>
+  <path class="edge" d="M226,640 H266" marker-end="url(#ah)"/>
+  <rect class="b-built" x="18" y="700" width="208" height="56" rx="6"/>
+  <text class="mono" x="30" y="722">Playwright · Chromium</text>
+  <text x="30" y="742">e2e/main-flow.spec.ts</text>
+  <path class="edge" d="M226,728 H246" marker-end="url(#ah)"/>
+  <text class="small" x="30" y="772">recorre la UI construida</text>
+
+  <!-- Límite del navegador -->
+  <rect class="boundary" x="248" y="96" width="762" height="840" rx="10"/>
+  <text class="lbl" x="262" y="116">NAVEGADOR DEL USUARIO</text>
+
+  <!-- main.tsx -->
+  <rect class="b-built" x="560" y="104" width="150" height="30" rx="5"/>
+  <text class="mono" x="635" y="123" text-anchor="middle">main.tsx</text>
+  <path class="edge" d="M635,134 V162" marker-end="url(#ah)"/>
+  <text class="small" x="641" y="152">monta</text>
+  <path class="edge" d="M460,54 V162" marker-end="url(#ah)"/>
+  <text class="small" x="466" y="84">usa (#datos … #cambio)</text>
+
+  <!-- Banda: presentación -->
+  <rect class="band" x="258" y="140" width="742" height="272" rx="6"/>
+  <text class="lbl" x="268" y="155">PRESENTACIÓN Y ORQUESTACIÓN</text>
+  <rect class="b-built" x="270" y="164" width="550" height="62" rx="6"/>
+  <text class="mono" x="284" y="184">App.tsx — orquestador</text>
+  <text x="284" y="201">useReducer(SessionState) · useState: pantalla, aula, filtros, destino</text>
+  <text x="284" y="217">routing por hash · generar · cambiar · deshacer · finalizar · exportar</text>
+  <rect class="b-built" x="850" y="174" width="140" height="42" rx="6"/>
+  <text class="mono" x="920" y="200" text-anchor="middle">StepNavigation</text>
+  <path class="edge" d="M820,195 H848" marker-end="url(#ah)"/>
+
+  <!-- Export -->
+  <path class="edge" d="M790,164 V148 H1038" marker-end="url(#ah)"/>
+  <text class="small" x="830" y="143">exportSession(): Blob → descarga</text>
+
+  <!-- props bus -->
+  <path class="edge" d="M545,226 V246 M355,246 H895"/>
+  <path class="edge" d="M355,246 V262" marker-end="url(#ah)"/>
+  <path class="edge" d="M535,246 V262" marker-end="url(#ah)"/>
+  <path class="edge" d="M715,246 V262" marker-end="url(#ah)"/>
+  <path class="edge" d="M895,246 V262" marker-end="url(#ah)"/>
+  <text class="small" x="552" y="241">props ↓ · callbacks on* ↑</text>
+
+  <rect class="b-sim" x="270" y="264" width="170" height="56" rx="6"/>
+  <text class="mono" x="282" y="285">DataScreen</text>
+  <text x="282" y="304">1 · Datos de prueba</text>
+  <rect class="b-built" x="450" y="264" width="170" height="56" rx="6"/>
+  <text class="mono" x="462" y="285">ProposalScreen</text>
+  <text x="462" y="304">2 · Revisar propuesta</text>
+  <rect class="b-built" x="630" y="264" width="170" height="56" rx="6"/>
+  <text class="mono" x="642" y="285">MonitoringScreen</text>
+  <text x="642" y="304">3 · Monitoreo y filtros</text>
+  <rect class="b-built" x="810" y="264" width="170" height="56" rx="6"/>
+  <text class="mono" x="822" y="285">ChangeScreen</text>
+  <text x="822" y="304">4 · Cambio local</text>
+
+  <!-- helpers bus (pantallas → datos / monitoring) -->
+  <path class="edge" d="M355,320 V332 M535,320 V332 M715,320 V332 M895,320 V332 M355,332 H1003 V645"/>
+  <path class="edge" d="M1003,645 H992" marker-end="url(#ah)"/>
+  <text class="small" x="996" y="348" text-anchor="end">importan helpers</text>
+
+  <!-- componentes -->
+  <path class="edge" d="M656,320 V348" marker-end="url(#ah)"/>
+  <path class="edge" d="M772,320 V348" marker-end="url(#ah)"/>
+  <rect class="b-built" x="610" y="350" width="92" height="38" rx="6"/>
+  <text class="mono" x="656" y="373" text-anchor="middle">RoomMap</text>
+  <rect class="b-built" x="716" y="350" width="112" height="38" rx="6"/>
+  <text class="mono" x="772" y="373" text-anchor="middle">ChangeSummary</text>
+  <path class="edge" d="M640,388 V400 H228" marker-end="url(#ah)"/>
+  <text class="small" x="300" y="395">&lt;img src="/mapa-campus.png"&gt;</text>
+
+  <!-- canal izquierdo: App llama -->
+  <path class="edge" d="M270,212 H258 V812"/>
+  <path class="edge" d="M258,488 H338" marker-end="url(#ah)"/>
+  <text class="small" x="264" y="482">dispatch</text>
+  <path class="edge" d="M258,441 H780 V450" marker-end="url(#ah)"/>
+  <text class="small" x="600" y="437" text-anchor="middle">loadSession · saveSession · clearSession</text>
+
+  <!-- Banda: estado -->
+  <rect class="band" x="258" y="418" width="742" height="132" rx="6" fill-opacity="0"/>
+  <text class="lbl" x="268" y="432">ESTADO DE SESIÓN</text>
+  <rect class="b-built" x="340" y="452" width="260" height="80" rx="6"/>
+  <text class="mono" x="352" y="472">state/reducer.ts</text>
+  <text x="352" y="490">GENERATE · APPLY_CHANGE · UNDO_CHANGE</text>
+  <text x="352" y="506">REJECT_CHANGE · FINISH · NEW_SESSION</text>
+  <text class="t-built" x="352" y="523">SessionState en memoria = fuente de verdad</text>
+  <rect class="b-built" x="650" y="452" width="260" height="80" rx="6"/>
+  <text class="mono" x="662" y="472">state/storage.ts</text>
+  <text x="662" y="490">load: valida esquema, versión y asignaciones</text>
+  <text x="662" y="506">save: después de cada cambio de estado</text>
+  <text x="662" y="523">clear: «Nueva prueba»</text>
+
+  <!-- storage → validation y localStorage -->
+  <path class="edge" d="M690,532 V556 H520 V598" marker-end="url(#ah)"/>
+  <text class="small" x="605" y="552" text-anchor="middle">revalida sesión</text>
+  <path class="edge" d="M850,532 V748" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <text class="small" x="856" y="716">JSON</text>
+
+  <!-- Banda: dominio -->
+  <rect class="band" x="258" y="560" width="742" height="152" rx="6"/>
+  <text class="lbl" x="268" y="575">DOMINIO · FUNCIONES PURAS</text>
+  <path class="edge" d="M258,584 H630"/>
+  <path class="edge" d="M336,584 V598" marker-end="url(#ah)"/>
+  <path class="edge" d="M483,584 V598" marker-end="url(#ah)"/>
+  <path class="edge" d="M630,584 V598" marker-end="url(#ah)"/>
+  <text class="small" x="640" y="588">llama</text>
+
+  <rect class="b-built" x="270" y="600" width="132" height="92" rx="6"/>
+  <text class="mono" x="280" y="620">allocation.ts</text>
+  <text x="280" y="638" style="font-family:var(--font-mono);font-size:10px">generateAssignments</text>
+  <text x="280" y="656">búsqueda con</text>
+  <text x="280" y="672">retroceso, determinista</text>
+  <rect class="b-built" x="417" y="600" width="132" height="92" rx="6"/>
+  <text class="mono" x="427" y="620">validation.ts</text>
+  <text x="427" y="638" style="font-family:var(--font-mono);font-size:10px">coursesOverlap</text>
+  <text x="427" y="655" style="font-family:var(--font-mono);font-size:10px">validateAssignments</text>
+  <text x="427" y="672" style="font-family:var(--font-mono);font-size:10px">validateChange</text>
+  <rect class="b-built" x="564" y="600" width="132" height="92" rx="6"/>
+  <text class="mono" x="574" y="620">metrics.ts</text>
+  <text x="574" y="638" style="font-family:var(--font-mono);font-size:9.5px">calculatePilotMetrics</text>
+  <text x="574" y="656">cobertura, solapes,</text>
+  <text x="574" y="672">% sin modificar, tiempo</text>
+  <rect class="b-built" x="711" y="600" width="132" height="92" rx="6"/>
+  <text class="mono" x="721" y="620">types.ts</text>
+  <text x="721" y="638">Room, Course,</text>
+  <text x="721" y="655">Assignment, Session-</text>
+  <text x="721" y="672">State · usado por todos</text>
+  <rect class="b-built" x="858" y="600" width="132" height="92" rx="6"/>
+  <text class="mono" x="868" y="620">monitoring.ts</text>
+  <text x="868" y="638">filtros día / franja</text>
+  <text x="868" y="656">ocupación por franja</text>
+  <text x="868" y="672">búsqueda en agenda</text>
+  <path class="edge" d="M402,646 H415" marker-end="url(#ah)"/>
+  <path class="edge" d="M564,662 H551" marker-end="url(#ah)"/>
+
+  <!-- Banda: datos y persistencia -->
+  <rect class="band" x="258" y="722" width="742" height="204" rx="6"/>
+  <text class="lbl" x="268" y="737">DATOS Y PERSISTENCIA</text>
+  <path class="edge" d="M258,812 H296" marker-end="url(#ah)"/>
+  <text class="small" x="262" y="806">lee</text>
+  <rect class="b-sim" x="298" y="750" width="310" height="120" rx="6"/>
+  <text class="mono" x="310" y="770">data/demoDataset.ts</text>
+  <text x="310" y="788">constante TS compilada dentro del bundle</text>
+  <text x="310" y="806">6 carreras · 65 materias de 1.er año · 6 aulas</text>
+  <text class="t-built" x="310" y="826">Real: nombre, código y horas (planes DIIT)</text>
+  <text class="t-sim" x="310" y="844">Simulado: horario, cupo, historial,</text>
+  <text class="t-sim" x="310" y="860">aulas y posición en el mapa</text>
+
+  <rect class="b-built" x="636" y="750" width="226" height="120" rx="6"/>
+  <text class="mono" x="648" y="770">localStorage</text>
+  <text x="648" y="790" style="font-family:var(--font-mono);font-size:10.5px">roomeet:mvp:session:v6</text>
+  <text x="648" y="810">SessionState serializado</text>
+  <text x="648" y="828">por navegador y dispositivo</text>
+  <text x="648" y="846">sin sincronización</text>
+
+  <rect class="b-absent" x="878" y="750" width="112" height="120" rx="6"/>
+  <text class="t-absent" x="934" y="796" text-anchor="middle">Base de datos</text>
+  <text class="t-absent" x="934" y="814" text-anchor="middle">o API</text>
+  <text class="t-absent" x="934" y="836" text-anchor="middle">no existen</text>
+
+  <path class="edge" d="M1003,645 V900 H452 V872" marker-end="url(#ah)"/>
+  <text class="small" x="720" y="895" text-anchor="middle">getCareer · formatCourseSchedule · getCourse</text>
+
+  <!-- Columna derecha: externos -->
+  <text class="lbl" x="1040" y="110">FUERA DEL NAVEGADOR</text>
+  <rect class="b-built" x="1040" y="120" width="186" height="64" rx="6"/>
+  <text class="mono" x="1050" y="141" style="font-size:10.5px">roomeet-prueba-&lt;id&gt;.json</text>
+  <text x="1050" y="159">evidencia descargada:</text>
+  <text x="1050" y="175">propuesta, eventos, métricas</text>
+
+  <rect class="b-sim" x="1040" y="250" width="186" height="84" rx="6"/>
+  <text class="mono" x="1050" y="272">SIU Guaraní</text>
+  <text x="1050" y="291">sin conexión ni adaptador</text>
+  <text x="1050" y="308">reemplazado por el dataset</text>
+  <text x="1050" y="325">hardcodeado</text>
+  <path class="edge-sim" d="M980,292 H1038" marker-end="url(#ahs)"/>
+  <text class="small" x="1133" y="350" text-anchor="middle">el cambio no se envía:</text>
+  <text class="small" x="1133" y="364" text-anchor="middle">queda solo en la sesión local</text>
+  <path class="edge-sim" d="M1226,320 H1234 V952 H380 V872" marker-end="url(#ahs)"/>
+  <text class="small" x="760" y="947" text-anchor="middle" style="fill:var(--sim)">fuente simulada «con archivos» (TP3 8.1)</text>
+
+  <rect class="b-absent" x="1040" y="420" width="186" height="64" rx="6"/>
+  <text class="t-absent" x="1050" y="442">Autenticación, usuarios,</text>
+  <text class="t-absent" x="1050" y="459">notificaciones, docentes</text>
+  <text class="t-absent" x="1050" y="476">y alumnos: fuera del MVP</text>
+</svg>
+</div>
+<figcaption>Todo lo que se ejecuta vive en el navegador. <code>App.tsx</code> es el único punto que conecta capas: baja estado a las pantallas por props, recibe callbacks, despacha acciones al reducer, llama al dominio y guarda la sesión. Las flechas cortas dentro del dominio indican que <code>allocation.ts</code> y <code>metrics.ts</code> reutilizan <code>validation.ts</code>. Las pantallas importan helpers de <code>demoDataset.ts</code> y <code>monitoring.ts</code> en forma directa, sin pasar por App.</figcaption>
+</figure>
+
+<section>
+  <h2>Componentes y responsabilidades</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Componente</th><th>Capa</th><th>Responsabilidad</th><th>TP3</th></tr></thead>
+    <tbody>
+      <tr><td><code>App.tsx</code></td><td>Orquestación</td><td>Mantiene el <code>useReducer</code> de sesión y el estado efímero de UI; navega por hash con precondiciones; implementa generar, abrir/confirmar/cancelar cambio, deshacer (revalida antes de restaurar), finalizar, exportar y nueva prueba.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>DataScreen</code></td><td>Presentación</td><td>Muestra aulas, cursos, horarios, cupos e historial por carrera; dispara «Generar propuesta».</td><td><span class="pill sim">simulado: datos estáticos</span></td></tr>
+      <tr><td><code>ProposalScreen</code></td><td>Presentación</td><td>Tabla de la propuesta generada con aula, cupo/capacidad y cursos sin asignar.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>MonitoringScreen</code></td><td>Presentación</td><td>Filtros de día y franja, mapa, agenda del aula con búsqueda y paginado, listado accesible, resumen del último cambio, finalizar/exportar/nueva prueba.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>ChangeScreen</code></td><td>Presentación</td><td>Lista aulas destino con su validación para el curso elegido; resalta las compatibles; confirma o cancela.</td><td><span class="pill built">construido (local)</span></td></tr>
+      <tr><td><code>RoomMap</code>, <code>ChangeSummary</code>, <code>StepNavigation</code></td><td>Presentación</td><td>Marcadores del plano, resumen con «Deshacer», pasos 1–4 habilitados según la fase.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>state/reducer.ts</code></td><td>Estado</td><td>Transiciones atómicas de <code>SessionState</code>: revisión, asignaciones original y vigente, evidencia de modificación, último cambio y eventos.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>state/storage.ts</code></td><td>Estado</td><td>Lee, valida, guarda y borra la sesión en <code>localStorage</code>; descarta claves y versiones anteriores.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>domain/allocation.ts</code></td><td>Dominio</td><td>Motor de asignación: ordena por cupo, busca con retroceso, devuelve asignaciones y cursos sin asignar.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>domain/validation.ts</code></td><td>Dominio</td><td>Reglas compartidas: datos válidos, capacidad, duplicados, solapamiento semiabierto, contexto vigente del cambio.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>domain/metrics.ts</code></td><td>Dominio</td><td>Métricas del piloto: cobertura, solapes y excesos (original y final), % sin modificar, cambios, duración.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>domain/monitoring.ts</code></td><td>Dominio</td><td>Opciones de filtro fijas, intersección curso–franja, textos de ocupación, búsqueda normalizada.</td><td><span class="pill built">construido</span></td></tr>
+      <tr><td><code>data/demoDataset.ts</code></td><td>Datos</td><td>Carreras, 6 aulas, 65 cursos generados con horarios y cupos simulados; helpers de formato y búsqueda por ID.</td><td><span class="pill sim">hardcodeado</span></td></tr>
+      <tr><td>SIU Guaraní</td><td>Externo</td><td>No hay cliente, adaptador ni mock en el código; solo leyendas en la UI («Sin conexión con SIU Guaraní»).</td><td><span class="pill sim">simulado</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="two">
+  <div>
+    <h2>Dónde están los datos</h2>
+    <ul>
+      <li><strong>Dataset de entrada:</strong> constante TypeScript compilada en el JavaScript que sirve Vercel. Solo lectura; cambia únicamente con un nuevo deploy (<code>DATASET_VERSION</code>).</li>
+      <li><strong>Sesión en curso:</strong> <code>SessionState</code> en memoria de React. Es la única fuente de las asignaciones; filtros y selección son estado de UI aparte.</li>
+      <li><strong>Persistencia:</strong> copia JSON en <code>localStorage</code> bajo <code>roomeet:mvp:session:v6</code>, escrita después de cada cambio y validada al recargar. Si el navegador la bloquea, la app sigue en memoria y avisa.</li>
+      <li><strong>Evidencia:</strong> archivo JSON que descarga el usuario (dataset, propuesta original y final, eventos, métricas).</li>
+      <li><strong>Asset:</strong> <code>mapa-campus.png</code>, extraído del wireframe por un script y servido como archivo estático.</li>
+      <li>No hay base de datos, servidor ni almacenamiento compartido entre usuarios.</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Construido y simulado, según el TP3</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Elemento (brief 8.2)</th><th>En el código</th></tr></thead>
+      <tbody>
+        <tr><td>Dataset de prueba</td><td><span class="pill sim">a mano</span> <code>demoDataset.ts</code>; nombres reales, horarios y cupos simulados.</td></tr>
+        <tr><td>Visualización del dataset</td><td><span class="pill sim">simulado</span> <code>DataScreen</code> lee la constante; no hay carga ni ABM.</td></tr>
+        <tr><td>Aulas con filtros (monitoreo)</td><td><span class="pill built">construido</span> <code>MonitoringScreen</code>, <code>monitoring.ts</code>, <code>RoomMap</code>.</td></tr>
+        <tr><td>Modificación de aulas</td><td><span class="pill built">local</span> <code>ChangeScreen</code> + <code>validateChange</code> + reducer · <span class="pill sim">Guaraní simulado</span></td></tr>
+        <tr><td>Motor de asignación (8.1)</td><td><span class="pill built">construido</span> cálculo real, no una tabla precargada.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="prose">
+  <h2>Diferencias con la guía de implementación</h2>
+  <p>Este diagrama describe el código, no <code>MVP-AGENTES.md</code>. Las diferencias encontradas:</p>
+  <ul>
+    <li>La guía prevé <code>components/AssignmentTable.tsx</code>; no existe. La tabla está dentro de <code>ProposalScreen</code>.</li>
+    <li>La lógica de deshacer (revalidar y restaurar) vive en <code>App.tsx</code>, no en el dominio; el reducer aplica el resultado sin volver a validar.</li>
+    <li>Los filtros de monitoreo son día y cuatro franjas fijas en <code>monitoring.ts</code>, no intervalos derivados del dataset.</li>
+    <li>La clave de almacenamiento es <code>…:v6</code> (la guía dice <code>v5</code>) y <code>schemaVersion</code> sigue en 4.</li>
+    <li>Las pantallas importan el dataset directamente, por lo que la capa de presentación depende de la de datos además de recibir props de App.</li>
+  </ul>
+</section>
+</main>

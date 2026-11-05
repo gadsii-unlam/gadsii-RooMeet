@@ -1,0 +1,271 @@
+<title>Arquitectura RooMeet Visión</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: una columna de lectura; el diagrama ocupa todo el ancho y se desplaza solo él en pantallas chicas. */
+:root {
+  --bg: #f5f6f8; --surface: #ffffff; --fg: #1b2330; --muted: #5a6474; --line: #cdd3dc; --band: #eaedf2;
+  --built: #1d6d68; --built-fill: #e2f1ef;
+  --sim: #a96200; --sim-fill: #fbefd9;
+  --absent: #8a93a3;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11151b; --surface: #171c24; --fg: #e3e8ef; --muted: #9aa4b4; --line: #343d4a; --band: #1a2029;
+  --built: #5cc2b6; --built-fill: #14302d; --sim: #e8a446; --sim-fill: #33270f; --absent: #6c7686; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #11151b; --surface: #171c24; --fg: #e3e8ef; --muted: #9aa4b4; --line: #343d4a; --band: #1a2029;
+  --built: #5cc2b6; --built-fill: #14302d; --sim: #e8a446; --sim-fill: #33270f; --absent: #6c7686; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font: 15px/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; }
+main { max-width: 1240px; margin: 0 auto; display: grid; gap: 40px; }
+.prose { max-width: 72ch; }
+h1, h2 { font-family: var(--font-display); text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: 2rem; font-weight: 700; }
+h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
+p { margin: 0 0 10px; }
+.eyebrow { font: 600 12px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+code { font: 0.88em var(--font-mono); background: var(--band); padding: 1px 5px; border-radius: 4px; }
+header.page { display: grid; gap: 12px; }
+.lede { color: var(--muted); max-width: 72ch; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 26px; height: 14px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.sw.built { border-color: var(--built); background: var(--built-fill); }
+.sw.sim { border-color: var(--sim); background: var(--sim-fill); border-style: dashed; }
+.sw.absent { border-color: var(--absent); border-style: dotted; }
+.ln { width: 30px; height: 0; border-top: 1.5px solid var(--fg); display: inline-block; }
+.ln.dash { border-top: 1.5px dashed var(--sim); }
+
+figure { margin: 0; display: grid; gap: 12px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.scroll svg { display: block; width: 100%; min-width: 980px; height: auto; color: var(--fg); }
+figcaption { font-size: 13.5px; color: var(--muted); max-width: 90ch; }
+
+/* Clases del SVG */
+svg text { font-family: var(--font-body); font-size: 11.5px; fill: var(--fg); }
+svg .mono { font-family: var(--font-mono); font-weight: 600; font-size: 12px; }
+svg .small { font-size: 10.5px; fill: var(--muted); }
+svg .lbl { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .07em; fill: var(--muted); }
+svg .band { fill: var(--band); }
+svg .boundary { fill: none; stroke: var(--fg); stroke-width: 1.5; }
+svg .b-built { fill: var(--built-fill); stroke: var(--built); stroke-width: 1.5; }
+svg .b-sim { fill: var(--sim-fill); stroke: var(--sim); stroke-width: 1.5; stroke-dasharray: 6 3; }
+svg .b-absent { fill: none; stroke: var(--absent); stroke-width: 1.5; stroke-dasharray: 2 3; }
+svg .b-actor { fill: var(--surface); stroke: var(--fg); stroke-width: 1.2; }
+svg .t-absent { fill: var(--absent); }
+svg .t-sim { fill: var(--sim); font-weight: 600; }
+svg .t-built { fill: var(--built); font-weight: 600; }
+svg .edge { fill: none; stroke: var(--fg); stroke-width: 1.3; }
+svg .edge-sim { fill: none; stroke: var(--sim); stroke-width: 1.3; stroke-dasharray: 5 4; }
+svg .head { fill: var(--fg); }
+svg .head-sim { fill: var(--sim); }
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+th { font: 600 12px/1.3 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--band); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+.pill { display: inline-block; font: 600 11.5px/1 var(--font-mono); padding: 4px 7px; border-radius: 99px; white-space: nowrap; }
+.pill.built { color: var(--built); background: var(--built-fill); }
+.pill.sim { color: var(--sim); background: var(--sim-fill); }
+.pill.absent { color: var(--absent); border: 1px dotted var(--absent); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+.two > * { min-width: 0; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+
+svg .b-new { fill: var(--surface); stroke: var(--fg); stroke-width: 1.3; }
+svg .b-mvp { fill: var(--built-fill); fill-opacity: .45; stroke: var(--built); stroke-width: 1.5; }
+.sw.new { border-color: var(--fg); background: var(--surface); }
+</style>
+
+<main>
+<header class="page">
+  <div class="eyebrow">GADSII · UNLaM · TP6 — Arquitectura de la gran visión</div>
+  <h1>Arquitectura del producto completo de RooMeet</h1>
+  <p class="lede">El producto imaginado en el TP1, con los actores relevados en el TP2, dibujado como arquitectura. En verde, la parte que ya cubre el MVP; en naranja, lo que hoy está simulado. El MVP tal como está en el código se describe en <code>arquitectura-mvp.html</code>.</p>
+</header>
+
+<section>
+  <div class="legend" aria-label="Referencias">
+    <span><i class="sw built"></i>Ya cubierto por el MVP (con el alcance indicado)</span>
+    <span><i class="sw sim"></i>Simulado en el MVP</span>
+    <span><i class="sw new"></i>Nuevo en la visión</span>
+    <span><i class="ln"></i>Dependencia o flujo de datos: la flecha va hacia quien recibe</span>
+  </div>
+</section>
+
+<figure>
+<h2>Vista de la gran visión</h2>
+<div class="scroll">
+<svg viewBox="0 0 1240 830" role="img" aria-label="Arquitectura de la gran visión de RooMeet: clientes web, API con módulos de planificación, operación y control, base PostgreSQL e integración con SIU Guaraní y SIU-Araí, todo dentro de la infraestructura de la UNLaM. En verde lo que ya cubre el MVP.">
+  <defs>
+    <marker id="vh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+
+  <!-- Actores -->
+  <rect class="b-actor" x="20" y="14" width="170" height="38" rx="19"/>
+  <text x="105" y="37" text-anchor="middle">Sistemas UNLaM</text>
+  <rect class="b-actor" x="270" y="14" width="190" height="38" rx="19"/>
+  <text x="365" y="37" text-anchor="middle">Secretaría Académica</text>
+  <rect class="b-actor" x="480" y="14" width="210" height="38" rx="19"/>
+  <text x="585" y="37" text-anchor="middle">Administrativo departamental</text>
+  <rect class="b-actor" x="710" y="14" width="150" height="38" rx="19"/>
+  <text x="785" y="37" text-anchor="middle">Mantenimiento</text>
+  <rect class="b-actor" x="880" y="14" width="170" height="38" rx="19"/>
+  <text x="965" y="37" text-anchor="middle">Docentes y alumnos</text>
+
+  <path class="edge" d="M105,52 V100 H238" marker-end="url(#vh)"/>
+  <text class="small" x="112" y="90">despliega y opera</text>
+  <path class="edge" d="M365,52 V128" marker-end="url(#vh)"/>
+  <text class="small" x="371" y="118">aprueba cambios</text>
+  <path class="edge" d="M585,52 V128" marker-end="url(#vh)"/>
+  <text class="small" x="591" y="118">planifica y monitorea</text>
+  <path class="edge" d="M785,52 V128" marker-end="url(#vh)"/>
+  <text class="small" x="791" y="118">reporta fallas</text>
+  <path class="edge" d="M965,52 V128" marker-end="url(#vh)"/>
+  <text class="small" x="971" y="118">consulta su aula</text>
+
+  <!-- Límite institucional -->
+  <rect class="boundary" x="240" y="72" width="830" height="740" rx="10"/>
+  <text class="lbl" x="254" y="88" style="paint-order:stroke;stroke:var(--surface);stroke-width:6px;stroke-linejoin:round">INFRAESTRUCTURA DE LA UNLaM · OPERADA POR SISTEMAS</text>
+
+  <!-- Clientes -->
+  <rect class="b-built" x="260" y="130" width="420" height="64" rx="6"/>
+  <text class="mono" x="274" y="152">Web de gestión de aulas</text>
+  <text x="274" y="170">datos → propuesta → monitoreo → cambio, con sesión por rol</text>
+  <text class="t-built" x="274" y="186">MVP: las 4 pantallas, sin login ni otros roles</text>
+  <rect class="b-new" x="700" y="130" width="350" height="64" rx="6"/>
+  <text class="mono" x="714" y="152">Portal de consulta y reportes</text>
+  <text x="714" y="170">aula de cada comisión, avisos de cambio,</text>
+  <text x="714" y="186">reporte de fallas desde el celular</text>
+
+  <path class="edge" d="M470,194 V246" marker-end="url(#vh)"/>
+  <path class="edge" d="M875,194 V246" marker-end="url(#vh)"/>
+  <text class="small" x="476" y="214">HTTPS · JSON</text>
+  <text class="small" x="881" y="214">HTTPS · JSON</text>
+
+  <!-- API -->
+  <rect class="band" x="256" y="224" width="798" height="378" rx="6"/>
+  <text class="lbl" x="268" y="240">API ROOMEET · SERVIDOR</text>
+
+  <rect class="b-new" x="280" y="250" width="240" height="64" rx="6"/>
+  <text class="mono" x="292" y="272">Autenticación y roles</text>
+  <text x="292" y="290">sesión institucional; qué puede</text>
+  <text x="292" y="306">ver o pedir cada actor</text>
+  <rect class="b-new" x="540" y="250" width="240" height="64" rx="6"/>
+  <text class="mono" x="552" y="272">Solicitudes de cambio</text>
+  <text x="552" y="290">el departamento pide,</text>
+  <text x="552" y="306">la Secretaría aprueba o rechaza</text>
+  <rect class="b-new" x="800" y="250" width="230" height="64" rx="6"/>
+  <text class="mono" x="812" y="272">Notificaciones</text>
+  <text x="812" y="290">aviso de cambio de aula</text>
+  <text x="812" y="306">a docentes y alumnos</text>
+  <path class="edge" d="M780,282 H798" marker-end="url(#vh)"/>
+
+  <text class="lbl" x="280" y="326">PLANIFICACIÓN</text>
+  <rect class="b-new" x="280" y="332" width="240" height="68" rx="6"/>
+  <text class="mono" x="292" y="354">Estimación de cupos</text>
+  <text x="292" y="372">historial de inscriptos</text>
+  <text x="292" y="388">y aspirantes por comisión</text>
+  <rect class="b-built" x="540" y="332" width="240" height="68" rx="6"/>
+  <text class="mono" x="552" y="354">Motor de asignación</text>
+  <text x="552" y="372">propuesta de aula por comisión</text>
+  <text class="t-built" x="552" y="390">MVP: retroceso, 65 cursos, 6 aulas</text>
+  <rect class="b-built" x="800" y="332" width="230" height="68" rx="6"/>
+  <text class="mono" x="812" y="354">Validador de reglas</text>
+  <text class="t-built" x="812" y="372">MVP: capacidad y solapes</text>
+  <text x="812" y="390">falta: semipresencial, aulas propias</text>
+  <path class="edge" d="M520,366 H538" marker-end="url(#vh)"/>
+  <path class="edge" d="M780,366 H798" marker-end="url(#vh)"/>
+
+  <text class="lbl" x="280" y="416">OPERACIÓN</text>
+  <rect class="b-built" x="280" y="422" width="240" height="68" rx="6"/>
+  <text class="mono" x="292" y="444">Panel de estado de aulas</text>
+  <text x="292" y="462">ocupación planificada y actual</text>
+  <text class="t-built" x="292" y="480">MVP: solo planificada, con filtros</text>
+  <rect class="b-new" x="540" y="422" width="240" height="68" rx="6"/>
+  <text class="mono" x="552" y="444">Gestión de incidentes</text>
+  <text x="552" y="462">fallas reportadas, estado</text>
+  <text x="552" y="478">y plan de contingencia</text>
+  <rect class="b-new" x="800" y="422" width="230" height="68" rx="6"/>
+  <text class="mono" x="812" y="444">Aulas de contingencia</text>
+  <text x="812" y="462">reasigna cuando un aula</text>
+  <text x="812" y="478">queda fuera de servicio</text>
+  <path class="edge" d="M780,456 H798" marker-end="url(#vh)"/>
+
+  <text class="lbl" x="280" y="506">CONTROL E INTEGRACIÓN</text>
+  <rect class="b-new" x="280" y="512" width="240" height="68" rx="6"/>
+  <text class="mono" x="292" y="534">Cumplimiento y auditoría</text>
+  <text x="292" y="552">normas de Higiene y Seguridad;</text>
+  <text x="292" y="568">quién cambió qué y cuándo</text>
+  <rect class="b-sim" x="540" y="512" width="240" height="68" rx="6"/>
+  <text class="mono" x="552" y="534">Adaptador SIU Guaraní</text>
+  <text x="552" y="552">importa comisiones, devuelve aula</text>
+  <text class="t-sim" x="552" y="570">MVP: simulado con dataset fijo</text>
+
+  <!-- Datos -->
+  <text class="lbl" x="268" y="622">DATOS</text>
+  <path class="edge" d="M400,604 V636" marker-start="url(#vh)" marker-end="url(#vh)"/>
+  <text class="small" x="406" y="612">lee / escribe</text>
+  <path class="edge" d="M660,580 V636" marker-end="url(#vh)"/>
+  <text class="small" x="666" y="612">sincroniza</text>
+  <rect class="b-new" x="280" y="638" width="500" height="72" rx="6"/>
+  <text class="mono" x="292" y="660">Base de datos central (PostgreSQL)</text>
+  <text x="292" y="678">aulas, comisiones, asignaciones, solicitudes, incidentes,</text>
+  <text x="292" y="694">historial y auditoría · compartida por todos los roles</text>
+  <rect class="b-built" x="800" y="638" width="230" height="72" rx="6"/>
+  <text class="mono" x="812" y="660">Hoy: localStorage</text>
+  <text x="812" y="678">una copia por navegador;</text>
+  <text x="812" y="694">la base la reemplaza</text>
+  <path class="edge-sim" d="M800,674 H782" marker-end="url(#vh)"/>
+
+  <rect class="b-mvp" x="252" y="726" width="806" height="74" rx="8"/>
+  <text class="lbl" x="268" y="746" style="fill:var(--built)">ALCANCE DEL MVP SOBRE ESTA VISIÓN</text>
+  <text x="268" y="766">Cubre el núcleo de cálculo para un solo usuario: la web de gestión, el motor, dos reglas del validador</text>
+  <text x="268" y="784">y el monitoreo planificado. No cubre ninguna frontera: Guaraní, identidad, otros actores ni datos compartidos.</text>
+
+  <!-- Externos -->
+  <text class="lbl" x="1090" y="240" style="paint-order:stroke;stroke:var(--surface);stroke-width:6px;stroke-linejoin:round">SERVICIOS EXTERNOS</text>
+  <rect class="b-actor" x="1090" y="252" width="140" height="60" rx="6"/>
+  <text class="mono" x="1100" y="274">Correo</text>
+  <text x="1100" y="292">institucional</text>
+  <path class="edge" d="M1030,282 H1088" marker-end="url(#vh)"/>
+  <path class="edge" d="M1160,252 V33 H1052" marker-end="url(#vh)"/>
+
+  <rect class="b-actor" x="1090" y="366" width="140" height="64" rx="6"/>
+  <text class="mono" x="1100" y="388">SIU-Araí</text>
+  <text x="1100" y="406">inicio de sesión</text>
+  <text x="1100" y="422">institucional</text>
+  <path class="edge" d="M400,314 V320 H1076 V398 H1088" marker-end="url(#vh)"/>
+
+  <rect class="b-sim" x="1090" y="500" width="140" height="92" rx="6"/>
+  <text class="mono" x="1100" y="522">SIU Guaraní</text>
+  <text x="1100" y="540">fuente oficial:</text>
+  <text x="1100" y="556">comisiones, inscriptos,</text>
+  <text x="1100" y="572">cupos y aula</text>
+  <path class="edge" d="M780,546 H1088" marker-start="url(#vh)" marker-end="url(#vh)"/>
+  <text class="small" x="934" y="538" text-anchor="middle">lee comisiones · escribe aula aprobada</text>
+
+  <rect class="b-actor" x="1090" y="638" width="140" height="72" rx="6"/>
+  <text class="mono" x="1100" y="660">IntraConsulta</text>
+  <text x="1100" y="678">y MIeL: consumen</text>
+  <text x="1100" y="694">de Guaraní</text>
+  <path class="edge" d="M1160,592 V636" marker-end="url(#vh)"/>
+</svg>
+
+</div>
+<figcaption>Todo el producto vive dentro de la infraestructura de la UNLaM y lo opera Sistemas. Los clientes hablan con una única API; la API guarda en una base central y se conecta con SIU Guaraní (fuente oficial), SIU-Araí (identidad) y el correo institucional. IntraConsulta y MIeL siguen consumiendo de Guaraní.</figcaption>
+</figure>
+
+<section class="prose">
+  <h2>El salto más grande entre el MVP y la visión</h2>
+  <p>Pasar de una aplicación que corre sola en un navegador, con datos inventados y un único usuario anónimo, a un sistema dentro de la UNLaM que lee y escribe sobre SIU Guaraní, la fuente oficial. Ese cambio arrastra a los demás: un servidor y una base compartida porque varios actores operan sobre el mismo dato, identidad y roles porque la Secretaría Académica aprueba lo que propone cada departamento, y un flujo de solicitudes en lugar del «deshacer» local. El MVP está parado en el centro de cálculo —motor, dos reglas del validador, monitoreo planificado y la web de gestión— y no toca ninguna frontera. La prueba del TP5 mostró que el salto es más institucional que técnico: el acceso a esos sistemas requiere un aval que el equipo no controla.</p>
+</section>
+</main>

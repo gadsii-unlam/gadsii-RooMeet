@@ -6,6 +6,7 @@
 | 27/08/26 | OpenAI ChatGPT (Free) | Formatea mejor el README introductorio del grupo. | 0 |
 | 25/10/26 | OpenAI Codex (GPT-5) | Analizar los requisitos, el wireframe y las correcciones propuestas para preparar la guía de implementación del MVP y su despliegue en Vercel. | 5 |
 | 25/10/26 | OpenAI Codex (GPT-5) | Implementar como desarrollador senior el MVP de RooMeet a partir de la guía preparada. | 5 |
+| 04/11/26 | Claude (Cowork, Opus 5.5) | Continuar el TP6 a partir de la consigna: diagrama de la gran visión, redacción de las decisiones heredadas con evidencia del repositorio, tecnologías de la visión, componente más riesgoso, brief v5 y PDF de entrega. | 6 |
 
 
 ## Analisis del wireframe del equipo TicTac
@@ -115,3 +116,23 @@ Se implementó una aplicación web funcional de RooMeet basada en la guía anter
 - Pruebas unitarias y de recorrido, configuración de ESLint y Playwright, documentación de ejecución y archivos de despliegue para Vercel.
 
 La respuesta entregó además el [README del MVP](../mvp/README.md) con los requisitos, comandos de desarrollo, verificación y despliegue. El producto quedó limitado al experimento de asignación y revisión de aulas; no se implementaron autenticación, backend, base de datos, colaboración, notificaciones ni integración real con Guaraní.
+
+## TP6: arquitectura del sistema (consignas 2 a 7)
+
+### Prompt
+
+> Necesito continuar un trabajo práctico, la consigna 1 ya está hecha. [Se adjuntó la consigna completa del TP6.]
+
+Aclaraciones dadas durante la sesión: la prueba con usuarios reales del TP5 está pendiente; la dificultad fue que no se consiguió el aval de las autoridades administrativas de la facultad y el usuario real no tiene ni va a tener acceso al software por la burocracia de la Universidad.
+
+### Respuesta
+
+Claude (Cowork, Opus 5.5) trabajó sobre el repositorio y produjo:
+
+- El diagrama de la arquitectura de la gran visión con el alcance del MVP marcado (`docs/arquitectura/arquitectura-vision.html`).
+- El informe del TP6 en PDF (`docs/tp6/TP6-RooMeet.pdf`), que integra los diagramas del punto 1 y la redacción de los puntos 2 a 7.
+- La versión 5 del brief (`docs/brief.md`), con el párrafo de cambios y la nueva sección 9.
+- Una exploración de tecnologías para la visión (PostgreSQL, servicios de integración del SIU, servidor en Node.js con TypeScript). La búsqueda web no estaba disponible en la sesión, por lo que las afirmaciones sobre el SIU quedan marcadas como «a confirmar con Sistemas».
+- Una medición del motor de asignación con datasets más grandes y con franjas saturadas, que mostró que el motor devuelve asignaciones duplicadas cuando algún curso no entra en ningún aula.
+
+Para la consigna 2, la IA reunió evidencia del historial (commits de `mvp/`, `MVP-AGENTES.md` y este registro) y propuso una clasificación; la decisión final sobre quién tomó cada decisión corresponde al equipo y no se delega.
