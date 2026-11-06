@@ -70,6 +70,30 @@ La consulta está en `/resumen-estadisticas` y no aparece enlazada en el MVP. Mu
 
 La aplicación exporta la propuesta original, el resultado final, las modificaciones realizadas, eventos, duración y métricas técnicas. La comparación con el tiempo del proceso manual y la participación de usuarios administrativos reales deben registrarse externamente. Un build exitoso o una prueba técnica no equivalen a validar la hipótesis con usuarios.
 
+### Grabación de sesiones y heatmaps (Microsoft Clarity)
+
+Opcional y solo para pruebas con participantes. Es una excepción documentada al criterio de «sin servicios externos»: si no se configura, o si un bloqueador de anuncios lo impide, la app funciona exactamente igual. El código está en [src/analytics.ts](src/analytics.ts).
+
+**Configuración (una vez):**
+
+1. Crear un proyecto en [clarity.microsoft.com](https://clarity.microsoft.com) y copiar el *Project ID* (Settings → Overview).
+2. En Vercel, agregar `VITE_CLARITY_ID` con ese valor (Production y/o Preview) y volver a desplegar. No es un secreto: viaja al navegador.
+
+**En cada prueba:**
+
+1. Pedir consentimiento antes de empezar: avisar que se graba la pantalla de la app (clics, desplazamiento y lo que se ve), sin audio ni cámara, para analizar la usabilidad, y que puede pedir que se borre.
+2. Abrir el MVP con `/?grabar=1&tipo=piloto&p=P03`. Usar `tipo=usabilidad` para los ejercicios guiados de cambio, rechazo y deshacer, así no se mezclan con el piloto de valor. `p` es un código anónimo (letras, números, `-` o `_`, hasta 20 caracteres); nunca usar nombres.
+3. Los parámetros se borran de la barra de direcciones y la grabación queda activa en esa pestaña, también al recargar. `/?grabar=0` la apaga. Una pestaña nueva sin el parámetro no graba.
+
+No se carga nada sin `?grabar=1`, con `npm run dev`, en los tests ni en `/resumen-estadisticas`. El comentario de la valoración y la pantalla de resultados se enmascaran.
+
+**Análisis en Clarity** (las grabaciones pueden tardar un rato en aparecer):
+
+- Cada grabación lleva los tags `tipo`, `participante` y `roomeet_session`. Este último es el mismo ID que figura en Neon, en el CSV de `/resumen-estadisticas` y en el JSON exportado, así que permite pasar de una fila de métricas a su grabación.
+- Eventos para filtrar o saltar en la línea de tiempo: `pantalla-datos`, `pantalla-propuesta`, `pantalla-monitoreo`, `pantalla-cambio`, `pantalla-finalizado`, `generar-propuesta`, `abrir-cambio`, `cambio-cancelado`, `cambio-rechazado`, `cambio-confirmado`, `deshacer`, `deshacer-fallido`, `finalizar-bloqueado`, `finalizar`, `exportar`, `nueva-prueba` y `valoracion-enviada`.
+- Las pantallas cambian por hash (`#datos`, `#monitoreo`…). Si los heatmaps no las separan por URL, filtrar el heatmap por el evento `pantalla-…` correspondiente.
+- Con pocas personas, los heatmaps orientan pero no son concluyentes: priorizar las grabaciones y las observaciones de la sesión moderada.
+
 ## Límites deliberados
 
 Quedan fuera del MVP la integración real con Guaraní, autenticación, persistencia institucional de asignaciones, ABM de datos, colaboración, notificaciones, incidentes, reglas departamentales, alternancia semipresencial, estimación estadística de cupos y recomendaciones automáticas de aulas.

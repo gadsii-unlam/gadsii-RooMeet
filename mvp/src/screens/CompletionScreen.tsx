@@ -39,7 +39,7 @@ export function CompletionScreen({ courseCount, roomCount, onRestart, onRate, ra
               {[1, 2, 3, 4, 5].map((value) => <button key={value} type="button" className={`button ${rating === value ? 'primary' : ''}`} aria-pressed={rating === value} onClick={() => setRating(value)}>{value}</button>)}
             </div>
             <label htmlFor="rating-comment">Comentario opcional</label>
-            <textarea id="rating-comment" value={comment} maxLength={500} onChange={(event) => setComment(event.target.value)} placeholder="¿Qué te resultó fácil o difícil?" />
+            <textarea id="rating-comment" data-clarity-mask="True" value={comment} maxLength={500} onChange={(event) => setComment(event.target.value)} placeholder="¿Qué te resultó fácil o difícil?" />
             {error && <p role="alert">{error}</p>}
             <button type="button" className="button primary" disabled={rating < 1 || sending} onClick={submit}>{sending ? 'Enviando…' : 'Enviar valoración'}</button>
           </>}

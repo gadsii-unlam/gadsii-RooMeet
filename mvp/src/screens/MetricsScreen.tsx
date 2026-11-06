@@ -42,7 +42,7 @@ export function MetricsScreen({ onBack }: { onBack: () => void }) {
     URL.revokeObjectURL(url)
   }
 
-  return <main id="main-content" className="page-shell">
+  return <main id="main-content" className="page-shell" data-clarity-mask="True">
     <button className="button" onClick={onBack}>← Volver al MVP</button>
     <h1>Resultados de las pruebas</h1>
     <p>{localEvaluationMode ? 'Pruebas guardadas en este navegador para desarrollo local.' : 'Sesiones anónimas registradas en la base de datos del piloto.'}</p>

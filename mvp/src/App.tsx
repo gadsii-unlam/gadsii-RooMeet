@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { trackEvent, trackScreen } from './analytics'
 import { StepNavigation } from './components/StepNavigation'
 import { careers, courses, DATASET_VERSION, formatCourseSchedule, getCourse, getRoom, rooms } from './data/demoDataset'
 import { generateAssignments } from './domain/allocation'
@@ -109,6 +110,11 @@ export default function App() {
     return () => { cancelled = true }
   }, [state.sessionId, state.phase, state.startedAt, state.finishedAt, confirmedChanges])
 
+  const trackedScreen = showMetrics ? '' : state.phase === 'finished' ? 'finalizado' : activeScreen
+  useEffect(() => {
+    if (trackedScreen) trackScreen(trackedScreen, state.sessionId)
+  }, [trackedScreen, state.sessionId])
+
   const metrics = useMemo(() => calculatePilotMetrics(state, rooms, courses), [state])
   const currentViolations = useMemo(() => validateAssignments(rooms, courses, state.currentAssignments), [state.currentAssignments])
   const canFinish = state.phase === 'running'
@@ -120,6 +126,7 @@ export default function App() {
     try {
       const result = generateAssignments(rooms, courses)
       dispatch({ type: 'GENERATE', result, sessionId: uid('session'), now: now(), eventId: uid('event') })
+      trackEvent('generar-propuesta')
       window.location.hash = 'propuesta'
       setScreen('propuesta')
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -130,6 +137,7 @@ export default function App() {
 
   const openEdit = (courseId: string, roomId: string) => {
     dispatch({ type: 'OPEN_EDIT', courseId, fromRoomId: roomId })
+    trackEvent('abrir-cambio')
     setDestinationId('')
     window.location.hash = 'cambio'
     setScreen('cambio')
@@ -146,6 +154,7 @@ export default function App() {
     if (!validation.valid) {
       const reason = validation.violations.map((violation) => violation.message).join(' ')
       dispatch({ type: 'REJECT_CHANGE', courseId: state.editContext.courseId, fromRoomId: state.editContext.fromRoomId, toRoomId: destinationId, reason, now: now(), eventId: uid('event') })
+      trackEvent('cambio-rechazado')
       return
     }
     const course = getCourse(state.editContext.courseId)!
@@ -167,6 +176,7 @@ export default function App() {
       now: now(),
       eventId: uid('event'),
     })
+    trackEvent('cambio-confirmado')
     setSelectedRoomId(destinationId)
     setDestinationId('')
     navigate('monitoreo')
@@ -177,26 +187,31 @@ export default function App() {
     if (!change) return
     const current = state.currentAssignments.find((assignment) => assignment.courseId === change.courseId)
     if (state.revision !== change.revisionAfter || current?.roomId !== change.toRoomId) {
+      trackEvent('deshacer-fallido')
       dispatch({ type: 'SET_ERROR', message: 'El cambio ya no es el último estado revisado y no se puede deshacer de forma segura.' })
       return
     }
     const restored = state.currentAssignments.map((assignment) => assignment.courseId === change.courseId ? { ...assignment, roomId: change.fromRoomId } : assignment)
     const violations = validateAssignments(rooms, courses, restored).filter((violation) => violation.courseIds.includes(change.courseId))
     if (violations.length > 0) {
+      trackEvent('deshacer-fallido')
       dispatch({ type: 'SET_ERROR', message: `No se pudo restaurar el aula anterior: ${violations.map((item) => item.message).join(' ')}` })
       return
     }
     const course = getCourse(change.courseId)!
     dispatch({ type: 'UNDO_CHANGE', message: `${course.name}: se restauró ${getRoom(change.fromRoomId)?.name}. ${formatCourseSchedule(course)}.`, now: now(), eventId: uid('event') })
+    trackEvent('deshacer')
     setSelectedRoomId(change.fromRoomId)
   }
 
   const finish = () => {
     if (!canFinish) {
+      trackEvent('finalizar-bloqueado')
       dispatch({ type: 'SET_ERROR', message: 'Todavía hay cursos pendientes, sin asignar o con conflictos.' })
       return
     }
     dispatch({ type: 'FINISH', message: 'Revisión finalizada. La sesión quedó disponible para consulta y exportación.', now: now(), eventId: uid('event') })
+    trackEvent('finalizar')
   }
 
   const exportSession = () => {
@@ -218,6 +233,7 @@ export default function App() {
       metrics,
       note: 'Resultados de una prueba local. No constituyen validación institucional ni integración con SIU Guaraní.',
     }
+    trackEvent('exportar')
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const anchor = document.createElement('a')
@@ -232,6 +248,7 @@ export default function App() {
   const newSession = () => {
     const confirmed = state.phase !== 'running' || window.confirm('Se eliminará la sesión local actual. Si necesitás conservarla, cancelá y exportala primero. ¿Iniciar una prueba nueva?')
     if (!confirmed) return
+    trackEvent('nueva-prueba')
     clearSession()
     dispatch({ type: 'NEW_SESSION' })
     setSelectedRoomId(rooms[0].id)
@@ -249,10 +266,12 @@ export default function App() {
     try { localStorage.setItem(`roomeet:rating:${state.sessionId}`, 'sent') } catch { /* Se conserva en memoria. */ }
     setRatingSaved(true)
     setEvaluationError('')
+    trackEvent('valoracion-enviada')
   }
 
   const cancelEdit = () => {
     dispatch({ type: 'CANCEL_EDIT' })
+    trackEvent('cambio-cancelado')
     setDestinationId('')
     navigate('monitoreo')
   }
