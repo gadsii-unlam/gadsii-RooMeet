@@ -58,9 +58,11 @@ npm run test:e2e
 2. Usar la raíz del repositorio como *Root Directory* del proyecto.
 3. Seleccionar el preset **Vite** y Node.js **22.x**.
 4. Vercel tomará de `vercel.json` la instalación `npm ci`, el build `npm run build` y la salida `dist`.
-5. Para recopilar pruebas, conectar Neon Postgres y configurar `DATABASE_URL` y `METRICS_ADMIN_KEY` en las variables de entorno del proyecto.
+5. Para recopilar pruebas, configurar `DATABASE_URL` y `METRICS_ADMIN_KEY` en las variables de entorno del proyecto.
 
-La asignación continúa en `localStorage` para permitir recargar la página. Los datos anónimos de evaluación se envían además a Neon. Antes de desplegar, ejecutar [evaluation-schema.sql](docs/evaluation-schema.sql) en la consola SQL de la base. `DATABASE_URL` debe ser la conexión de Neon; `METRICS_ADMIN_KEY` debe ser una clave larga y aleatoria, distinta de las credenciales de la base. Configurar ambas para Production y Preview según el entorno que se quiera medir. No ponerlas en variables `VITE_`, porque esas se exponen al navegador. Volver a desplegar después de guardar las variables.
+La asignación continúa en `localStorage` para permitir recargar la página. Los datos anónimos de evaluación se envían además a Neon. Este directorio está vinculado al proyecto de Neon mediante `.neon` (ignorado por Git); `neon.ts` declara Postgres. Después de iniciar sesión con `neon login`, ejecutar `neon deploy` y `npm run db:migrate` desde `mvp/`. El segundo comando aplica [evaluation-schema.sql](docs/evaluation-schema.sql) usando `DATABASE_URL_UNPOOLED` de `.env.local` (o `.env`, si existe). `npm run db:verify` comprueba por HTTP el inicio, la finalización, la valoración y la consulta protegida, y elimina su sesión de prueba. La API en Vercel usa la conexión agrupada `DATABASE_URL`.
+
+En Vercel, configurar `DATABASE_URL` con el valor de la conexión agrupada de Neon y `METRICS_ADMIN_KEY` con una clave larga y aleatoria distinta de las credenciales de la base. Configurar ambas para Production y Preview según el entorno que se quiera medir. No ponerlas en variables `VITE_`, porque esas se exponen al navegador. Volver a desplegar después de guardar las variables.
 
 La consulta está en `/resumen-estadisticas` y no aparece enlazada en el MVP. Muestra pruebas iniciadas/completadas, tiempo mediano, valoración media y detalle exportable a CSV. En Vercel pide la clave, que se mantiene solo en memoria de esa página; conocer la ruta no reemplaza esta protección. Las sesiones iniciadas sin finalizar figuran como incompletas, lo que puede incluir pestañas que todavía están abiertas. Con `npm run dev`, las métricas se guardan únicamente en el `localStorage` del navegador y la consulta local no pide clave; esto permite ensayar el flujo sin base de datos. El modo local no reúne pruebas de otras personas. Cuando cambia la versión del dataset de demostración, una sesión anterior se descarta automáticamente para evitar mezclar aulas o asignaciones incompatibles.
 
@@ -70,7 +72,7 @@ La aplicación exporta la propuesta original, el resultado final, las modificaci
 
 ## Límites deliberados
 
-Quedan fuera del MVP la integración real con Guaraní, autenticación, base de datos, ABM de datos, colaboración, notificaciones, incidentes, reglas departamentales, alternancia semipresencial, estimación estadística de cupos y recomendaciones automáticas de aulas.
+Quedan fuera del MVP la integración real con Guaraní, autenticación, persistencia institucional de asignaciones, ABM de datos, colaboración, notificaciones, incidentes, reglas departamentales, alternancia semipresencial, estimación estadística de cupos y recomendaciones automáticas de aulas.
 
 ## Equipo
 
