@@ -192,6 +192,23 @@ td small { display: block; margin-top: 0.18rem; }
 .completion-lead { max-width: 580px; margin: 0 auto; color: var(--muted); font-size: 1.15rem; line-height: 1.65; }
 .mock-notice { margin: 2rem 0; padding: 1.2rem 1.4rem; border: 1px solid #e4bf6c; border-radius: .8rem; background: #fff8e8; color: #6f4d00; text-align: left; }
 .mock-notice p { margin: .35rem 0 0; line-height: 1.55; }
+.rating-panel { margin: 1.5rem 0; padding: 1.4rem; border: 1px solid var(--line); border-radius: .8rem; text-align: left; }
+.rating-panel h2 { margin: 0 0 .9rem; font-size: 1.15rem; }
+.rating-options { display: flex; gap: .5rem; margin-bottom: 1rem; }
+.rating-options .button { min-width: 2.8rem; }
+.rating-panel label { display: block; font-weight: 700; margin-bottom: .4rem; }
+.rating-panel textarea { display: block; width: 100%; min-height: 5rem; padding: .7rem; border: 1px solid #aebbd0; border-radius: .6rem; font: inherit; margin-bottom: 1rem; }
+.metrics-access { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; margin: 1.2rem 0; }
+.metrics-access input { padding: .7rem; border: 1px solid #aebbd0; border-radius: .6rem; font: inherit; }
+.metrics-access p { flex-basis: 100%; color: #a32935; }
+.metrics-results { margin-top: 1.2rem; }
+.metrics-results > p { color: var(--muted); }
+.metrics-overview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.metrics-overview div { display: grid; padding: 1rem; background: #f1f6fc; border-radius: .7rem; }
+.metrics-overview strong { font-size: 1.4rem; }
+.metrics-overview span { color: var(--muted); font-size: .8rem; }
+.metrics-results table { width: 100%; min-width: 760px; margin-top: 1rem; border-collapse: collapse; }
+.metrics-results th, .metrics-results td { padding: .7rem; border-bottom: 1px solid var(--line); text-align: left; }
 .finish-hint { color: var(--muted); font-size: .8rem; text-align: right; }
 
 .edit-context { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.2rem; border-top: 4px solid var(--blue); }
@@ -233,6 +250,7 @@ footer { margin-top: auto; min-height: 64px; background: #e9edf4; color: var(--m
 }
 
 @media (max-width: 600px) {
+  .metrics-overview { grid-template-columns: repeat(2, 1fr); }
   .app-header { min-height: 68px; }
   .brand small { display: none; }
   .brand-mark { width: 36px; height: 36px; }

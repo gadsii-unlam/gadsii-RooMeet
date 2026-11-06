@@ -3,6 +3,7 @@ import { StepNavigation } from './components/StepNavigation'
 import { careers, courses, DATASET_VERSION, formatCourseSchedule, getCourse, getRoom, rooms } from './data/demoDataset'
 import { generateAssignments } from './domain/allocation'
 import { calculatePilotMetrics } from './domain/metrics'
+import { recordFinish, recordRating, recordStart } from './evaluationApi'
 import { defaultMonitorFilters } from './domain/monitoring'
 import type { Screen, SessionState } from './domain/types'
 import { validateAssignments, validateChange } from './domain/validation'
@@ -10,6 +11,7 @@ import { ChangeScreen } from './screens/ChangeScreen'
 import { CompletionScreen } from './screens/CompletionScreen'
 import { DataScreen } from './screens/DataScreen'
 import { MonitoringScreen } from './screens/MonitoringScreen'
+import { MetricsScreen } from './screens/MetricsScreen'
 import { ProposalScreen } from './screens/ProposalScreen'
 import { initialState, sessionReducer } from './state/reducer'
 import { clearSession, loadSession, saveSession } from './state/storage'
@@ -36,10 +38,17 @@ function restoreInitialState(): SessionState {
 export default function App() {
   const [state, dispatch] = useReducer(sessionReducer, undefined, restoreInitialState)
   const [screen, setScreen] = useState<Screen>(screenFromHash)
+  const [showMetrics, setShowMetrics] = useState(window.location.pathname === '/resumen-estadisticas')
+  const [evaluationError, setEvaluationError] = useState('')
+  const [ratingSaved, setRatingSaved] = useState(() => {
+    try { return state.sessionId ? localStorage.getItem(`roomeet:rating:${state.sessionId}`) === 'sent' : false }
+    catch { return false }
+  })
   const [selectedRoomId, setSelectedRoomId] = useState(rooms[0].id)
   const [monitorFilters, setMonitorFilters] = useState(defaultMonitorFilters)
   const [destinationId, setDestinationId] = useState('')
   const storageWarningShown = useRef(false)
+  const confirmedChanges = state.events.filter((event) => event.type === 'change-confirmed').length
   const activeScreen: Screen = state.phase === 'not-started' && screen !== 'datos'
     ? 'datos'
     : screen === 'cambio' && !state.editContext
@@ -47,6 +56,8 @@ export default function App() {
       : screen
 
   const navigate = (next: Screen) => {
+    if (window.location.pathname === '/resumen-estadisticas') window.history.pushState({}, '', '/')
+    setShowMetrics(false)
     let safe = next
     if (state.phase === 'not-started' && next !== 'datos') safe = 'datos'
     if (next === 'cambio' && !state.editContext) safe = state.phase === 'not-started' ? 'datos' : 'monitoreo'
@@ -56,9 +67,19 @@ export default function App() {
   }
 
   useEffect(() => {
-    const onHashChange = () => setScreen(screenFromHash())
+    const onHashChange = () => {
+      setScreen(screenFromHash())
+    }
+    const onPopState = () => {
+      setShowMetrics(window.location.pathname === '/resumen-estadisticas')
+      setScreen(screenFromHash())
+    }
     window.addEventListener('hashchange', onHashChange)
-    return () => window.removeEventListener('hashchange', onHashChange)
+    window.addEventListener('popstate', onPopState)
+    return () => {
+      window.removeEventListener('hashchange', onHashChange)
+      window.removeEventListener('popstate', onPopState)
+    }
   }, [])
 
   useEffect(() => {
@@ -69,6 +90,24 @@ export default function App() {
       dispatch({ type: 'SET_STORAGE_WARNING', message: warning })
     }
   }, [state])
+
+  useEffect(() => {
+    if (!state.sessionId || state.phase === 'not-started') return
+    let cancelled = false
+    const sync = async () => {
+      try {
+        await recordStart(state.sessionId, DATASET_VERSION, state.startedAt)
+        if (state.phase === 'finished') {
+          await recordFinish(state.sessionId, confirmedChanges, state.finishedAt)
+        }
+        if (!cancelled) setEvaluationError('')
+      } catch {
+        if (!cancelled) setEvaluationError('La prueba se guardó en este navegador, pero las métricas centrales no se pudieron enviar. Revisá la conexión y recargá la página para reintentar.')
+      }
+    }
+    void sync()
+    return () => { cancelled = true }
+  }, [state.sessionId, state.phase, state.startedAt, state.finishedAt, confirmedChanges])
 
   const metrics = useMemo(() => calculatePilotMetrics(state, rooms, courses), [state])
   const currentViolations = useMemo(() => validateAssignments(rooms, courses, state.currentAssignments), [state.currentAssignments])
@@ -198,7 +237,18 @@ export default function App() {
     setSelectedRoomId(rooms[0].id)
     setMonitorFilters(defaultMonitorFilters)
     setDestinationId('')
+    setEvaluationError('')
+    setRatingSaved(false)
     navigate('datos')
+  }
+
+  const submitRating = async (rating: number, comment: string) => {
+    await recordStart(state.sessionId, DATASET_VERSION, state.startedAt)
+    await recordFinish(state.sessionId, confirmedChanges, state.finishedAt)
+    await recordRating(state.sessionId, rating, comment)
+    try { localStorage.setItem(`roomeet:rating:${state.sessionId}`, 'sent') } catch { /* Se conserva en memoria. */ }
+    setRatingSaved(true)
+    setEvaluationError('')
   }
 
   const cancelEdit = () => {
@@ -210,10 +260,11 @@ export default function App() {
   return (
     <div className="app">
       <a className="skip-link" href="#main-content">Saltar al contenido</a>
-      <header className="app-header">{state.phase === 'finished' ? <div className="brand"><span className="brand-mark">R</span><span><strong>RooMeet</strong><small>Revisión segura de aulas</small></span></div> : <><button className="brand" onClick={() => navigate('datos')} aria-label="Ir a los datos de RooMeet"><span className="brand-mark">R</span><span><strong>RooMeet</strong><small>Revisión segura de aulas</small></span></button><StepNavigation screen={activeScreen} phase={state.phase} onNavigate={navigate} /></>}</header>
+      <header className="app-header">{state.phase === 'finished' || showMetrics ? <div className="brand"><span className="brand-mark">R</span><span><strong>RooMeet</strong><small>Revisión segura de aulas</small></span></div> : <><button className="brand" onClick={() => navigate('datos')} aria-label="Ir a los datos de RooMeet"><span className="brand-mark">R</span><span><strong>RooMeet</strong><small>Revisión segura de aulas</small></span></button><StepNavigation screen={activeScreen} phase={state.phase} onNavigate={navigate} /></>}</header>
       {(state.storageWarning || state.errorMessage) && <div className={`global-message ${state.errorMessage ? 'error' : 'warning'}`} role="alert"><span>{state.errorMessage ?? state.storageWarning}</span><button aria-label="Cerrar mensaje" onClick={() => dispatch({ type: 'CLEAR_STATUS' })}>×</button></div>}
-      {state.phase === 'finished'
-        ? <CompletionScreen courseCount={courses.length} roomCount={rooms.length} onRestart={newSession} />
+      {evaluationError && !showMetrics && <div className="global-message warning" role="alert">{evaluationError}</div>}
+      {showMetrics ? <MetricsScreen onBack={() => navigate(state.phase === 'finished' ? 'datos' : activeScreen)} /> : state.phase === 'finished'
+        ? <CompletionScreen courseCount={courses.length} roomCount={rooms.length} onRestart={newSession} onRate={submitRating} ratingSaved={ratingSaved} />
         : <>{activeScreen === 'datos' && <DataScreen rooms={rooms} courses={courses} phase={state.phase} onGenerate={generate} onContinue={() => navigate('propuesta')} />}
           {activeScreen === 'propuesta' && <ProposalScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} unassigned={state.unassigned} onContinue={() => navigate('monitoreo')} />}
           {activeScreen === 'monitoreo' && <MonitoringScreen rooms={rooms} courses={courses} assignments={state.currentAssignments} phase={state.phase} selectedRoomId={selectedRoomId} filters={monitorFilters} lastChange={state.lastChange} statusMessage={state.statusMessage} metrics={metrics} canFinish={canFinish} onSelectRoom={setSelectedRoomId} onFiltersChange={setMonitorFilters} onResetFilters={() => setMonitorFilters(defaultMonitorFilters)} onEdit={openEdit} onUndo={undo} onFinish={finish} onExport={exportSession} onNew={newSession} />}
