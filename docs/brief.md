@@ -1,8 +1,12 @@
 # Brief
 
-**Versión 5**
+**Versión 6**
 
-**Cambios respecto de la versión 4.** La versión 4 no llegó a registrarse en el repositorio: correspondía al TP5, en el que se construyó el MVP. Esta versión incorpora ese cambio y el del TP6. Del TP5: el MVP dejó de ser un alcance y pasó a ser un producto construido y funcionando (carpeta `mvp/`): una aplicación web en React + TypeScript que corre entera en el navegador, con un motor de asignación real, monitoreo con filtros, cambio local de aula con opción de deshacer y una pantalla final que simula el envío a SIU Guaraní. La prueba con usuarios reales sigue pendiente: no se consiguió el aval de las autoridades administrativas de la facultad y el usuario real no tiene ni tendrá acceso al software por los procesos de la Universidad, por lo que la hipótesis de valor de 7.7 todavía no tiene evidencia de uso. Del TP6: el brief pasa a describir el producto también como arquitectura, en la nueva **sección 9**: la arquitectura real del MVP, las decisiones estructurales que el equipo heredó sin discutirlas, la arquitectura de la gran visión con la parte que ya cubre el MVP, las tecnologías que agregaría y el componente más riesgoso. El fundamento de este cambio es que el salto entre el MVP y la visión no consiste en sumar funcionalidades sino en cruzar fronteras —SIU Guaraní como fuente oficial, varios actores sobre el mismo dato, identidad y roles— y que esas fronteras dependen de restricciones del contexto de la UNLaM que el brief no registraba: la infraestructura y el mantenimiento a cargo de Sistemas (TP2) y el acceso a datos y sistemas institucionales sujeto a un aval que hoy no existe (TP5). Segmento, producto, funcionalidades core, hipótesis de valor y alcance del MVP (secciones 1 a 8) no cambian.
+**Cambios respecto de la versión 3 solicitados en el punto 7 del TP5.** El MVP pasó del alcance definido en TP3 a una aplicación construida con las correcciones aceptadas del TP4. Se obtuvo un primer registro de uso y se formuló una decisión provisional de perseverar, pero faltan las otras sesiones y la comparación manual para cerrar el aprendizaje y validar la hipótesis de valor. La versión 4 prevista por la consigna no se registró en Git; por eso estos hechos se incorporan a la versión 6 sin renumerar retroactivamente el historial.
+
+**Actualización respecto de la versión 5.** El informe final del TP5 registra una sesión anónima completada en 01:28, sin cambios de aula, con valoración 5/5 y un pedido de filtros de materias y aulas en la primera pantalla. Según el informe, la respuesta proviene de una persona relevada en el TP2; la captura por sí sola no permite identificarla. El resultado apoya una lectura preliminar de usabilidad, pero no demuestra que el 90 % de las propuestas sea aprobado, que las asignaciones funcionen con datos institucionales ni que el proceso sea más rápido que el manual. Del TP6 se conservan la arquitectura de la gran visión y el riesgo del adaptador con SIU Guaraní. Se actualiza la descripción del MVP porque, después de la versión analizada en ese informe, se agregó una API con Neon para guardar métricas anónimas de evaluación; la asignación continúa siendo local y simulada.
+
+*Registro histórico de la versión 5, antes del resultado del TP5.* La versión 4 no llegó a registrarse en el repositorio. La versión 5 documentó la construcción del MVP y agregó la sección 9 a partir del TP6. En ese momento aún no se había incorporado al brief una sesión de prueba. La sección 9 de esta versión 6 conserva las decisiones arquitectónicas del TP6 y distingue la arquitectura de asignación de la API de métricas agregada después.
 
 *Nota de trazabilidad — cambio de la versión 2 a la versión 3 (se conserva como antecedente).* Esta versión no modifica el segmento, el producto ni la hipótesis de valor establecidos en la versión 2: los conserva como marco vigente. Lo que cambia es el **nivel de definición del alcance**. Hasta la versión 2 el brief describía el producto completo (motor de asignación, panel de estado, gestión de incidentes, aulas de contingencia, cumplimiento normativo) sin distinguir qué parte de ese producto se llevaría a una prueba real. A partir del trabajo realizado en el TP3 (puntos 1 a 4), el equipo delimitó el **scope del MVP**: qué se incluye y qué se excluye, qué se construye efectivamente y qué se simula o se resuelve a mano, el flujo principal que recorrerá el usuario y los atributos de usabilidad priorizados. El fundamento de estos cambios es que el MVP existe únicamente para poner a prueba la hipótesis de valor formulada en la versión 2: por eso se recorta el alcance a lo mínimo que permite observar si el sistema produce asignaciones sin solapamientos ni excesos de capacidad y si el personal administrativo las aprueba o las modifica. Todo aquello que no aporta evidencia sobre esa hipótesis —el set completo de datos, los parámetros configurables, la carga de datos (dataEntry), el soporte a alumnos y docentes y la conexión real con SIU Guaraní— queda fuera del MVP sin dejar de formar parte de la visión de producto. La priorización de **tasa de errores** y **recuerdo en el tiempo** como atributos de usabilidad se apoya en dos hechos ya documentados: la criticidad del proceso (una asignación errónea afecta la planificación de todo el cuatrimestre, en línea con los reclamos por superpoblación y los solapamientos relevados en el TP2) y su frecuencia (se ejecuta una sola vez por cuatrimestre).
 
@@ -197,7 +201,7 @@ A partir de estos hallazgos surgen nuevos supuestos que deberán validarse en la
 
 ## 8. Actualización del brief a partir del TP3: alcance del MVP
 
-Esta sección es nueva en la versión 3. Define el alcance del MVP destinado a poner a prueba la hipótesis de valor de la sección 7.7. Todo lo que no aparece aquí como incluido **no forma parte del MVP**, aunque siga siendo parte de la visión de producto descripta en las secciones 2 a 4.
+Esta sección se incorporó en la versión 3 para definir el alcance del MVP destinado a poner a prueba la hipótesis de valor de 7.7. La lista de incluidos y excluidos conserva esa decisión de scope; las tablas y el flujo siguientes reflejan el MVP construido en el TP5. Todo lo que no aparece como incluido **no forma parte del MVP**, aunque siga siendo parte de la visión de producto de las secciones 2 a 4.
 
 ### 8.1 Scope del MVP
 
@@ -226,21 +230,19 @@ Esta sección es nueva en la versión 3. Define el alcance del MVP destinado a p
 
 | Elemento | Se construye | Se simula / se resuelve a mano | Por qué |
 | --- | --- | --- | --- |
-| Dataset de prueba pequeño | No | Se resuelve a mano | Se agregará información hardcodeada para agilizar las pruebas. La información será estática en el MVP. |
-| Visualización de los datos cargados con el dataset (aulas, capacidad, materias, etc.) | No | Se simula | La información está hardcodeada y es estática en el MVP. |
-| Aulas con cursos y horarios asignados, con navegabilidad clara y ágil con filtros | Sí | No | En el MVP se incluirá el monitoreo de la disponibilidad de las aulas para poder visualizar la asignación hecha. Es una pieza fundamental para los usuarios. |
-| Modificación de aulas asignadas | Solo la parte local | Se simula la conexión con Guaraní | Los usuarios desearán poder modificar la asignación de aulas antes y después de que sea efectiva en Guaraní. |
+| Dataset de prueba pequeño | No | Se resuelve a mano | Hay 65 cursos de primer año y seis aulas ilustrativas. Materias, códigos y horas se basan en planes; horarios, cupos, historial y aulas son simulados. |
+| Visualización de los datos cargados | Sí | El origen de los datos es estático y simulado | La interfaz muestra aulas, capacidades y cursos precargados para revisar la entrada de la prueba. |
+| Motor de propuesta automática | Sí | No | Genera asignaciones sobre el dataset de demostración; no consulta datos institucionales. |
+| Aulas con cursos y horarios asignados, con navegación y filtros | Sí | El plano del campus es ilustrativo | El monitoreo construido permite consultar ocupación y disponibilidad. |
+| Modificación de aulas asignadas | Sí, en la sesión local | Se simula el guardado y el envío a Guaraní | Se puede cambiar y deshacer una asignación compatible; no se modifica ningún registro institucional. |
 
 ### 8.3 Flujo principal del MVP
 
-1. Abre la aplicación → Pantalla principal → Visualización del dataset cargado.
-2. Botón "Generar asignación" → Pantalla de asignación → Resultado de la asignación.
-3. Botón "Gestionar aulas" → Pantalla de monitoreo de aulas con disponibilidades y horarios ocupados.
-4. Selecciona "Filtros" y agrega filtros → Muestra resultados.
-5. Selecciona el curso y el aula deseada → Presiona la opción modificar → Pantalla de aulas y sus disponibilidades.
-6. Selecciona "Filtros" y agrega filtros → Muestra resultados.
-7. Selecciona el aula y su disponibilidad deseada → Confirma el cambio.
-8. Vuelve a la pantalla de monitoreo de aulas con disponibilidades y horarios ocupados.
+1. Abre la aplicación y revisa los datos precargados de aulas y cursos.
+2. Genera la propuesta de asignación completa del cuatrimestre vigente y la revisa.
+3. Consulta la ocupación en el mapa ilustrativo, la agenda y el listado, con filtros de día y franja.
+4. Si lo considera necesario, selecciona un curso, consulta las aulas compatibles, modifica su aula y puede deshacer el último cambio.
+5. Finaliza la revisión. La pantalla final simula el guardado y el envío a SIU Guaraní, ofrece una valoración y permite reiniciar la prueba.
 
 ### 8.4 Atributos de usabilidad priorizados
 
@@ -249,24 +251,26 @@ Esta sección es nueva en la versión 3. Define el alcance del MVP destinado a p
 
 Los demás atributos quedan en segundo plano: la **facilidad de aprendizaje** no es esencial porque el personal que lo usa es especializado; la **eficiencia** resulta poco relevante porque es un proceso que se realiza una vez por cuatrimestre; y la **satisfacción** pasa a segundo plano por la falta de competencia, dado que hasta este momento el proceso es manual.
 
-### 8.5 Cuestiones pendientes al cierre de esta versión
+Esta priorización corresponde al TP3. El TP5 mide el tiempo y recoge una valoración para explorar eficiencia y satisfacción en el piloto; una sesión no permite revisar todavía la prioridad de esos atributos para el producto institucional.
 
-Se registran como pendientes, sin resolver en esta versión del brief:
+### 8.5 Cuestiones del TP3 y estado actual
 
-* El diseño de la interacción y las pantallas concretas del MVP (corresponde a etapas posteriores del TP3).
-* La definición de cómo se comunicarán los cambios de aula a docentes y estudiantes, necesidad relevada en el TP2 y no incluida en el alcance del MVP.
-* Los aspectos de contexto de uso señalados en 7.4 (dispositivos, conectividad, trabajo individual o conjunto), que siguen sin evidencia.
-* La validación con el personal administrativo de que el alcance recortado del MVP resulta suficiente para ejecutar la prueba piloto.
+Las cuestiones que quedaron abiertas en la versión 3 se revisan a la luz de TP4, TP5 y TP6:
+
+* El diseño de la interacción y las pantallas del MVP ya se concretó en el wireframe, TP4 y la aplicación construida.
+* La comunicación de cambios a docentes y estudiantes sigue sin definirse dentro del MVP.
+* Los aspectos del contexto de uso señalados en 7.4 (dispositivos, conectividad y trabajo individual o conjunto) siguen sin evidencia suficiente.
+* La suficiencia del alcance para el personal administrativo sigue pendiente de una prueba más amplia. TP5 registra una respuesta favorable con una sugerencia de filtros, no la validación del segmento completo.
 
 ---
 
 ## 9. Arquitectura del sistema (TP6)
 
-Esta sección es nueva en la versión 5. Los diagramas completos están en `docs/arquitectura/arquitectura-mvp.html` (MVP tal como está en el código) y `docs/arquitectura/arquitectura-vision.html` (gran visión), y el análisis en el informe del TP6 (`docs/tp6/`).
+Esta sección se incorporó en la versión 5 a partir del TP6. Los diagramas de `docs/arquitectura/` y el informe de `docs/tp6/` representan la arquitectura del MVP en el momento de ese trabajo. La presente versión conserva su análisis de la gran visión y actualiza la descripción del MVP con la API de métricas agregada después.
 
 ### 9.1 Arquitectura real del MVP
 
-El MVP es una única aplicación web estática (React + TypeScript + Vite) que Vercel entrega una vez; después, todo ocurre en el navegador del administrativo. No hay servidor de aplicación, base de datos, API, autenticación ni conexión con SIU Guaraní.
+El núcleo de asignación del MVP es una aplicación web React + TypeScript + Vite servida por Vercel. La propuesta, los cambios y el cierre se procesan en el navegador y la sesión se conserva en `localStorage`. No hay autenticación, datos institucionales ni conexión real con SIU Guaraní. A diferencia de la instantánea documentada en el TP6, el código actual incluye `mvp/api/evaluations.js`, una función de Vercel que guarda inicio, finalización, cantidad de cambios y valoración en Neon Postgres. Esa base almacena métricas anónimas del piloto, **no** asignaciones compartidas ni aprobaciones institucionales.
 
 | Capa | Componentes | Estado según 8.2 |
 | --- | --- | --- |
@@ -274,21 +278,22 @@ El MVP es una única aplicación web estática (React + TypeScript + Vite) que V
 | Estado de sesión | `reducer.ts` (fuente de verdad en memoria), `storage.ts` (copia en `localStorage`) | Construido |
 | Dominio | `allocation.ts` (motor por búsqueda con retroceso), `validation.ts`, `metrics.ts`, `monitoring.ts` | Construido |
 | Datos | `demoDataset.ts`: 65 materias de primer año del DIIT y 6 aulas, compiladas en el bundle | Hardcodeado: nombres, códigos y horas reales; horarios, cupos, historial y aulas simulados |
+| Evaluación del piloto | `api/evaluations.js`, `evaluationApi.ts` y Neon Postgres | Construido después de la instantánea del TP6; guarda métricas anónimas, no la sesión de asignación |
 | Externos | SIU Guaraní | Simulado: no hay adaptador; el dataset ocupa su lugar y la pantalla final simula el envío |
 
 ### 9.2 Decisiones heredadas
 
 | Decisión | ¿Quién la tomó? | ¿La sostendríamos? | Dato que la sostiene o contradice |
 | --- | --- | --- | --- |
-| La sesión vive sólo en el navegador (memoria + `localStorage`), sin servidor ni base | La herramienta (`MVP-AGENTES.md` §8) | Sí para el piloto; no para el producto | TP2: varios actores operan sobre el mismo dato (Secretaría Académica y departamentos) y se pide centralizar la información. TP5: sin prueba con usuarios todavía |
+| La sesión de asignación vive sólo en el navegador (memoria + `localStorage`); la API y Neon guardan únicamente métricas del piloto | La herramienta (`MVP-AGENTES.md` §8) definió la sesión local; la medición central se agregó después | Sí para el piloto; no para el producto institucional | TP2: Secretaría Académica y departamentos necesitan operar sobre el mismo dato. El único registro del TP5 informa uso del prototipo, pero no valida colaboración ni aprobación compartida |
 | `App.tsx` concentra la orquestación y las pantallas importan el dataset directamente | Nadie, salió así | No: no hay una interfaz de datos donde conectar la fuente real | Ningún dato del TP2 ni del TP5: se tomó por comodidad |
-| Publicar en Vercel, fuera de la infraestructura de la UNLaM | El equipo | Sí para el MVP; no para la visión | TP2: Sistemas proveerá infraestructura y mantenimiento. TP5: no hubo aval institucional |
+| Publicar en Vercel, fuera de la infraestructura de la UNLaM | El equipo | Sí para el piloto con datos simulados; no para la visión | TP2: Sistemas proveerá infraestructura y mantenimiento. TP5 registra una prueba remota, pero no un aval para datos o sistemas institucionales |
 
 ### 9.3 Arquitectura de la gran visión
 
 La visión agrega, dentro de la infraestructura de la UNLaM operada por Sistemas: una web de gestión con sesión por rol y un portal de consulta y reportes para docentes, alumnos y mantenimiento; una API con autenticación y roles, solicitudes de cambio aprobadas por la Secretaría Académica, notificaciones, estimación de cupos, motor y validador de reglas completo, panel de estado planificado y actual, gestión de incidentes, aulas de contingencia, cumplimiento y auditoría; una base de datos central; y un adaptador con SIU Guaraní que importa comisiones e inscriptos y devuelve el aula aprobada.
 
-**Qué cubre el MVP:** el núcleo de cálculo para un solo usuario —la web de gestión, el motor, dos reglas del validador (capacidad y solapamiento) y el monitoreo planificado—. No cubre ninguna frontera: Guaraní, identidad, otros actores ni datos compartidos.
+**Qué cubre el MVP:** el núcleo de cálculo para un solo usuario —la web de gestión, el motor, dos reglas del validador (capacidad y solapamiento) y el monitoreo planificado—, más una API separada para registrar métricas anónimas de las pruebas. No cubre las fronteras institucionales: Guaraní, identidad, otros actores ni asignaciones compartidas.
 
 **Salto arquitectónico más grande:** pasar de una aplicación aislada en un navegador, con datos inventados y un usuario anónimo, a un sistema dentro de la UNLaM que lee y escribe sobre SIU Guaraní, la fuente oficial. De ese cambio se derivan el servidor y la base compartida, la identidad y los roles, y el flujo de aprobación que reemplaza al «deshacer» local.
 
@@ -303,17 +308,39 @@ La visión agrega, dentro de la infraestructura de la UNLaM operada por Sistemas
 * SIU Guaraní es la fuente oficial y legal de comisiones, inscriptos, cupos y aulas: «si una comisión no está en Guaraní, legalmente no existe» (U1). RooMeet propone; Guaraní registra.
 * IntraConsulta y MIeL consumen de Guaraní, y la información de IntraConsulta puede desfasarse si requiere migraciones (U1).
 * Sistemas de la UNLaM proveerá la infraestructura, administrará la configuración de bajo nivel y mantendrá la disponibilidad (TP2), por lo que la visión debe ejecutarse dentro de la infraestructura institucional y con tecnologías que Sistemas pueda operar.
-* El acceso a datos y sistemas institucionales requiere un aval que no se obtuvo durante el TP5; el usuario real no tiene ni tendrá acceso al software.
+* El acceso a datos y sistemas institucionales requiere un aval que no se obtuvo durante el TP5. El informe final del TP5 registra una prueba remota del prototipo con datos simulados por una persona relevada en el TP2; eso no equivale a acceso institucional ni autoriza una integración real.
 * Una vez iniciado el cuatrimestre, las modificaciones sólo se hacen por solicitud a la Secretaría Académica (U1).
 * El proceso real tiene casos que el MVP no modela: materias semipresenciales que comparten aula alternando días, aulas propias de cada departamento y cupos que cambian por reclamos (encuesta de U1).
 
 ### 9.6 Componente más riesgoso
 
-El **adaptador con SIU Guaraní**, la frontera con los datos institucionales: es lo que trabó la prueba del TP5 (falta de aval), hoy no existe ni como interfaz (el dataset está compilado y lo leen directamente `App` y las pantallas), un error de escritura alteraría la asignación oficial y los datos reales traen casos no modelados. Segundo candidato: el **motor de asignación**, que con el dataset del MVP funciona, pero cuando algún curso no entra en ningún aula devuelve asignaciones duplicadas (en una prueba con 69 cursos devolvió 236 asignaciones con 385 violaciones), y `App.tsx` publica el resultado sin validarlo.
+El **adaptador con SIU Guaraní** sigue siendo la frontera más riesgosa según el TP6 final: no existe ni como interfaz (el dataset está compilado y lo leen directamente `App` y las pantallas), requiere permisos institucionales aún no obtenidos y un error de escritura alteraría la asignación oficial. La API de métricas agregada al MVP no reduce ese riesgo porque no consulta ni modifica Guaraní. Segundo candidato: el **motor de asignación**, que con el dataset del MVP funciona, pero cuando algún curso no entra en ningún aula puede devolver asignaciones inválidas, como mostró la prueba de saturación documentada en el TP6. La propuesta debe validarse antes de publicarse.
 
 ### 9.7 Pendientes que se suman a 8.5
 
-* Obtener el aval institucional para la prueba piloto, o definir cómo realizarla si el usuario no puede acceder al software.
+* Completar la prueba del MVP con al menos tres usuarios reales del segmento y obtener el aval necesario para cualquier uso de datos o sistemas institucionales. El único registro actual no permite cerrar la hipótesis de valor.
 * Confirmar con Sistemas qué servicios del SIU están habilitados, si es posible usar PostgreSQL y un servidor en Node.js, y dónde se alojaría el producto.
 * Corregir el motor de asignación para el caso de cursos sin aula compatible y validar la propuesta antes de publicarla.
 * Separar el acceso a datos detrás de una interfaz, para poder reemplazar el dataset por el adaptador de Guaraní sin modificar las pantallas.
+
+---
+
+## 10. Aprendizaje del TP5 y estado de la hipótesis
+
+Esta sección incorpora al brief el resultado del informe final del TP5. La hipótesis de valor de 7.7 y el alcance de 8 siguen vigentes como planteo, pero su estado de validación cambia: ya existe un primer registro de uso del MVP y aún falta evidencia para concluir sobre el proceso institucional.
+
+### 10.1 Métricas y primer resultado
+
+El TP5 final propone como métricas accionables la **cantidad de cambios de aula** que hace quien revisa la propuesta y el **tiempo de la tarea terminada**, con un criterio de mediana inferior a cinco minutos. La valoración de 1 a 5 y el comentario libre son datos complementarios. La cantidad de visitas al enlace se identifica como métrica vanidosa porque puede aumentar aunque nadie complete la tarea. Estos criterios se documentaron después de construir el MVP, por lo que el brief no los presenta como definidos antes de la implementación.
+
+El informe registra una sesión anónima del 6/11/2026 que terminó en **01:28**, con **cero cambios de aula** y una valoración de **5/5**. Según el equipo, participó una persona relevada en el TP2. Su comentario pide filtros de materias y de aulas en la primera pantalla, y valora favorablemente la distribución, el control y la ubicación de las aulas en el mapa. La captura de métricas muestra el resultado final, pero no permite observar dónde dudó, qué intentó hacer ni si hubiera aprobado la asignación para uso real.
+
+### 10.2 Qué se aprendió y qué queda sin validar
+
+**Usabilidad.** Una persona pudo finalizar el flujo y dejó una valoración alta. La cantidad de elementos de la primera pantalla apareció como fricción concreta en su comentario. No se puede inferir que el resto del recorrido haya estado libre de dificultades, porque la prueba fue asincrónica y el registro no contiene observación paso a paso.
+
+**Hipótesis de valor.** Cero cambios en una sesión con datos simulados no confirma la condición de que al menos el 90 % de las propuestas sean aprobadas por el personal administrativo y la Secretaría Académica. El tiempo de 01:28 cumple el criterio de cinco minutos propuesto en el TP5, pero no demuestra una reducción frente al proceso manual porque no se midió una referencia comparable. Tampoco hubo una prueba de aceptación institucional con datos reales. Por lo tanto, la hipótesis de 7.7 **permanece sin validar en conjunto**. El resultado es favorable para continuar evaluando el MVP, no para declarar resuelto el problema.
+
+### 10.3 Decisión y siguiente iteración
+
+Se decide **perseverar provisionalmente con el MVP**, como plantea el TP5 final, para obtener más evidencia antes de cambiar la hipótesis o elegir un tipo de pivote. La siguiente mejora a evaluar son filtros de materias y aulas en la primera pantalla, por el pedido explícito de la persona que probó el producto. El TP5 también propone considerar características y tipos de aulas para materias con necesidades específicas. Eso queda como propuesta de una iteración posterior, no como funcionalidad ya validada ni incluida en el MVP actual. Para una decisión definitiva faltan al menos dos sesiones más de usuarios reales del segmento, la verificación de las asignaciones en un contexto representativo y una línea de base del tiempo manual.
