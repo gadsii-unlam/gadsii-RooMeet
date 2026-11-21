@@ -6,7 +6,7 @@ Trabajo integrador de **Gestión Aplicada al Desarrollo de Software II (3665)** 
 
 | | |
 | --- | --- |
-| **Producto desplegado** | `[https://roomeet-asignacion-aulas.vercel.app/]` |
+| **Producto desplegado** | https://roomeet-asignacion-aulas.vercel.app |
 | **Repositorio** | https://github.com/gadsii-unlam/gadsii-RooMeet |
 | **Brief vigente** | [`docs/brief.md`](docs/brief.md) |
 | **Registro de trabajo con IA** | [`docs/prompts.md`](docs/prompts.md) |
