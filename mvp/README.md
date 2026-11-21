@@ -2,7 +2,7 @@
 
 Aplicación web para probar la hipótesis central de RooMeet: generar y revisar propuestas de asignación de aulas sin superposiciones ni excesos de capacidad, y medir cuántas propuestas son aceptadas sin modificaciones y cuánto demora el recorrido.
 
-El dataset incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. La propuesta representa la **asignación completa de aulas del cuatrimestre vigente**; la ubicación de cada materia dentro de su plan no divide la propuesta. Los horarios, cupos, historiales, seis aulas y posiciones del mapa son simulados. Funciona completamente en el navegador, sin conexión con SIU Guaraní, backend, credenciales ni variables de entorno. [Fuentes y criterios del dataset](docs/dataset-diit.md).
+El dataset incluye el primer año de las seis carreras de grado del DIIT de la UNLaM: 65 materias, con nombres, códigos y horas semanales tomados de sus planes de estudio. La propuesta representa la **asignación completa de aulas del cuatrimestre vigente**; la ubicación de cada materia dentro de su plan no divide la propuesta. Los horarios, cupos, historiales, seis aulas y posiciones del mapa son simulados. La asignación funciona completamente en el navegador, sin conexión con SIU Guaraní ni credenciales. Solo la API opcional de métricas del piloto (`api/evaluations.js`, con Neon) usa backend y variables de entorno; en desarrollo local no es necesaria. [Fuentes y criterios del dataset](docs/dataset-diit.md).
 
 ## Alcance implementado
 
@@ -27,12 +27,12 @@ La guía completa de alcance, criterios y decisiones está en [MVP-AGENTES.md](M
 ## Desarrollo local
 
 ```bash
-cd C:\Users\fnval\Desktop\git\MVP-GADS2
+cd mvp
 npm ci
 npm run dev
 ```
 
-Si ya estás dentro de `MVP-GADS2/`, omití el `cd`. Todos los demás comandos de esta guía se ejecutan desde esa carpeta.
+Si ya estás dentro de `mvp/`, omití el `cd`. Todos los demás comandos de esta guía se ejecutan desde esa carpeta.
 
 Vite muestra la URL local en la terminal. La navegación utiliza hashes (`#datos`, `#propuesta`, `#monitoreo`, `#cambio`), por lo que recargar una vista no requiere reglas de servidor adicionales.
 
@@ -55,7 +55,7 @@ npm run test:e2e
 ## Despliegue en Vercel
 
 1. Importar este repositorio en Vercel.
-2. Usar la raíz del repositorio como *Root Directory* del proyecto.
+2. Usar `mvp` como *Root Directory* del proyecto (ahí están `vercel.json`, `package.json` y `api/`).
 3. Seleccionar el preset **Vite** y Node.js **22.x**.
 4. Vercel tomará de `vercel.json` la instalación `npm ci`, el build `npm run build` y la salida `dist`.
 5. Para recopilar pruebas, configurar `DATABASE_URL` y `METRICS_ADMIN_KEY` en las variables de entorno del proyecto.

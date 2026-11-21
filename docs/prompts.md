@@ -7,6 +7,7 @@
 | 25/10/26 | OpenAI Codex (GPT-5) | Analizar los requisitos, el wireframe y las correcciones propuestas para preparar la guía de implementación del MVP y su despliegue en Vercel. | 5 |
 | 25/10/26 | OpenAI Codex (GPT-5) | Implementar como desarrollador senior el MVP de RooMeet a partir de la guía preparada. | 5 |
 | 04/11/26 | Claude (Cowork, Opus 5.5) | Continuar el TP6 a partir de la consigna: diagrama de la gran visión, redacción de las decisiones heredadas con evidencia del repositorio, tecnologías de la visión, componente más riesgoso, brief v5 y PDF de entrega. | 6 |
+| 21/11/26 | Claude (Cowork, Opus 5.5) | Hacer la Parte 2 del TPI: dejar el repositorio en condiciones de pasar a otro equipo (README, brief, registro de prompts, evidencia), sin aplicar tags ni commitear. | TPI |
 
 
 ## Analisis del wireframe del equipo TicTac
@@ -136,3 +137,25 @@ Claude (Cowork, Opus 5.5) trabajó sobre el repositorio y produjo:
 - Una medición del motor de asignación con datasets más grandes y con franjas saturadas, que mostró que el motor devuelve asignaciones duplicadas cuando algún curso no entra en ningún aula.
 
 Para la consigna 2, la IA reunió evidencia del historial (commits de `mvp/`, `MVP-AGENTES.md` y este registro) y propuso una clasificación; la decisión final sobre quién tomó cada decisión corresponde al equipo y no se delega.
+
+## TPI: Parte 2, el repositorio
+
+### Prompt
+
+> necesito que hagas la parte 2
+> dejame a mi aplicar los tags
+>
+> [Se adjuntó la consigna del TPI, versión 4.] Durante la sesión: «dejá los cambios en local, yo los reviso».
+
+### Respuesta
+
+Claude (Cowork, Opus 5.5) trabajó sobre la copia local del repositorio. No hizo commits ni creó tags.
+
+- Recorrió el historial del brief y armó la tabla de versiones y commits. La versión rotulada 6 es la quinta registrada, porque la versión 4 nunca se commiteó.
+- Revisó los tags existentes (`Entrega-TP3` a `Entrega-TP6`) y propuso commits para `Entrega-TP1` y `Entrega-TP2`. `Entrega-TP7`, `Entrega-TPI` y la aplicación de todos los tags quedaron a cargo del equipo.
+- Ejecutó `npm ci`, las pruebas unitarias (20/20) y el build del MVP sobre una copia limpia del commit `5b19ef2`, para comprobar que las instrucciones de ejecución funcionan.
+- Reescribió el `README.md` raíz como punto de entrada para otro equipo: qué es el producto, qué está construido, simulado y diferido, cómo se ejecuta, la estructura del repositorio, la historia del brief, las líneas base, cómo continuar, la deuda técnica y los límites.
+- Agregó `docs/evidencia/README.md`, que indexa la evidencia del TP2 y del TP5 y declara qué falta (las respuestas originales de U2 y U3).
+- Corrigió `mvp/README.md`: la ruta local de otra máquina (`C:\Users\fnval\...`), el *Root Directory* de Vercel (es `mvp`, no la raíz) y la afirmación de que el MVP no tenía backend ni variables de entorno, que dejó de ser cierta al agregar la API de métricas.
+
+Los datos que la IA no podía conocer quedaron marcados como `[COMPLETAR]` en el README: la URL del producto, los titulares de las cuentas de Vercel y Neon, y los commits de TP7 y TPI.
